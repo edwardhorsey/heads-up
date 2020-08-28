@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>HU Poker</title>
+        <script src="index.js" async></script>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+
+        <h1>HU Poker</h1>
+        <div id="set-name">
+          <input type="text" id="name-input">
+          <button onclick="setYourName()">Set your name</button>
+        </div>
+
+        <div id="name-set">
+          <p id="your-name"></p>
+          <input type="text" id="chat-input">
+          <button onclick="sendMsg()">Send message</button>
+          <div class="chat-div">
+            <p>Chatbox:</p>
+            <p id="chat"></p>
+          </div>
+        </div>
+
+    </body>
+</html>

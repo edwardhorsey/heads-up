@@ -1,0 +1,14 @@
+.name-set {
+  display: none;
+}
+
+.chat-div {
+  background-color: aliceblue;
+}
+
+.chat {
+  width: 200px;
+  height: 200px;
+  border: 2px solid red;
+  overflow-y: auto;
+}
