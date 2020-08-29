@@ -10,10 +10,10 @@ connected = set()
 def createUser(websocket):
     return (uuid.uuid4(), websocket)
 
-def chat(message):
-    return {
-
-    }
+async def chat(message):
+    for conn in connected:
+        await conn[1].send(f'from server: {message}')
+        
 
 async def echo(websocket, path):
     user = createUser(websocket)
@@ -21,11 +21,10 @@ async def echo(websocket, path):
 
     try:
         async for message in websocket:
+            request = json.loads(message)
+            if request['method'] == 'chat':
+                await chat(request['value'])
         
-        
-        
-            for conn in connected:
-                await conn[1].send(f"Hi {conn[0]} back from server: {message}")
     finally:
         # Unregister.
         connected.remove(user)
