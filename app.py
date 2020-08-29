@@ -10,10 +10,14 @@ connected = set()
 def createUser(websocket):
     return (uuid.uuid4(), websocket)
 
-async def chat(message):
+async def chat(value):
+    response = {
+      'username': value['username'],
+      'message': value['message'],
+    }
     for conn in connected:
-        await conn[1].send(f'from server: {message}')
-        
+        await conn[1].send(json.dumps(response))
+
 
 async def echo(websocket, path):
     user = createUser(websocket)

@@ -9,6 +9,14 @@ const nameDisplay = document.getElementById('your-name');
 const chatInput = document.getElementById('chat-input');
 const chat = document.getElementById('chat');
 
+class User {
+  constructor(name) {
+    this.username = name;
+  }
+}
+
+let user;
+
 socket.addEventListener('open', (event) => {
   console.log('Connected to server');
 })
@@ -18,13 +26,15 @@ socket.addEventListener('close', (event) => {
 })
 
 socket.addEventListener('message', (event => {
-  let message = `${nameInput.value}: ${event.data}`
+  response = JSON.parse(event.data)
+  const message = `${response.username}: ${response.message}\n`
   chat.innerHTML += message;
-  chat.innerHTML += '<br>';
 }))
 
 const setYourName = () => {
-  nameDisplay.innerHTML = nameInput.value;
+  const name = nameInput.value;
+  user = new User(name);
+  nameDisplay.innerHTML = name;
   setName.style.display = 'none';
   afterSetName.style.display = 'block';
 }
@@ -32,7 +42,10 @@ const setYourName = () => {
 const sendMsg = () => {
   const request = {
     'method': 'chat',
-    'value': chatInput.value
+    'value': {
+      'username': user.username,
+      'message': chatInput.value
+    }
   }
   socket.send(JSON.stringify(request));
 } 
