@@ -7,21 +7,23 @@
     </head>
     <body>
 
-        <h1>HU Poker</h1>
-        <div id="set-name">
+      <h1>HU Poker</h1>
+        <section id="set-name">
           <input type="text" id="name-input">
           <button onclick="setYourName()">Set your name</button>
-        </div>
+        </section>
 
-        <div id="name-set">
-          <p id="your-name"></p>
-          <input type="text" id="chat-input">
-          <button onclick="sendMsg()">Send message</button>
-          <div class="chat-div">
-            <p>Chatbox:</p>
-            <p id="chat"></p>
-          </div>
-        </div>
+        <section id="name-set">
+          <article>
+            <p id="your-name"></p>
+            <input type="text" id="chat-input">
+            <button onclick="sendMsg()">Send message</button>
+            <div class="chat-div">
+              <p>Chatbox:</p>
+              <p id="chat"></p>
+            </div>
+          </article>  
+        </section>
 
     </body>
 </html>
