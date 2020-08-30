@@ -5,33 +5,66 @@ import websockets
 import uuid
 import json
 
-connected = set()
+from random import randrange
+from poker import Game, Player
 
-def createUser(websocket):
-    return (uuid.uuid4(), websocket)
+connected = {}
+game_ids = set()
+games = {}
+
+def generate_GID():
+    gid = randrange(1000)
+    if gid not in game_ids:
+        game_ids.add(gid)
+        return gid
+    else:
+        return generate_GID()
+
+def createUser():
+    return uuid.uuid4()
 
 async def chat(value):
     response = {
-      'username': value['username'],
-      'message': value['message'],
+      'method': 'chat',
+      'value': {
+          'username': value['username'],
+          'message': value['message'],
+      }
     }
     for conn in connected:
-        await conn[1].send(json.dumps(response))
-
+        await connected[conn].send(json.dumps(response))
 
 async def echo(websocket, path):
-    user = createUser(websocket)
-    connected.add(user)
+    uid = createUser()
+    connected[uid] = websocket
+    first_send = {
+      'method': 'connected',
+      'uid': uid
+    }
+    websocket.send(json.dumps(first_send))
 
     try:
         async for message in websocket:
             request = json.loads(message)
             if request['method'] == 'chat':
                 await chat(request['value'])
+
+            if request['method'] == 'create-game':
+                uid = request['uid']
+                gid = generate_GID()
+                player_one = Player(uid, request['username'], 10000)
+                games[gid] = Game(gid, player_one)
+                response = {
+                  'method': 'create-game',
+                  'uid': uid,
+                  'gid': gid,
+                }
+                connected[uid].send(json.dumps(response))
+                
         
     finally:
         # Unregister.
-        connected.remove(user)
+        connected.pop(uid)
 
 start_server = websockets.serve(echo, "localhost", 5000)
 

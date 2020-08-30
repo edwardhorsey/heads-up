@@ -8,32 +8,46 @@ const nameInput = document.getElementById('name-input');
 const nameDisplay = document.getElementById('your-name');
 const chatInput = document.getElementById('chat-input');
 const chat = document.getElementById('chat');
+const gameID = document.getElementById('game-id')
 
 class User {
-  constructor(name) {
+  constructor(name, uid) {
     this.username = name;
+    this.uid = uid;
   }
 }
 
 let user;
+let uid;
 
-socket.addEventListener('open', (event) => {
+socket.addEventListener('open', () => {
   console.log('Connected to server');
 })
 
-socket.addEventListener('close', (event) => {
+socket.addEventListener('close', () => {
   console.log('Disconnected to server');
 })
 
 socket.addEventListener('message', (event => {
   response = JSON.parse(event.data)
-  const message = `${response.username}: ${response.message}\n`
-  chat.innerHTML += message;
+  if (response.method === 'connected') {
+    console.log('Your uid: ', response.uid);
+    uid = response.uid
+  } else if (response.method === 'chat') {
+    const response = response.value;
+    const message = `${response.username}: ${response.message}` + '<br>'
+    chat.innerHTML += message;
+  } else if (response.method === 'create-game') {
+    console.log(response)
+    gameID.innerHTML = response.gid;
+    gameID.innerHTML += '\nTell your friend';
+  }
+    
 }))
 
 const setYourName = () => {
   const name = nameInput.value;
-  user = new User(name);
+  user = new User(name, uid);
   nameDisplay.innerHTML = name;
   setName.style.display = 'none';
   afterSetName.style.display = 'block';
@@ -49,3 +63,12 @@ const sendMsg = () => {
   }
   socket.send(JSON.stringify(request));
 } 
+
+const createGame = () => {
+  const request = {
+    'method': 'create-game',
+    'uid': user.uid,
+    'display-name': user.name
+  };
+  socket.send(JSON.stringify(request))
+}

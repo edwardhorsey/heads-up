@@ -2,6 +2,10 @@
   display: none;
 }
 
+.chat-box {
+  border: 1px solid darkgrey;
+  background-color: ivory;
+}
 .chat-div {
   background-color: aliceblue;
 }
