@@ -12,7 +12,7 @@ const gameID = document.getElementById('game-id')
 
 class User {
   constructor(name, uid) {
-    this.username = name;
+    this.name = name;
     this.uid = uid;
   }
 }
@@ -38,7 +38,6 @@ socket.addEventListener('message', (event => {
     const message = `${response.username}: ${response.message}` + '<br>'
     chat.innerHTML += message;
   } else if (response.method === 'create-game') {
-    console.log(response)
     gameID.innerHTML = response.gid;
     gameID.innerHTML += '\nTell your friend';
   }
@@ -46,9 +45,8 @@ socket.addEventListener('message', (event => {
 }))
 
 const setYourName = () => {
-  const name = nameInput.value;
-  user = new User(name, uid);
-  nameDisplay.innerHTML = name;
+  user = new User(nameInput.value, uid);
+  nameDisplay.innerHTML = nameInput.value;
   setName.style.display = 'none';
   afterSetName.style.display = 'block';
 }

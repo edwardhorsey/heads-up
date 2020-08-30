@@ -39,9 +39,9 @@ async def echo(websocket, path):
     connected[uid] = websocket
     first_send = {
       'method': 'connected',
-      'uid': uid
+      'uid': str(uid)
     }
-    websocket.send(json.dumps(first_send))
+    await websocket.send(json.dumps(first_send))
 
     try:
         async for message in websocket:
@@ -50,16 +50,16 @@ async def echo(websocket, path):
                 await chat(request['value'])
 
             if request['method'] == 'create-game':
-                uid = request['uid']
+                uid = uuid.UUID(request['uid'])
                 gid = generate_GID()
-                player_one = Player(uid, request['username'], 10000)
+                player_one = Player(uid, request['display-name'], 10000)
                 games[gid] = Game(gid, player_one)
                 response = {
                   'method': 'create-game',
-                  'uid': uid,
+                  'uid': str(uid),
                   'gid': gid,
                 }
-                connected[uid].send(json.dumps(response))
+                await connected[uid].send(json.dumps(response))
                 
         
     finally:
