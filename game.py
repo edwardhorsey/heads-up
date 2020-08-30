@@ -11,8 +11,6 @@ class Game():
 
     def add_player(self, player_two):
         self.player_two = player_two
-        if self.player_one and self.player_two:
-            return self.new_hand()
 
     def new_hand(self):
         self.current_hand = Hand(Deck())

@@ -13,13 +13,26 @@
           <button onclick="setYourName()">Set your name</button>
         </section>
 
-        <section id="name-set">
-          <button onclick="createGame()">Create game</button>
-          <article>
-            <p>Game ID:</p>
-            <p id="game-id"></p>
+        <section id="main">
+          <div id="create-or-join">
+            <button onclick="createGame()">Create game</button>
+            <p>OR</p>
+            <input type="text" id="join-game-input">
+            <button onclick="joinGame()">Join game</button>
+          </div>
+          <div id="created-game">
+            <p>Created game. ID:</p>
+            <p id="create-game-id"></p>
+          </div>
             <!-- <h3>preflop cards</h3>
             <p id="preflop-cards"></p> -->
+          </article>
+
+          <article id="game">
+            <h2 id="game-welcome">You are in game </h2>
+            <section id="hand">
+
+            </section>
           </article>
 
           <article class="chat-box">
