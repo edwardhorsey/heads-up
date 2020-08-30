@@ -6,7 +6,8 @@ import uuid
 import json
 
 from random import randrange
-from poker import Game, Player
+from game import Game
+from player import Player
 
 connected = {}
 game_ids = set()

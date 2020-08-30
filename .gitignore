@@ -137,6 +137,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Custom
+# Custom / Misc / Ed
 Scripts
-Includes
+Include
+rough-ideas
