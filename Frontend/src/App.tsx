@@ -1,11 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import styles from './App.module.scss';
 
+import SetName from './Components/SetName';
+import Lobby from './Components/Lobby';
+
 function App() {
+  const [ displayName, setDisplayName ] = useState('')
+  
+  const setName = (name: string): void => {
+    setDisplayName(name);
+  };
+
+  const showLobby = () => {
+    return displayName === '' ? (<SetName setName={setName} />) : (<Lobby displayName={displayName} />)
+  }
+
   return (
-    <div className="App">
-      <p>Heads Up Poker</p>
+    <div className={styles.App}>
+      <h1>Heads Up Poker</h1>
+      {showLobby()}
     </div>
   );
 }
