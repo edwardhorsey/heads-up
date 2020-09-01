@@ -4,6 +4,7 @@ import styles from './App.module.scss';
 import SetName from './Components/SetName';
 import Lobby from './Components/Lobby';
 import { ServerContext } from './Context/serverContext';
+import GameContainer from './Components/GameContainer';
 
 const App = () => {
   const [ displayName, setDisplayName ] = useState('');
@@ -16,9 +17,9 @@ const App = () => {
     context.setCState({...context.cState, displayName: name})
   };
 
-  const showLobby = () => {
-    return displayName === '' ? (<SetName setName={setName} />) : (<Lobby />)
-  }
+  const showLobby = () => displayName === '' ? <SetName setName={setName} /> : beginGame();
+
+  const beginGame = () => context.cState.readyToStart ? <GameContainer /> : <Lobby />;
 
   return (
       <div className={styles.App}>
