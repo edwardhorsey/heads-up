@@ -58,18 +58,16 @@ async def join_game(request):
       'method': 'joined-game',
       'gid': gid,
       'uids': [str(client) for client in clients],
-      'players': {
-        'player-one': {
+      'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
           'bankroll': games[gid].player_one.bankroll
-        },
-        'player-two': {
+        }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
           'bankroll': games[gid].player_two.bankroll
         }
-      }
+      ]
     }
     for client in clients:
         await connected[client].send(json.dumps(response))

@@ -10,7 +10,8 @@ interface Icontext {
   opponentName: string | undefined,
   gid: number | undefined,
   readyToStart: boolean,
-  players: []
+  players: [],
+  whichPlayer: number
 }
 
 const initialState: Icontext = {
@@ -19,7 +20,8 @@ const initialState: Icontext = {
   opponentName: undefined,
   gid: undefined,
   readyToStart: false,
-  players: []
+  players: [],
+  whichPlayer: 0
 }
 
 export const ServerContext = createContext<Icontext | any>(initialState)
@@ -33,22 +35,13 @@ export const ServerProvider = (props: any) => {
     if (response.method === 'connected') setCState({...cState, uid: response.uid });
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
     if (response.method === 'joined-game') {
-      console.log(response)
-
+      setCState({ ...cState,
+        gid: response.gid,
+        players: response.players,
+        readyToStart: response.players.length === 2 ? true : false,
+        whichPlayer: cState.uid === response.players[0].uid ? 0 : 1
+      })
     }
-    
-
-    
-  // const beginGame = (response) => {
-  //   createdGame.style.display = 'none';
-  //   console.log(response);
-  //   const playerOneName = response.players['player-one'].name;
-  //   const playerTwoName = response.players['player-two'].name;
-  //   if (response.uids[0] === user.uid) gameDisplay.innerHTML += `<p>${playerTwoName} has joined</p>`;
-  //   gameDisplay.innerHTML += `<p>Welcome ${playerOneName} and ${playerTwoName}</p>`;
-  // }
-
-
   }
 
   return <ServerContext.Provider value={{cState, setCState}}>{props.children}</ServerContext.Provider>
