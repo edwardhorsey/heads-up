@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 import styles from "./SetName.module.scss";
+import { ServerContext } from '../../Context/serverContext';
 // import Button from "../Button";
 
 interface IProps {
@@ -8,6 +9,9 @@ interface IProps {
 
 const SetName: React.FC<IProps> = (props) => {
   const [input, setInput] = useState('Your name')
+  
+  const context = useContext(ServerContext)
+  console.log('hi from setname', context)
 
   return (
     <section className={styles.SetName}>
