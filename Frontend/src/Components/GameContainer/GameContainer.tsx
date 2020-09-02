@@ -1,31 +1,36 @@
 import React, {useState, useContext} from "react";
 import styles from "./GameContainer.module.scss";
 import { socket, ServerContext } from '../../Context/serverContext';
+import GameNav from "../GameNav";
+import Button from "../Button";
 
 const GameContainer: React.FC = () => {
-  // const [input, setInput] = useState('Game ID')
+  // const [input, setInput] = useState('Game Container')
 
   const context = useContext(ServerContext);
   console.log('hi from GameContainer', context);
+  const { uid, gid, players, whichPlayer } = context.cState;
 
-  const playerOne = context.cState.players[context.cState.whichPlayer];
-  const playerTwo = context.cState.players[context.cState.whichPlayer === 0 ? 1: 0];
-  console.log(playerOne, playerTwo)
+  const playerOne = players[whichPlayer];
+  const playerTwo = players[whichPlayer === 0 ? 1: 0];
+
+  const readyToPlayHand = () => {
+    const request = {
+      method: 'ready-to-play',
+      uid: uid,
+      gid: gid,
+      ready: true
+    }
+    socket.send(JSON.stringify(request));
+  }
 
   return (
     <section className={styles.GameContainer}>
-      <h2>GameContainer</h2>
-      <h3>GameID: {context.cState.gid}</h3>
+      <h2>Game Container</h2>
+      <h3>GameID: {gid}</h3>
       <h3>Welcome {playerOne.name} and {playerTwo.name}</h3>
-      <div>
-        <h4>{playerTwo.name}</h4>
-        <h5>Bankroll: {playerTwo.bankroll}</h5>
-      </div>
-      <div>
-        <h3>{playerOne.name}</h3>
-        <h4>Bankroll: {playerOne.bankroll}</h4>
-      </div>
-      <button onClick={()=>{console.log('play hand')}}>Play hand</button>
+      <GameNav playerOne={playerOne} playerTwo={playerTwo} />
+      <Button logic={readyToPlayHand} text="Play hand" />
     </section>
   );
 };

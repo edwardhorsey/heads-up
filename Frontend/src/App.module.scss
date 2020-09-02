@@ -5,13 +5,20 @@
 }
 
 .App {
+  text-align: center;
+  padding: 5%;
+  
   h1 {
     color: darkblue;
   }
-  text-align: center;
-  padding: 5%;
+  
   section {
     margin: 10px;
     padding: 10px;
+
+    input {
+      margin: 5px;
+      padding: 5px;
+    }
   }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import styles from "./CreateOrJoin.module.scss";
 import { ServerContext, socket } from '../../Context/serverContext';
-// import Button from "../Button";
+import Button from "../Button";
 
 interface IProps {
 
@@ -13,11 +13,13 @@ const CreateOrJoin: React.FC<IProps> = (props) => {
   const context = useContext(ServerContext);
   console.log('hi from CreateOrJoin', context);
 
+  const { uid, displayName } = context.cState;
+
   const createGame = () => {
     const request = {
       'method': 'create-game',
-      'uid': context.cState.uid,
-      'display-name': context.cState.displayName
+      'uid': uid,
+      'display-name': displayName
     };
     socket.send(JSON.stringify(request));
   }
@@ -25,8 +27,8 @@ const CreateOrJoin: React.FC<IProps> = (props) => {
   const joinGame = () => {
       const request = {
         'method': 'join-game',
-        'uid': context.cState.uid,
-        'display-name': context.cState.displayName,
+        'uid': uid,
+        'display-name': displayName,
         'gid': input
       };
       socket.send(JSON.stringify(request));
@@ -35,9 +37,9 @@ const CreateOrJoin: React.FC<IProps> = (props) => {
   return (
     <section className={styles.CreateOrJoin}>
       <h3>Create or Join a game</h3>
-      <button onClick={() => {createGame()}}>Create game</button>
+      <Button logic={createGame} text="Create game" />
       <input type="text" name="gid-input" value={input} onChange={(event) => {setInput(event.target.value)}}/>
-      <button onClick={() => {joinGame()}}>Join a game</button>
+      <Button logic={joinGame} text="Join a game" />
     </section>
   );
 };

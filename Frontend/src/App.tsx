@@ -12,6 +12,7 @@ const App = () => {
   const context = useContext(ServerContext)
   console.log('hi from app', context)
   
+  const { readyToStart } = context.cState;
   const setName = (name: string): void => {
     setDisplayName(name);
     context.setCState({...context.cState, displayName: name})
@@ -19,7 +20,7 @@ const App = () => {
 
   const showLobby = () => displayName === '' ? <SetName setName={setName} /> : beginGame();
 
-  const beginGame = () => context.cState.readyToStart ? <GameContainer /> : <Lobby />;
+  const beginGame = () => readyToStart ? <GameContainer /> : <Lobby />;
 
   return (
       <div className={styles.App}>

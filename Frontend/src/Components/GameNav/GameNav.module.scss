@@ -1,0 +1,9 @@
+.Nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  text-align: left;
+  .playerName {
+    font-weight: 700;
+  }
+}
