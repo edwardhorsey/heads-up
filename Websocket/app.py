@@ -100,6 +100,8 @@ async def ready_to_play(request):
         games[gid].new_hand()
         response['method'] = 'new-hand'
         response['number-of-hands'] = games[gid].number_of_hands
+        response['players'][0]['ready'] = True if games[gid].player_one_ready else False
+        response['players'][1]['ready'] = True if games[gid].player_two_ready else False
         for client in clients:
             if str(client) == response['players'][0]['uid']:
                 response['players'][0]['hand'] = games[gid].current_hand.one

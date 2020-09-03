@@ -11,7 +11,8 @@ interface Icontext {
   gid: number | undefined,
   readyToStart: boolean,
   players: [],
-  whichPlayer: number
+  whichPlayer: number,
+  hand: [] | boolean
 }
 
 const initialState: Icontext = {
@@ -21,7 +22,8 @@ const initialState: Icontext = {
   gid: undefined,
   readyToStart: false,
   players: [],
-  whichPlayer: 0
+  whichPlayer: 0,
+  hand: false
 }
 
 export const ServerContext = createContext<Icontext | any>(initialState)
@@ -44,9 +46,16 @@ export const ServerProvider = (props: any) => {
     }
     if (response.method === 'one-player-ready') {
       console.log(response);
+      setCState({...cState,
+        players: response.players
+      })
     }
     if (response.method === 'new-hand') {
       console.log(response);
+      setCState({...cState,
+        players: response.players,
+        hand: response.players[cState.whichPlayer].hand
+      })
     }
   }
 

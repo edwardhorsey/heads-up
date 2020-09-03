@@ -2,6 +2,7 @@ import React, {useState, useContext} from "react";
 import styles from "./GameContainer.module.scss";
 import { socket, ServerContext } from '../../Context/serverContext';
 import GameNav from "../GameNav";
+import GameHand from "../GameHand";
 import Button from "../Button";
 
 const GameContainer: React.FC = () => {
@@ -9,10 +10,10 @@ const GameContainer: React.FC = () => {
 
   const context = useContext(ServerContext);
   console.log('hi from GameContainer', context);
-  const { uid, gid, players, whichPlayer } = context.cState;
+  const { uid, gid, players, whichPlayer, hand } = context.cState;
 
-  const playerOne = players[whichPlayer];
-  const playerTwo = players[whichPlayer === 0 ? 1: 0];
+  const playerOne = players[whichPlayer]; // playerOne is user
+  const playerTwo = players[whichPlayer === 0 ? 1: 0]; // playerTwo is opponent
 
   const readyToPlayHand = () => {
     const request = {
@@ -30,7 +31,8 @@ const GameContainer: React.FC = () => {
       <h3>GameID: {gid}</h3>
       <h3>Welcome {playerOne.name} and {playerTwo.name}</h3>
       <GameNav playerOne={playerOne} playerTwo={playerTwo} />
-      <Button logic={readyToPlayHand} text="Play hand" />
+      {!playerOne.ready ? <Button logic={readyToPlayHand} text="Play hand" /> : ''}
+      {hand ? <GameHand hand={hand} /> : ''}
     </section>
   );
 };
