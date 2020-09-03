@@ -56,59 +56,64 @@ async def join_game(request):
     clients = [games[gid].player_one.uid, games[gid].player_two.uid]
     response = {
       'method': 'joined-game',
-      'uid': uid,
+      'uid': str(uid),
       'gid': gid,
       'uids': [str(client) for client in clients],
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'bankroll': games[gid].player_one.bankroll,
-          'hand': False
+          'bankroll': games[gid].player_one.bankroll
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'bankroll': games[gid].player_two.bankroll,
-          'hand': False
+          'bankroll': games[gid].player_two.bankroll
         }
       ]
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
 
-def ready_to_play(request):
+async def ready_to_play(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
     clients = [games[gid].player_one.uid, games[gid].player_two.uid]
-    
-    if games[gid].player_one.uid == uid:
+    if games[gid].player_one.uid == uid and request['ready']:
         games[gid].player_one_ready = True
-    elif games[gid].player_two.uid == uid:
-        games[gid].player_two_ready = True
-    print(gid, games[gid].player_one_ready, games[gid].player_two_ready)
-
+    elif games[gid].player_two.uid == uid and request['ready']:
+        games[gid].player_two_ready = True 
+    response = {
+      'uid': str(uid),
+      'gid': gid,
+      'uids': [str(client) for client in clients],
+      'players': [ {
+          'uid': str(games[gid].player_one.uid),
+          'name': games[gid].player_one.name,
+          'bankroll': games[gid].player_one.bankroll
+        }, {
+          'uid': str(games[gid].player_two.uid),
+          'name': games[gid].player_two.name,
+          'bankroll': games[gid].player_two.bankroll
+        }
+      ]
+    }
     if games[gid].player_one_ready and games[gid].player_two_ready:
         games[gid].new_hand()
-        # your_hand = 
-        response = {
-          'method': 'new-hand',
-          'uid': uid,
-          'gid': gid,
-          'uids': [str(client) for client in clients],
-          'number-of-hands': games[gid].number_of_hands,
-          'players': [ {
-              'uid': str(games[gid].player_one.uid),
-              'name': games[gid].player_one.name,
-              'bankroll': games[gid].player_one.bankroll,
-              # 'hand': games[gid].current_hand.one
-            }, {
-              'uid': str(games[gid].player_two.uid),
-              'name': games[gid].player_two.name,
-              'bankroll': games[gid].player_two.bankroll,
-              # 'hand': games[gid].current_hand.two
-            }
-          ]
-        }
-
+        response['method'] = 'new-hand'
+        response['number-of-hands'] = games[gid].number_of_hands
+        for client in clients:
+            if str(client) == response['players'][0]['uid']:
+                response['players'][0]['hand'] = games[gid].current_hand.one
+                response['players'][1]['hand'] = False
+            else:
+                response['players'][0]['hand'] = False
+                response['players'][1]['hand'] = games[gid].current_hand.two
+            await connected[client].send(json.dumps(response))
+    else:
+        response['method'] = 'one-player-ready'
+        response['players'][0]['ready'] = True if games[gid].player_one_ready else False
+        response['players'][1]['ready'] = True if games[gid].player_two_ready else False
+        for client in clients:
+            await connected[client].send(json.dumps(response))
 
 ## running the server ##
 

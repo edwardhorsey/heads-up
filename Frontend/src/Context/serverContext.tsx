@@ -42,6 +42,12 @@ export const ServerProvider = (props: any) => {
         whichPlayer: cState.uid === response.players[0].uid ? 0 : 1
       })
     }
+    if (response.method === 'one-player-ready') {
+      console.log(response);
+    }
+    if (response.method === 'new-hand') {
+      console.log(response);
+    }
   }
 
   return <ServerContext.Provider value={{cState, setCState}}>{props.children}</ServerContext.Provider>
