@@ -104,6 +104,7 @@ async def ready_to_play(request):
         response['players'][1]['blind'] = games[gid].current_hand.p_two_blind
         response['players'][0]['bankroll'] = games[gid].player_one.bankroll
         response['players'][1]['bankroll'] = games[gid].player_two.bankroll
+        response['pot'] = games[gid].current_hand.pot
         for client in clients:
             if str(client) == response['players'][0]['uid']:
                 response['players'][0]['hand'] = games[gid].current_hand.one_cards

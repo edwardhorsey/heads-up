@@ -12,7 +12,8 @@ interface Icontext {
   readyToStart: boolean,
   players: [],
   whichPlayer: number,
-  hand: [] | boolean
+  hand: [] | boolean,
+  pot: number
 }
 
 const initialState: Icontext = {
@@ -23,7 +24,8 @@ const initialState: Icontext = {
   readyToStart: false,
   players: [],
   whichPlayer: 0,
-  hand: false
+  hand: false,
+  pot: 0
 }
 
 export const ServerContext = createContext<Icontext | any>(initialState)
@@ -54,7 +56,8 @@ export const ServerProvider = (props: any) => {
       console.log(response);
       setCState({...cState,
         players: response.players,
-        hand: response.players[cState.whichPlayer].hand
+        hand: response.players[cState.whichPlayer].hand,
+        pot: response.pot
       })
     }
   }
