@@ -6,30 +6,31 @@ import { ServerContext } from '../../Context/serverContext';
 interface Iplayer {
   name: string,
   bankroll: number,
-  ready: boolean
+  ready: boolean,
+  blind: number
 }
 
 interface IProps {
-  playerOne: Iplayer,
-  playerTwo: Iplayer
+  yourself: Iplayer,
+  opponent: Iplayer
 }
 
-const GameNav: React.FC<IProps> = ({playerOne, playerTwo}) => {
+const GameNav: React.FC<IProps> = ({yourself, opponent}) => {
 
   const context = useContext(ServerContext);
   console.log('hi from GameNav', context);
 
   return (
     <article className={styles.Nav}>
-        <div className={styles.playerOne}>
-          <p className={styles.playerName}>{playerOne.name}</p>
-          <p>Bankroll: {playerOne.bankroll}</p>
-          {playerOne.ready ? <p className={styles.Ready}>Ready</p> : ''}
+        <div>
+          <p className={styles.playerName}>{yourself.name}</p>
+          <p>Bankroll: {yourself.bankroll}</p>
+          {yourself.ready ? <p className={styles.Ready}>Ready</p> : ''}
         </div>
-        <div className={styles.playerTwo}>
-          <p className={styles.playerName}>{playerTwo.name}</p>
-          <p>Bankroll: {playerTwo.bankroll}</p>
-          {playerTwo.ready ? <p className={styles.Ready}>Ready</p> : ''}
+        <div>
+          <p className={styles.playerName}>{opponent.name}</p>
+          <p>Bankroll: {opponent.bankroll}</p>
+          {opponent.ready ? <p className={styles.Ready}>Ready</p> : ''}
         </div>
       </article>
   )

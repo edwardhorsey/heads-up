@@ -27,15 +27,3 @@ class Game():
             self.current_hand = Hand(Deck(), self.current_blind, self.current_dealer)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
             self.current_hand.deal_cards()
-            
-
-
-# from player import Player
-# p_one = Player(123, 'ed', 750)
-# p_two = Player(124, 'amb', 750)
-# g = Game(135, p_one)
-# g.add_player(p_two)
-# g.player_one_ready = True
-# g.player_two_ready = True
-# g.new_hand()
-# print(p_one.bankroll, p_two.bankroll)

@@ -21,7 +21,7 @@ class Hand():
         p_one.bet(multiplier[0]*self.big_blind)
         self.p_one_blind = multiplier[0]*self.big_blind
         p_two.bet(multiplier[1]*self.big_blind)
-        self.p_two_blind = multiplier[0]*self.big_blind
+        self.p_two_blind = multiplier[1]*self.big_blind
         self.pot += 1.5*self.big_blind
 
     def all_in(self, player):

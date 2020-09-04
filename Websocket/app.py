@@ -53,7 +53,7 @@ async def join_game(request):
     gid = int(request['gid'])
     player_two = Player(uid, request['display-name'], 750)
     games[gid].add_player(player_two)
-    clients = [games[gid].player_one.uid, games[gid].player_two.uid]
+    clients = (games[gid].player_one.uid, games[gid].player_two.uid)
     response = {
       'method': 'joined-game',
       'uid': str(uid),
@@ -76,7 +76,7 @@ async def join_game(request):
 async def ready_to_play(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
-    clients = [games[gid].player_one.uid, games[gid].player_two.uid]
+    clients = (games[gid].player_one.uid, games[gid].player_two.uid)
     if games[gid].player_one.uid == uid and request['ready']:
         games[gid].player_one_ready = True
     elif games[gid].player_two.uid == uid and request['ready']:
@@ -98,13 +98,15 @@ async def ready_to_play(request):
     }
     if games[gid].player_one_ready and games[gid].player_two_ready:
         games[gid].new_hand()
-        response['method'] = 'new-hand'
-        response['number-of-hands'] = games[gid].number_of_hands
+        response.update({
+          'method': 'new-hand',
+          'number-of-hands': games[gid].number_of_hands,
+          'pot': games[gid].current_hand.pot
+        })
         response['players'][0]['blind'] = games[gid].current_hand.p_one_blind
-        response['players'][1]['blind'] = games[gid].current_hand.p_two_blind
         response['players'][0]['bankroll'] = games[gid].player_one.bankroll
+        response['players'][1]['blind'] = games[gid].current_hand.p_two_blind
         response['players'][1]['bankroll'] = games[gid].player_two.bankroll
-        response['pot'] = games[gid].current_hand.pot
         for client in clients:
             if str(client) == response['players'][0]['uid']:
                 response['players'][0]['hand'] = games[gid].current_hand.one_cards
@@ -140,8 +142,6 @@ async def echo(websocket, path):
                 await join_game(request)
             if request['method'] == 'ready-to-play':
                 await ready_to_play(request)
-
-            
 
     finally:
         # Unregister.
