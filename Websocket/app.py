@@ -38,7 +38,7 @@ async def chat(value):
 async def create_game(request):
     uid = uuid.UUID(request['uid'])
     gid = generate_GID()
-    player_one = Player(uid, request['display-name'], 10000)
+    player_one = Player(uid, request['display-name'], 750)
     games[gid] = Game(gid, player_one)
     print(games)
     response = {
@@ -51,7 +51,7 @@ async def create_game(request):
 async def join_game(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
-    player_two = Player(uid, request['display-name'], 10000)
+    player_two = Player(uid, request['display-name'], 750)
     games[gid].add_player(player_two)
     clients = [games[gid].player_one.uid, games[gid].player_two.uid]
     response = {
@@ -88,11 +88,11 @@ async def ready_to_play(request):
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'bankroll': games[gid].player_one.bankroll
+          'ready': True if games[gid].player_one_ready else False
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'bankroll': games[gid].player_two.bankroll
+          'ready': True if games[gid].player_two_ready else False
         }
       ]
     }
@@ -100,20 +100,20 @@ async def ready_to_play(request):
         games[gid].new_hand()
         response['method'] = 'new-hand'
         response['number-of-hands'] = games[gid].number_of_hands
-        response['players'][0]['ready'] = True if games[gid].player_one_ready else False
-        response['players'][1]['ready'] = True if games[gid].player_two_ready else False
+        response['players'][0]['blind'] = games[gid].current_hand.p_one_blind
+        response['players'][1]['blind'] = games[gid].current_hand.p_two_blind
+        response['players'][0]['bankroll'] = games[gid].player_one.bankroll
+        response['players'][1]['bankroll'] = games[gid].player_two.bankroll
         for client in clients:
             if str(client) == response['players'][0]['uid']:
-                response['players'][0]['hand'] = games[gid].current_hand.one
+                response['players'][0]['hand'] = games[gid].current_hand.one_cards
                 response['players'][1]['hand'] = False
             else:
                 response['players'][0]['hand'] = False
-                response['players'][1]['hand'] = games[gid].current_hand.two
+                response['players'][1]['hand'] = games[gid].current_hand.two_cards
             await connected[client].send(json.dumps(response))
     else:
         response['method'] = 'one-player-ready'
-        response['players'][0]['ready'] = True if games[gid].player_one_ready else False
-        response['players'][1]['ready'] = True if games[gid].player_two_ready else False
         for client in clients:
             await connected[client].send(json.dumps(response))
 
