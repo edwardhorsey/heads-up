@@ -42,15 +42,25 @@ async def create_game(request):
     games[gid] = Game(gid, player_one)
     print(games)
     response = {
-      'method': 'create-game',
-      'uid': str(uid),
-      'gid': gid,
+        'method': 'create-game',
+        'uid': str(uid),
+        'gid': gid,
+    }
+    await connected[uid].send(json.dumps(response))
+
+async def incorrect_gid(uid, gid):
+    response = {
+        'method': 'incorrect-gid',
+        'uid': str(uid),
+        'gid': gid
     }
     await connected[uid].send(json.dumps(response))
 
 async def join_game(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
+    if gid not in games:
+        return await incorrect_gid(uid, gid)
     player_two = Player(uid, request['display-name'], 750)
     games[gid].add_player(player_two)
     clients = (games[gid].player_one.uid, games[gid].player_two.uid)

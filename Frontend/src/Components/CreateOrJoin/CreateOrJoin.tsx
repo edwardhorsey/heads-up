@@ -12,17 +12,17 @@ const validate = (values: Ivalues) => {
   let errors: FormikErrors<Ivalues> = { };
   if (!values.gid) {
     errors.gid = "Required"
-  } else if (!Number(values.gid)) {
+  } else if (!Number(values.gid) || Number(values.gid) > 999) {
     errors.gid = "Must be a number between 1-999"
   }
   return errors;
 };
 
-const CreateOrJoin: React.FC = () => {    
+const CreateOrJoin: React.FC = () => {
   const context = useContext(ServerContext);
   console.log('hi from CreateOrJoin', context);
 
-  const { uid, displayName } = context.cState;
+  const { falseGID, uid, displayName } = context.cState;
 
   const formik = useFormik({
     initialValues: {
@@ -44,14 +44,16 @@ const CreateOrJoin: React.FC = () => {
   }
 
   const joinGame = (gid: string) => {
-      const request = {
-        'method': 'join-game',
-        'uid': uid,
-        'display-name': displayName,
-        'gid': gid
-      };
-      socket.send(JSON.stringify(request));
+    const request = {
+      'method': 'join-game',
+      'uid': uid,
+      'display-name': displayName,
+      'gid': gid
+    };
+    socket.send(JSON.stringify(request));
   }
+
+  if (formik.errors.gid === "Required" && falseGID) context.setCState({...context.cState, falseGID: false });
 
   return (
     <section className={styles.CreateOrJoin}>
@@ -61,6 +63,7 @@ const CreateOrJoin: React.FC = () => {
         <input name="gid" placeholder="Game ID" onChange={formik.handleChange}/>
         <Button logic={formik.handleSubmit} text="Join a game" />
         {formik.errors.gid ? <div className={styles.formErrors}>{formik.errors.gid}</div> : ''}
+        {!formik.errors.gid && falseGID ? <div className={styles.formErrors}>Incorrect Game ID</div> : ''}
       </form>
     </section>
   );

@@ -9,6 +9,7 @@ interface Icontext {
   displayName: string | undefined,
   opponentName: string | undefined,
   gid: number | undefined,
+  falseGID: boolean
   readyToStart: boolean,
   players: [],
   whichPlayer: number,
@@ -21,6 +22,7 @@ const initialState: Icontext = {
   displayName: undefined,
   opponentName: undefined,
   gid: undefined,
+  falseGID: false,
   readyToStart: false,
   players: [],
   whichPlayer: 0,
@@ -38,9 +40,14 @@ export const ServerProvider = (props: any) => {
     const response = JSON.parse(event.data)
     if (response.method === 'connected') setCState({...cState, uid: response.uid });
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
+    if (response.method === 'incorrect-gid') {
+      console.log(response)
+      setCState({...cState, falseGID: true });
+    }
     if (response.method === 'joined-game') {
       setCState({ ...cState,
         gid: response.gid,
+        falseGID: false,
         players: response.players,
         readyToStart: response.players.length === 2 ? true : false,
         whichPlayer: cState.uid === response.players[0].uid ? 0 : 1
