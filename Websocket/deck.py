@@ -3,8 +3,8 @@ from itertools import product
 
 class Deck():
     def __init__(self):
-      self.suits = ['Hearts', 'Clubs', 'Diamonds', 'Spades']
-      self.cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
+      self.suits = ['hearts', 'clubs', 'diamonds', 'spades']
+      self.cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k', 'a']
       self.deck = self.create_deck()
 
     def create_deck(self):

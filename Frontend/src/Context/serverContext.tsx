@@ -13,7 +13,7 @@ interface Icontext {
   readyToStart: boolean,
   players: [],
   whichPlayer: number,
-  hand: [] | boolean,
+  hand: string[] | boolean,
   pot: number
 }
 

@@ -14,7 +14,6 @@ const App = () => {
   
   const { readyToStart } = context.cState;
   const setName = (name: string): void => {
-    console.log('insdie setname func', name)
     setDisplayName(name);
     context.setCState({...context.cState, displayName: name})
   };
