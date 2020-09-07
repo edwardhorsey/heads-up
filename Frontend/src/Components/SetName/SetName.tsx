@@ -28,10 +28,7 @@ const SetName: React.FC<IProps> = (props) => {
       name: "",
     },
     validate,
-    onSubmit: values => {
-      console.log('derp')
-      props.setName(values.name);
-    }
+    onSubmit: values => props.setName(values.name)
   });
 
   return (
