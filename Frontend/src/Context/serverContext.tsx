@@ -58,10 +58,14 @@ export const ServerProvider = (props: any) => {
         whichPlayer: cState.uid === response.players[0].uid ? 0 : 1
       })
     }
-    if (response.method === 'one-player-ready') setCState({...cState, players: response.players });
+    if (response.method === 'one-player-ready') {
+      setCState({...cState,
+        players: {...response.players }
+      })
+    }
     if (response.method === 'new-hand') {
       setCState({...cState,
-        players: response.players,
+        players: {...cState.players , ...response.players},
         action: response.action === 'two' ? 1: 0,
         stage: response.stage,
         yourHand: response.players[cState.whichPlayer].hand,
@@ -72,7 +76,7 @@ export const ServerProvider = (props: any) => {
     if (response.method === "all-in") {
       console.log(response)
       setCState({...cState,
-        players: response.players,
+        players: {...cState.players , ...response.players},
         stage: 'to-call',
         action: response.action === 'two' ? 1: 0,
         pot: response.pot
@@ -81,14 +85,16 @@ export const ServerProvider = (props: any) => {
     if (response.method === "showdown") {
       console.log(response)
       setCState({...cState,
-        players: response.players,
+        players: {...cState.players , ...response.players},
         yourHand: response.players[cState.whichPlayer].hand,
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
         community: response['community-cards']})
     }
     if (response.method === "folded") {
       console.log(response)
-      setCState({...cState, players: response.players})
+      setCState({...cState,
+        players: {...cState.players , ...response.players}}
+      )
     }
 
   }

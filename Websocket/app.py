@@ -146,12 +146,10 @@ async def all_in(request):
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'ready': True if games[gid].player_one_ready else False,
           'bankroll': games[gid].player_one.bankroll
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'ready': True if games[gid].player_two_ready else False,
           'bankroll': games[gid].player_two.bankroll
         }
       ],
@@ -175,13 +173,11 @@ async def call(request):
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'ready': True if games[gid].player_one_ready else False,
           'bankroll': games[gid].player_one.bankroll,
           'hand': games[gid].current_hand.one_cards
           }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'ready': True if games[gid].player_two_ready else False,
           'bankroll': games[gid].player_two.bankroll,
           'hand': games[gid].current_hand.two_cards
         }
@@ -203,12 +199,10 @@ async def fold(request):
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'ready': True if games[gid].player_one_ready else False,
           'bankroll': games[gid].player_one.bankroll
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'ready': True if games[gid].player_two_ready else False,
           'bankroll': games[gid].player_two.bankroll,
         }
       ]

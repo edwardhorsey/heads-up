@@ -30,14 +30,14 @@ const GameHand: React.FC<IProps> = ({yourHand, oppHand, community, pot, yourself
   return (
     <article className={styles.Hand}>
         <h2>GAME HAND</h2>
-        <div>{opponentsCards()}</div>
+        <div className={styles.players}>{opponentsCards()}</div>
         <p>Opponent blind: {opponent.blind}</p>
         <p>Opponent bet: {opponent.bet}</p>
-        <div>{community ? readCards(community) : ''}</div>
+        <div className={styles.community}>{community ? readCards(community) : ''}</div>
         <p>Pot: {pot}</p>
         <p>Your blind: {yourself.blind}</p>
         <p>Your bet: {yourself.bet}</p>
-        <div>{readCards(yourHand)}</div>
+        <div className={styles.players}>{readCards(yourHand)}</div>
         <UserMoves />
     </article>
   )

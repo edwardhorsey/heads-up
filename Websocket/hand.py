@@ -22,7 +22,7 @@ class Hand():
         player.bet(bet_amount)
         self.pot += bet_amount
 
-    def all_in(self, player)
+    def all_in(self, player):
         self.bet(player, player.bankroll)
         self.all_in_amount = player.bankroll
 
