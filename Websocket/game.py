@@ -27,3 +27,14 @@ class Game():
             self.current_hand = Hand(Deck(), self.current_blind, self.current_dealer)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
             self.current_hand.deal_cards()
+
+    def fold(self, uid):
+        if self.player_one.uid == uid:
+            self.current_hand.declare_winner(self.player_two)
+        else:
+            self.current_hand.declare_winner(self.player_one)
+
+    def all_in(self, uid):
+        all_in_player = self.player_one if self.player_one.uid == uid else self.player_two
+        self.current_hand.bet(all_in_player, all_in_player.bankroll)
+

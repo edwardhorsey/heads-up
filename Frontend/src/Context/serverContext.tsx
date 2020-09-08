@@ -11,9 +11,13 @@ interface Icontext {
   gid: number | undefined,
   falseGID: boolean
   readyToStart: boolean,
+  action: number | null,
+  stage: string,
   players: [],
   whichPlayer: number,
-  hand: string[] | boolean,
+  oppHand: string[] | boolean,
+  yourHand: string[] | boolean,
+  community: string[] | boolean,
   pot: number
 }
 
@@ -24,9 +28,13 @@ const initialState: Icontext = {
   gid: undefined,
   falseGID: false,
   readyToStart: false,
+  action: null,
+  stage: 'initial',
   players: [],
   whichPlayer: 0,
-  hand: false,
+  oppHand: false,
+  yourHand: false,
+  community: false,
   pot: 0
 }
 
@@ -40,10 +48,7 @@ export const ServerProvider = (props: any) => {
     const response = JSON.parse(event.data)
     if (response.method === 'connected') setCState({...cState, uid: response.uid });
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
-    if (response.method === 'incorrect-gid') {
-      console.log(response)
-      setCState({...cState, falseGID: true });
-    }
+    if (response.method === 'incorrect-gid') setCState({...cState, falseGID: true });
     if (response.method === 'joined-game') {
       setCState({ ...cState,
         gid: response.gid,
@@ -53,21 +58,41 @@ export const ServerProvider = (props: any) => {
         whichPlayer: cState.uid === response.players[0].uid ? 0 : 1
       })
     }
-    if (response.method === 'one-player-ready') {
-      console.log(response);
-      setCState({...cState,
-        players: response.players
-      })
-    }
+    if (response.method === 'one-player-ready') setCState({...cState, players: response.players });
     if (response.method === 'new-hand') {
-      console.log(response);
       setCState({...cState,
         players: response.players,
-        hand: response.players[cState.whichPlayer].hand,
+        action: response.action === 'two' ? 1: 0,
+        stage: response.stage,
+        yourHand: response.players[cState.whichPlayer].hand,
+        oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
         pot: response.pot
       })
     }
+    if (response.method === "all-in") {
+      console.log(response)
+      setCState({...cState,
+        players: response.players,
+        stage: 'to-call',
+        action: response.action === 'two' ? 1: 0,
+        pot: response.pot
+    })
+    }
+    if (response.method === "showdown") {
+      console.log(response)
+      setCState({...cState,
+        players: response.players,
+        yourHand: response.players[cState.whichPlayer].hand,
+        oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
+        community: response['community-cards']})
+    }
+    if (response.method === "folded") {
+      console.log(response)
+      setCState({...cState, players: response.players})
+    }
+
   }
+
 
   return <ServerContext.Provider value={{cState, setCState}}>{props.children}</ServerContext.Provider>
 
