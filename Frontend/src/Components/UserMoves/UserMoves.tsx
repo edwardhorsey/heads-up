@@ -30,10 +30,18 @@ const UserMoves: React.FC<IProps> = ({}) => {
     } else if (action === whichPlayer && stage === "to-call") {
       return (
         <>
-          <div className={'call'}><Button logic={() => call()} text={'Call'}/></div>
+          <div className={'call'}><Button logic={() => call()} text={`Call ${opponent['bet-size']}`}/></div>
           <div className={'fold'}><Button logic={() => fold()} text={'Fold'}/></div>
         </>
         )
+    } else if (stage === "showdown" || stage === "folded") {
+      return '';
+    } else if (stage === "winner") {
+      return (
+      <>
+        <div className={'nexthand'}><Button logic={() => nexthand()} text={'Next Hand'}/></div>
+      </>
+      )
     } else {
       return (
       <>
@@ -47,7 +55,7 @@ const UserMoves: React.FC<IProps> = ({}) => {
     const request = {
       method: 'all-in',
       uid: uid,
-      gid: gid
+      gid: gid,
     }
     socket.send(JSON.stringify(request));
   }
@@ -55,6 +63,16 @@ const UserMoves: React.FC<IProps> = ({}) => {
   const call = () => {
     const request = {
       method: 'call',
+      uid: uid,
+      gid: gid,
+      'amount-to-call': opponent['bet-size']
+    }
+    socket.send(JSON.stringify(request));
+  }
+
+  const nexthand = () => {
+    const request = {
+      method: 'nexthand',
       uid: uid,
       gid: gid,
     }
@@ -70,7 +88,9 @@ const UserMoves: React.FC<IProps> = ({}) => {
     socket.send(JSON.stringify(request));
   }
 
-  const betAmount = yourself.bankroll < opponent.bankroll ? yourself.bankroll : opponent.bankroll;
+  const nextHand = () => {
+    console.log(nextHand);
+  }
 
   return (
     <article className={styles.UserMoves}>

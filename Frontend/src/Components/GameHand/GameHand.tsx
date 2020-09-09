@@ -7,8 +7,9 @@ interface Iplayer {
   name: string,
   bankroll: number,
   ready: boolean,
-  blind: number
-  bet: number
+  blind: number,
+  'bet-size': number,
+  folded: boolean
 }
 
 interface IProps {
@@ -31,13 +32,17 @@ const GameHand: React.FC<IProps> = ({yourHand, oppHand, community, pot, yourself
     <article className={styles.Hand}>
         <h2>GAME HAND</h2>
         <div className={styles.players}>{opponentsCards()}</div>
-        <p>Opponent blind: {opponent.blind}</p>
-        <p>Opponent bet: {opponent.bet}</p>
+        <div className={styles.blindsAndBets}>
+          <p>Opponent blind: {opponent.blind}</p>
+          <p>Opponent bet: {opponent['bet-size'] > 0 ? opponent['bet-size'] : ''}</p>
+        </div>
         <div className={styles.community}>{community ? readCards(community) : ''}</div>
         <p>Pot: {pot}</p>
-        <p>Your blind: {yourself.blind}</p>
-        <p>Your bet: {yourself.bet}</p>
-        <div className={styles.players}>{readCards(yourHand)}</div>
+        <div className={styles.blindsAndBets}>
+          <p>Your blind: {yourself.blind}</p>
+          <p>Your bet: {yourself['bet-size'] > 0 ? yourself['bet-size'] : ''}</p>
+        </div>
+        <div className={styles.players}>{yourself.folded ? cardBacks() : readCards(yourHand)}</div>
         <UserMoves />
     </article>
   )

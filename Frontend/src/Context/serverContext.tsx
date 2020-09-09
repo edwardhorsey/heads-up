@@ -13,7 +13,7 @@ interface Icontext {
   readyToStart: boolean,
   action: number | null,
   stage: string,
-  players: [],
+  players: object[],
   whichPlayer: number,
   oppHand: string[] | boolean,
   yourHand: string[] | boolean,
@@ -60,12 +60,14 @@ export const ServerProvider = (props: any) => {
     }
     if (response.method === 'one-player-ready') {
       setCState({...cState,
-        players: {...response.players }
+        players: response.players
       })
     }
     if (response.method === 'new-hand') {
       setCState({...cState,
-        players: {...cState.players , ...response.players},
+        players: cState.players.map((player, index) => {
+          return {...player, ...response.players[index]}
+        }),
         action: response.action === 'two' ? 1: 0,
         stage: response.stage,
         yourHand: response.players[cState.whichPlayer].hand,
@@ -76,29 +78,46 @@ export const ServerProvider = (props: any) => {
     if (response.method === "all-in") {
       console.log(response)
       setCState({...cState,
-        players: {...cState.players , ...response.players},
+        players: cState.players.map((player, index) => {
+          return {...player, ...response.players[index]}
+        }),
         stage: 'to-call',
         action: response.action === 'two' ? 1: 0,
         pot: response.pot
-    })
+      })
     }
     if (response.method === "showdown") {
       console.log(response)
       setCState({...cState,
-        players: {...cState.players , ...response.players},
+        players: cState.players.map((player, index) => {
+          return {...player, ...response.players[index]}
+        }),
         yourHand: response.players[cState.whichPlayer].hand,
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
-        community: response['community-cards']})
+        community: response['community-cards'],
+        stage: 'showdown',
+      })
     }
     if (response.method === "folded") {
       console.log(response)
       setCState({...cState,
-        players: {...cState.players , ...response.players}}
-      )
+        players: cState.players.map((player, index) => {
+          return {...player, ...response.players[index]}
+        }),
+        stage: 'folded',
+      })
+    }
+    if (response.method === "winner") {
+      console.log(response)
+      setCState({...cState,
+        players: cState.players.map((player, index) => {
+          return {...player, ...response.players[index]}
+        }),
+        stage: 'winner'
+      })
     }
 
   }
-
 
   return <ServerContext.Provider value={{cState, setCState}}>{props.children}</ServerContext.Provider>
 

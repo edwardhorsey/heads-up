@@ -1,8 +1,12 @@
 class Hand():
-    def __init__(self, deck, big_blind, dealer):
+    def __init__(self, deck, big_blind, dealer, one_starting, two_starting):
         self.deck = deck
         deck.shuffle()
         self.big_blind = big_blind
+        self.one_starting_chips = one_starting
+        self.one_hand_profit = 0
+        self.two_starting_chips = two_starting
+        self.two_hand_profit = 0
         self.one_blind = 0
         self.two_blind = 0
         self.dealer = dealer
@@ -10,7 +14,7 @@ class Hand():
         self.two_cards = []
         self.community = []
         self.pot = 0
-        self.all_in_amount = False
+        self.winner = False
 
     def deal_cards(self):
         self.one_cards.append(self.deck.deal_card())
@@ -23,12 +27,33 @@ class Hand():
         self.pot += bet_amount
 
     def all_in(self, player):
+        player.bet_size = player.bankroll
         self.bet(player, player.bankroll)
-        self.all_in_amount = player.bankroll
 
+    def call(self, player, call_amount):
+        player.bet(call_amount)
+        player.bet_size = call_amount
+        self.pot += call_amount
+        self.run_cards()
+        
+    def transfer_winnings(self, one, two):
+        if self.winner == 'one':
+            one.bankroll += self.pot
+        elif self.winner == 'two':
+            two.bankroll += self.pot
+        elif self.winner == 'draw':
+            one.bankroll += 0.5 * self.pot
+            two.bankroll += 0.5 * self.pot
+        self.one_hand_profit = one.bankroll - self.one_starting_chips
+        self.two_hand_profit = two.bankroll - self.two_starting_chips
 
-    def declare_winner(self, player):
-        player.bankroll += self.pot
+    def fold(self, which, one, two):
+        if which == 'one':
+            one.folded = True
+            self.winner = 'two'
+        else:
+            self.winner = 'one'
+            two.folded = True
 
     def run_cards(self):
         for x in range(0, 5):
@@ -40,3 +65,6 @@ class Hand():
         self.p_two_blind = multiplier[1]*self.big_blind
         self.bet(p_one, self.p_one_blind)
         self.bet(p_two, self.p_two_blind)
+
+    def calculate_winner(self):
+        pass

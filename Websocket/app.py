@@ -4,6 +4,7 @@ import asyncio
 import websockets
 import uuid
 import json
+import time
 
 from random import randrange
 from game import Game
@@ -136,7 +137,8 @@ async def all_in(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
     clients = (games[gid].player_one.uid, games[gid].player_two.uid)
-    games[gid].all_in(uid)
+    all_in_player = games[gid].player_one if games[gid].player_one.uid == uid else games[gid].player_two
+    games[gid].current_hand.all_in(all_in_player)
     response = {
       'method': 'all-in',
       'uid': str(uid),
@@ -146,15 +148,16 @@ async def all_in(request):
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'bankroll': games[gid].player_one.bankroll
+          'bankroll': games[gid].player_one.bankroll,
+          'bet-size': games[gid].player_one.bet_size
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'bankroll': games[gid].player_two.bankroll
+          'bankroll': games[gid].player_two.bankroll,
+          'bet-size': games[gid].player_two.bet_size
         }
       ],
-      'pot': games[gid].current_hand.pot,
-      'amount-to-call': games[gid].current_hand.all_in_amount,
+      'pot': games[gid].current_hand.pot
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
@@ -163,7 +166,8 @@ async def call(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
     clients = (games[gid].player_one.uid, games[gid].player_two.uid)
-    games[gid].current_hand.run_cards()
+    calling_player = games[gid].player_one if games[gid].player_one.uid == uid else games[gid].player_two
+    games[gid].current_hand.call(calling_player, request['amount-to-call']) # deals community cards too and calculates winner
     response = {
       'method': 'showdown',
       'uid': str(uid),
@@ -181,16 +185,21 @@ async def call(request):
           'bankroll': games[gid].player_two.bankroll,
           'hand': games[gid].current_hand.two_cards
         }
-      ]
+      ],
+      'pot': games[gid].current_hand.pot
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
+    time.sleep(2)
+    games[gid].current_hand.calculate_winner()
+    await send_winner_response(uid, gid, clients)
 
 async def fold(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
     clients = (games[gid].player_one.uid, games[gid].player_two.uid)
-    games[gid].fold(uid)
+    folding_player = 'one' if games[gid].player_one.uid == uid else 'two'
+    games[gid].current_hand.fold(folding_player, games[gid].player_one, games[gid].player_two)
     response = {
       'method': 'folded',
       'uid': str(uid),
@@ -203,12 +212,44 @@ async def fold(request):
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'bankroll': games[gid].player_two.bankroll,
+          'bankroll': games[gid].player_two.bankroll
         }
       ]
     }
+    if games[gid].player_one.folded:
+        response['players'][0]['folded'] = True
+    elif games[gid].player_two.folded:
+        response['players'][1]['folded'] = True
     for client in clients:
         await connected[client].send(json.dumps(response))
+    time.sleep(1)
+    await send_winner_response(uid, gid, clients)
+
+async def send_winner_response(uid, gid, clients):
+    games[gid].current_hand.transfer_winnings(games[gid].player_one, games[gid].player_two)
+    response = {
+        'method': 'winner',
+        'uid': str(uid),
+        'gid': gid,
+        'uids': [str(client) for client in clients],
+        'winner': games[gid].current_hand.winner,
+        'pot': games[gid].current_hand.pot,
+        'players': [ {
+            'uid': str(games[gid].player_one.uid),
+            'name': games[gid].player_one.name,
+            'bankroll': games[gid].player_one.bankroll,
+            'profit': games[gid].current_hand.one_hand_profit
+          }, {
+            'uid': str(games[gid].player_two.uid),
+            'name': games[gid].player_two.name,
+            'bankroll': games[gid].player_two.bankroll,
+            'profit': games[gid].current_hand.two_hand_profit
+          }
+        ]
+    }
+    for client in clients:
+        await connected[client].send(json.dumps(response))
+
 
 ## running the server ##
 
