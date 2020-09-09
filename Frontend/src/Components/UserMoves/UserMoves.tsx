@@ -37,11 +37,7 @@ const UserMoves: React.FC<IProps> = ({}) => {
     } else if (stage === "showdown" || stage === "folded") {
       return '';
     } else if (stage === "winner") {
-      return (
-      <>
-        <div className={'nexthand'}><Button logic={() => nexthand()} text={'Next Hand'}/></div>
-      </>
-      )
+      return '';
     } else {
       return (
       <>
@@ -66,15 +62,6 @@ const UserMoves: React.FC<IProps> = ({}) => {
       uid: uid,
       gid: gid,
       'amount-to-call': opponent['bet-size']
-    }
-    socket.send(JSON.stringify(request));
-  }
-
-  const nexthand = () => {
-    const request = {
-      method: 'nexthand',
-      uid: uid,
-      gid: gid,
     }
     socket.send(JSON.stringify(request));
   }

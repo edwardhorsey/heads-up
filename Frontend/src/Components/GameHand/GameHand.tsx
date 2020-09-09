@@ -18,10 +18,11 @@ interface IProps {
   community: [],
   pot: number,
   yourself: Iplayer,
-  opponent: Iplayer
+  opponent: Iplayer,
+  noOfHands: number
 }
 
-const GameHand: React.FC<IProps> = ({yourHand, oppHand, community, pot, yourself, opponent}) => {
+const GameHand: React.FC<IProps> = ({noOfHands, yourHand, oppHand, community, pot, yourself, opponent}) => {
 
   const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} card={card}/>)
   const cardBacks = () => [<PlayingCard key={1} card={['c', 'b']}/>, <PlayingCard key={2} card={['c', 'b']}/>]
@@ -31,6 +32,9 @@ const GameHand: React.FC<IProps> = ({yourHand, oppHand, community, pot, yourself
   return (
     <article className={styles.Hand}>
         <h2>GAME HAND</h2>
+        <div>
+          <p>{`#${noOfHands}`}</p>
+        </div>
         <div className={styles.players}>{opponentsCards()}</div>
         <div className={styles.blindsAndBets}>
           <p>Opponent blind: {opponent.blind}</p>

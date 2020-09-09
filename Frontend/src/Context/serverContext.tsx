@@ -18,7 +18,8 @@ interface Icontext {
   oppHand: string[] | boolean,
   yourHand: string[] | boolean,
   community: string[] | boolean,
-  pot: number
+  pot: number,
+  noOfHands: number
 }
 
 const initialState: Icontext = {
@@ -35,7 +36,8 @@ const initialState: Icontext = {
   oppHand: false,
   yourHand: false,
   community: false,
-  pot: 0
+  pot: 0,
+  noOfHands: 0
 }
 
 export const ServerContext = createContext<Icontext | any>(initialState)
@@ -64,15 +66,15 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === 'new-hand') {
+      console.log(response);
       setCState({...cState,
-        players: cState.players.map((player, index) => {
-          return {...player, ...response.players[index]}
-        }),
+        players: response.players,
         action: response.action === 'two' ? 1: 0,
         stage: response.stage,
         yourHand: response.players[cState.whichPlayer].hand,
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
-        pot: response.pot
+        pot: response.pot,
+        noOfHands: response['number-of-hands'],
       })
     }
     if (response.method === "all-in") {

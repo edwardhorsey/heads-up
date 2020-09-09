@@ -26,6 +26,8 @@ class Game():
             self.player_one.folded = False
             self.player_two.folded = False
             self.number_of_hands += 1
+            if self.number_of_hands > 1:
+                self.current_dealer = 'two' if self.current_dealer == 'one' else 'two'
             self.current_hand = Hand(Deck(), self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
             self.current_hand.deal_cards()
