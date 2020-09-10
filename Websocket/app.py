@@ -108,26 +108,7 @@ async def ready_to_play(request):
       ]
     }
     if games[gid].player_one_ready and games[gid].player_two_ready:
-        games[gid].new_hand()
-        response.update({
-          'method': 'new-hand',
-          'number-of-hands': games[gid].number_of_hands,
-          'stage': 'preflop',
-          'action': games[gid].current_hand.dealer,
-          'pot': games[gid].current_hand.pot
-        })
-        response['players'][0]['blind'] = games[gid].current_hand.p_one_blind
-        response['players'][0]['bankroll'] = games[gid].player_one.bankroll
-        response['players'][1]['blind'] = games[gid].current_hand.p_two_blind
-        response['players'][1]['bankroll'] = games[gid].player_two.bankroll
-        for client in clients:
-            if str(client) == response['players'][0]['uid']:
-                response['players'][0]['hand'] = games[gid].current_hand.one_cards
-                response['players'][1]['hand'] = False
-            else:
-                response['players'][0]['hand'] = False
-                response['players'][1]['hand'] = games[gid].current_hand.two_cards
-            await connected[client].send(json.dumps(response))
+        await new_hand(response, uid, gid, clients)
     else:
         response['method'] = 'one-player-ready'
         for client in clients:
@@ -249,28 +230,22 @@ async def send_winner_response(uid, gid, clients):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-    await new_hand(uid, gid, clients) ## need to turn into a client req...
+    time.sleep(1)
+    response['players'] = [ {
+          'uid': str(games[gid].player_one.uid),
+          'name': games[gid].player_one.name,
+          'ready': True if games[gid].player_one_ready else False
+        }, {
+          'uid': str(games[gid].player_two.uid),
+          'name': games[gid].player_two.name,
+          'ready': True if games[gid].player_two_ready else False
+        }
+      ]
+    await new_hand(response, uid, gid, clients) ## need to turn into a client req...
 
-
-async def new_hand(uid, gid, clients):
-    time.sleep(4)
+async def new_hand(response, uid, gid, clients):
     if games[gid].player_one.bankroll > games[gid].current_blind and games[gid].player_two.bankroll > games[gid].current_blind:
         games[gid].new_hand()
-        response = {
-          'uid': str(uid),
-          'gid': gid,
-          'uids': [str(client) for client in clients],
-          'players': [ {
-              'uid': str(games[gid].player_one.uid),
-              'name': games[gid].player_one.name,
-              'folded': games[gid].player_one.folded
-            }, {
-              'uid': str(games[gid].player_two.uid),
-              'name': games[gid].player_two.name,
-              'folded': games[gid].player_two.folded
-            }
-          ]
-        }
         response.update({
           'method': 'new-hand',
           'number-of-hands': games[gid].number_of_hands,
@@ -280,8 +255,10 @@ async def new_hand(uid, gid, clients):
         })
         response['players'][0]['blind'] = games[gid].current_hand.p_one_blind
         response['players'][0]['bankroll'] = games[gid].player_one.bankroll
+        response['players'][0]['folded'] = games[gid].player_one.folded
         response['players'][1]['blind'] = games[gid].current_hand.p_two_blind
         response['players'][1]['bankroll'] = games[gid].player_two.bankroll
+        response['players'][1]['folded'] = games[gid].player_one.folded
         for client in clients:
             if str(client) == response['players'][0]['uid']:
                 response['players'][0]['hand'] = games[gid].current_hand.one_cards
@@ -290,7 +267,8 @@ async def new_hand(uid, gid, clients):
                 response['players'][0]['hand'] = False
                 response['players'][1]['hand'] = games[gid].current_hand.two_cards
             await connected[client].send(json.dumps(response))
-
+    else:
+        print('player bust')
 
 ## running the server ##
 

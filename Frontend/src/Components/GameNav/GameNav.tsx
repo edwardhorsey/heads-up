@@ -22,8 +22,6 @@ const GameNav: React.FC<IProps> = ({yourself, opponent}) => {
   console.log('hi from GameNav', context);
   const { stage } = context.cState;
 
-  console.log(stage, yourself.profit, opponent.profit);
-
   return (
     <article className={styles.Nav}>
         <div>
