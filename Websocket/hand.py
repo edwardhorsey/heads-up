@@ -9,8 +9,6 @@ class Hand():
         self.one_hand_profit = 0
         self.two_starting_chips = two_starting
         self.two_hand_profit = 0
-        self.one_blind = 0
-        self.two_blind = 0
         self.dealer = dealer
         self.one_cards = []
         self.two_cards = []

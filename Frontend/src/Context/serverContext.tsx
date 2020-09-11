@@ -19,7 +19,7 @@ interface Icontext {
   yourHand: string[] | boolean,
   community: string[] | boolean,
   winningHand: string[] | boolean,
-  winner: string,
+  winner: string | boolean,
   pot: number,
   noOfHands: number,
 }
@@ -39,7 +39,7 @@ const initialState: Icontext = {
   yourHand: false,
   community: false,
   winningHand: false,
-  winner: '',
+  winner: false,
   pot: 0,
   noOfHands: 0
 }
@@ -78,6 +78,7 @@ export const ServerProvider = (props: any) => {
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
         pot: response.pot,
         noOfHands: response['number-of-hands'],
+        winner: response.winner
       })
     }
     if (response.method === "all-in") {

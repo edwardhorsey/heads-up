@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { socket, ServerContext } from '../../Context/serverContext';
 import styles from "./UserMoves.module.scss";
 import Button from "../Button";
-import { callbackify } from "util";
 
 interface Iplayer {
 }

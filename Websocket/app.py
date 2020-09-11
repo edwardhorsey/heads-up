@@ -173,7 +173,7 @@ async def call(request):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-    time.sleep(2)
+    time.sleep(1)
     games[gid].current_hand.calculate_winner()
     await send_winner_response(uid, gid, clients)
 

@@ -25,10 +25,12 @@ interface IProps {
 const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const context = useContext(ServerContext);
-  const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community } = context.cState;
+  const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community, stage } = context.cState;
 
-  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} card={card}/>)
-  const cardBacks = () => [<PlayingCard key={1} card={['c', 'b']}/>, <PlayingCard key={2} card={['c', 'b']}/>]
+  const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
+
+  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={winner ? isAWinningCard(`${card}`) : false} card={card}/>)
+  const cardBacks = () => [<PlayingCard key={1} winner={false} card={['c', 'b']}/>, <PlayingCard key={2} winner={false} card={['c', 'b']}/>]
 
   const opponentsCards = () => oppHand ? readCards(oppHand) : cardBacks();
 
@@ -37,7 +39,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
       return <h3>Draw: players split the pot with {winningHand[0]} (further hand details)</h3>;
     } else {
       const winningPlayer = whichPlayer === (winner === 'one' ? 0:1) ? yourself : opponent;
-      return <h3>{winningPlayer.name} wins the hand with {winningHand[0]} (further hand details)</h3>;
+      return <h3>{winningPlayer.name} wins the pot {pot} with {winningHand[0]} (further hand details)</h3>;
     }
   }
 
@@ -52,7 +54,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
           {opponent['bet-size'] > 0 ? <p>Opponent bet: {opponent['bet-size']}</p> : ''}
         </div>
         <div className={styles.community}>{community ? readCards(community) : ''}</div>
-        <p>Pot: {pot}</p>
+          {stage === "winner" ? '' : <p>Pot: {pot}</p>}
         <div className={styles.blindsAndBets}>
           {yourself['bet-size'] > 0 ? <p>Your bet: {yourself['bet-size']}</p> : ''}
         </div>
