@@ -68,7 +68,7 @@ export const ServerProvider = (props: any) => {
     }
     if (response.method === 'one-player-ready') {
       setCState({...cState,
-        players: response.players
+        players: response.players,
       })
     }
     if (response.method === 'new-hand') {
@@ -79,12 +79,13 @@ export const ServerProvider = (props: any) => {
           stage: response.stage,
           yourHand: response.players[cState.whichPlayer].hand,
           oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
+          community: response['community-cards'],
           pot: response.pot,
           noOfHands: response['number-of-hands'],
           winner: response.winner
         })
       }
-      cState.noOfHands === 0 ? newHand() : setTimeout(()=>{newHand()}, 2000)
+      cState.noOfHands <= 1 ? newHand() : setTimeout(()=>{newHand()}, 2000)
     }
     if (response.method === "all-in") {
       setCState({...cState,
@@ -141,7 +142,8 @@ export const ServerProvider = (props: any) => {
         }),
         yourHand: response.players[cState.whichPlayer].hand,
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
-        noOfRounds: response['number-of-rounds']
+        noOfRounds: response['number-of-rounds'],
+        noOfHands: response['number-of-hands'],
       })
     }
 

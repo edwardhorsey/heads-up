@@ -249,7 +249,8 @@ async def new_hand(response, uid, gid, clients):
           'stage': 'preflop',
           'action': games[gid].current_hand.dealer,
           'pot': games[gid].current_hand.pot,
-          'winner': games[gid].current_hand.winner
+          'winner': games[gid].current_hand.winner,
+          'community': games[gid].current_hand.community
         })
         response['players'][0]['bet-size'] = games[gid].player_one.bet_size
         response['players'][0]['bankroll'] = games[gid].player_one.bankroll
@@ -270,22 +271,22 @@ async def new_hand(response, uid, gid, clients):
           'method': 'player-bust',
           'stage': 'end'
         })
+        games[gid].new_round()
         for client in clients:
             await connected[client].send(json.dumps(response))
 
 async def back_to_lobby(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
-    games[gid].player_one = Player(uid, games[gid].player_one.name, 750)
-    games[gid].player_one = Player(uid, games[gid].player_two.name, 750)
-    games[gid].new_round()
+    games[gid].player_one = Player(games[gid].player_one.uid, games[gid].player_one.name, 750)
+    games[gid].player_two = Player(games[gid].player_two.uid, games[gid].player_two.name, 750)
     response = {
         'method': 'back-to-lobby',
         'uid': str(uid),
         'gid': gid,
         'number-of-rounds': games[gid].number_of_rounds,
         'players': [ {
-            'uid': str(games[gid].player_one.uid),
+            'uid': str(games[gid].player_one.uid), 
             'name': games[gid].player_one.name,
             'bankroll': games[gid].player_one.bankroll,
             'hand': False,

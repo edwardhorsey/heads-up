@@ -21,6 +21,7 @@ class Game():
 
     def new_round(self):
         self.number_of_rounds += 1
+        self.number_of_hands = 0
         self.player_one_ready = False
         self.player_two_ready = False
 
