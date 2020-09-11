@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { socket, ServerContext } from '../../Context/serverContext';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
@@ -7,7 +8,6 @@ interface Iplayer {
   name: string,
   bankroll: number,
   ready: boolean,
-  blind: number,
   'bet-size': number,
   folded: boolean
 }
@@ -22,29 +22,39 @@ interface IProps {
   noOfHands: number
 }
 
-const GameHand: React.FC<IProps> = ({noOfHands, yourHand, oppHand, community, pot, yourself, opponent}) => {
+const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
+
+  const context = useContext(ServerContext);
+  const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community } = context.cState;
 
   const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} card={card}/>)
   const cardBacks = () => [<PlayingCard key={1} card={['c', 'b']}/>, <PlayingCard key={2} card={['c', 'b']}/>]
 
   const opponentsCards = () => oppHand ? readCards(oppHand) : cardBacks();
 
+  const announceWinner = () => {
+    if (winner === 'draw') {
+      return <h3>Draw: players split the pot with {winningHand[0]} (further hand details)</h3>;
+    } else {
+      const winningPlayer = whichPlayer === (winner === 'one' ? 0:1) ? yourself : opponent;
+      return <h3>{winningPlayer.name} wins the hand with {winningHand[0]} (further hand details)</h3>;
+    }
+  }
+
   return (
     <article className={styles.Hand}>
-        <h2>GAME HAND</h2>
         <div>
           <p>{`#${noOfHands}`}</p>
         </div>
+        {winner ? announceWinner() : ''}
         <div className={styles.players}>{opponentsCards()}</div>
         <div className={styles.blindsAndBets}>
-          <p>Opponent blind: {opponent.blind}</p>
-          <p>Opponent bet: {opponent['bet-size'] > 0 ? opponent['bet-size'] : ''}</p>
+          {opponent['bet-size'] > 0 ? <p>Opponent bet: {opponent['bet-size']}</p> : ''}
         </div>
         <div className={styles.community}>{community ? readCards(community) : ''}</div>
         <p>Pot: {pot}</p>
         <div className={styles.blindsAndBets}>
-          <p>Your blind: {yourself.blind}</p>
-          <p>Your bet: {yourself['bet-size'] > 0 ? yourself['bet-size'] : ''}</p>
+          {yourself['bet-size'] > 0 ? <p>Your bet: {yourself['bet-size']}</p> : ''}
         </div>
         <div className={styles.players}>{yourself.folded ? cardBacks() : readCards(yourHand)}</div>
         <UserMoves />

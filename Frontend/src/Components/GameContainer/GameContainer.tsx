@@ -12,6 +12,10 @@ const GameContainer: React.FC = () => {
   console.log('hi from GameContainer', context);
   const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community } = context.cState;
 
+  const handWinner = () => {
+    
+  }
+
   const yourself = players[whichPlayer]; // yourself is user
   const opponent = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
 
@@ -33,7 +37,6 @@ const GameContainer: React.FC = () => {
       <GameNav yourself={yourself} opponent={opponent} />
       {!yourself.ready ? <Button logic={readyToPlayHand} text="Play hand" /> : ''}
       {yourHand ? <GameHand noOfHands={noOfHands} yourHand={yourHand} oppHand={oppHand} community={community} pot={pot} yourself={yourself} opponent={opponent} /> : ''}
-
     </section>
   );
 };
