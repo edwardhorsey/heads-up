@@ -1,3 +1,5 @@
+from hand_evaluater import Hand_Evaluater
+
 class Hand():
     def __init__(self, deck, big_blind, dealer, one_starting, two_starting):
         self.deck = deck
@@ -15,12 +17,11 @@ class Hand():
         self.community = []
         self.pot = 0
         self.winner = False
+        self.winning_hand = False
 
     def deal_cards(self):
-        self.one_cards.append(self.deck.deal_card())
-        self.two_cards.append(self.deck.deal_card())
-        self.one_cards.append(self.deck.deal_card())
-        self.two_cards.append(self.deck.deal_card())
+        self.one_cards = [self.deck.deal_card(), self.deck.deal_card()]
+        self.two_cards = [self.deck.deal_card(), self.deck.deal_card()]
 
     def bet(self, player, bet_amount):
         player.bet(bet_amount)
@@ -35,6 +36,7 @@ class Hand():
         player.bet_size = call_amount
         self.pot += call_amount
         self.run_cards()
+        self.calculate_winner()
         
     def transfer_winnings(self, one, two):
         if self.winner == 'one':
@@ -67,4 +69,12 @@ class Hand():
         self.bet(p_two, self.p_two_blind)
 
     def calculate_winner(self):
-        pass
+        best_one = Hand_Evaluater(self.one_cards, self.community).find_best_hand()
+        best_two = Hand_Evaluater(self.two_cards, self.community).find_best_hand()
+        self.winner = Hand_Evaluater.compare_two_hands(best_one, best_two)
+        if self.winner == 'one':
+            self.winning_hand = (best_one)
+        elif self.winner == 'two':
+            self.winning_hand = (best_two)
+        elif self.winner == 'draw':
+            self.winning_hand = (best_one, best_two)

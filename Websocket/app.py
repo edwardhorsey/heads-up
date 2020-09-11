@@ -214,6 +214,7 @@ async def send_winner_response(uid, gid, clients):
         'gid': gid,
         'uids': [str(client) for client in clients],
         'winner': games[gid].current_hand.winner,
+        'winning-hand': games[gid].current_hand.winning_hand,
         'pot': games[gid].current_hand.pot,
         'players': [ {
             'uid': str(games[gid].player_one.uid),
@@ -241,7 +242,7 @@ async def send_winner_response(uid, gid, clients):
           'ready': True if games[gid].player_two_ready else False
         }
       ]
-    await new_hand(response, uid, gid, clients) ## need to turn into a client req...
+    # await new_hand(response, uid, gid, clients) ## need to turn into a client req...
 
 async def new_hand(response, uid, gid, clients):
     if games[gid].player_one.bankroll > games[gid].current_blind and games[gid].player_two.bankroll > games[gid].current_blind:

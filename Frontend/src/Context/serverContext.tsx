@@ -66,7 +66,6 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === 'new-hand') {
-      console.log(response);
       setCState({...cState,
         players: response.players,
         action: response.action === 'two' ? 1: 0,
@@ -78,7 +77,6 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === "all-in") {
-      console.log(response)
       setCState({...cState,
         players: cState.players.map((player, index) => {
           return {...player, ...response.players[index]}
@@ -89,7 +87,6 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === "showdown") {
-      console.log(response)
       setCState({...cState,
         players: cState.players.map((player, index) => {
           return {...player, ...response.players[index]}
@@ -101,7 +98,6 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === "folded") {
-      console.log(response)
       setCState({...cState,
         players: cState.players.map((player, index) => {
           return {...player, ...response.players[index]}
