@@ -19,7 +19,6 @@ interface IProps {
 const GameNav: React.FC<IProps> = ({yourself, opponent}) => {
 
   const context = useContext(ServerContext);
-  console.log('hi from GameNav', context);
   const { stage } = context.cState;
 
   return (

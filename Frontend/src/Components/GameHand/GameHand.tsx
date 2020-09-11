@@ -29,7 +29,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
 
-  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={winner ? isAWinningCard(`${card}`) : false} card={card}/>)
+  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={stage === 'winner' && winningHand ? isAWinningCard(`${card}`) : false} card={card}/>)
   const cardBacks = () => [<PlayingCard key={1} winner={false} card={['c', 'b']}/>, <PlayingCard key={2} winner={false} card={['c', 'b']}/>]
 
   const opponentsCards = () => oppHand ? readCards(oppHand) : cardBacks();
@@ -45,20 +45,24 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   return (
     <article className={styles.Hand}>
-        <div>
-          <p>{`#${noOfHands}`}</p>
-        </div>
+        <p>{`#${noOfHands}`}</p>
         {winner ? announceWinner() : ''}
-        <div className={styles.players}>{opponentsCards()}</div>
+        <div className={styles.players}>
+          {opponentsCards()}
+        </div>
         <div className={styles.blindsAndBets}>
           {opponent['bet-size'] > 0 ? <p>Opponent bet: {opponent['bet-size']}</p> : ''}
         </div>
-        <div className={styles.community}>{community ? readCards(community) : ''}</div>
-          {stage === "winner" ? '' : <p>Pot: {pot}</p>}
+        <div className={styles.community}>
+          {community ? readCards(community) : ''}
+        </div>
+        <p>Pot: {pot}</p>
         <div className={styles.blindsAndBets}>
           {yourself['bet-size'] > 0 ? <p>Your bet: {yourself['bet-size']}</p> : ''}
         </div>
-        <div className={styles.players}>{yourself.folded ? cardBacks() : readCards(yourHand)}</div>
+        <div className={styles.players}>
+          {yourself.folded ? cardBacks() : readCards(yourHand)}
+        </div>
         <UserMoves />
     </article>
   )

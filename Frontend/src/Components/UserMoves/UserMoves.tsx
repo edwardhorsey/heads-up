@@ -12,7 +12,6 @@ interface IProps {
 const UserMoves: React.FC<IProps> = ({}) => {
 
   const context = useContext(ServerContext);
-  console.log('hi from UserMoves', context);
   const { uid, gid, players, whichPlayer, action, stage } = context.cState;
 
   const yourself = players[whichPlayer]; // yourself is user

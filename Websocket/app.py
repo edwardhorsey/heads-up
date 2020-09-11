@@ -233,7 +233,6 @@ async def send_winner_response(uid, gid, clients):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-    time.sleep(1)
     response['players'] = [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
@@ -244,7 +243,7 @@ async def send_winner_response(uid, gid, clients):
           'ready': True if games[gid].player_two_ready else False
         }
       ]
-    # await new_hand(response, uid, gid, clients) ## need to turn into a client req...
+    await new_hand(response, uid, gid, clients) ## need to turn into a client req...
 
 async def new_hand(response, uid, gid, clients):
     if games[gid].player_one.bankroll > games[gid].current_blind and games[gid].player_two.bankroll > games[gid].current_blind:
@@ -254,8 +253,10 @@ async def new_hand(response, uid, gid, clients):
           'number-of-hands': games[gid].number_of_hands,
           'stage': 'preflop',
           'action': games[gid].current_hand.dealer,
-          'pot': games[gid].current_hand.pot
+          'pot': games[gid].current_hand.pot,
+          'winner': games[gid].current_hand.winner
         })
+        print(games[gid].current_hand.winner)
         response['players'][0]['bet-size'] = games[gid].player_one.bet_size
         response['players'][0]['bankroll'] = games[gid].player_one.bankroll
         response['players'][0]['folded'] = games[gid].player_one.folded

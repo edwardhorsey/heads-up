@@ -21,7 +21,6 @@ const validate = (values: Ivalues) => {
 const SetName: React.FC<IProps> = (props) => {
   
   const context = useContext(ServerContext)
-  console.log('hi from setname', context)
 
   const formik = useFormik({
     initialValues: {

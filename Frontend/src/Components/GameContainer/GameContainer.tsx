@@ -9,12 +9,8 @@ const GameContainer: React.FC = () => {
   // const [input, setInput] = useState('Game Container')
 
   const context = useContext(ServerContext);
-  console.log('hi from GameContainer', context);
   const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community } = context.cState;
-
-  const handWinner = () => {
-    
-  }
+  console.log(context.cState)
 
   const yourself = players[whichPlayer]; // yourself is user
   const opponent = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent

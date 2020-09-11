@@ -47,11 +47,11 @@ const initialState: Icontext = {
 export const ServerContext = createContext<Icontext | any>(initialState)
 
 export const ServerProvider = (props: any) => {
-  
   const [cState, setCState] = useState(initialState)
 
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data)
+    console.log(response)
     if (response.method === 'connected') setCState({...cState, uid: response.uid });
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
     if (response.method === 'incorrect-gid') setCState({...cState, falseGID: true });
@@ -70,16 +70,18 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === 'new-hand') {
-      setCState({...cState,
-        players: response.players,
-        action: response.action === 'two' ? 1: 0,
-        stage: response.stage,
-        yourHand: response.players[cState.whichPlayer].hand,
-        oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
-        pot: response.pot,
-        noOfHands: response['number-of-hands'],
-        winner: response.winner
-      })
+      setTimeout(()=>{
+        setCState({...cState,
+          players: response.players,
+          action: response.action === 'two' ? 1: 0,
+          stage: response.stage,
+          yourHand: response.players[cState.whichPlayer].hand,
+          oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
+          pot: response.pot,
+          noOfHands: response['number-of-hands'],
+          winner: response.winner
+        })
+      }, 2000)
     }
     if (response.method === "all-in") {
       setCState({...cState,

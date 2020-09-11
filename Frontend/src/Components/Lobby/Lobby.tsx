@@ -5,10 +5,9 @@ import { socket, ServerContext } from '../../Context/serverContext';
 import WaitingRoom from "../WaitingRoom";
 
 const Lobby: React.FC = () => {
-  const [input, setInput] = useState('Game ID')
+  // const [input, setInput] = useState('Game ID')
 
   const context = useContext(ServerContext);
-  console.log('hi from lobby', context);
 
   return (
     <section className={styles.Lobby}>

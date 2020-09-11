@@ -10,7 +10,6 @@ const App = () => {
   const [ displayName, setDisplayName ] = useState('');
   
   const context = useContext(ServerContext)
-  console.log('hi from app', context)
   
   const { readyToStart } = context.cState;
   const setName = (name: string): void => {
