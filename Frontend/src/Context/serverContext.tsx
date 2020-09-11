@@ -18,8 +18,10 @@ interface Icontext {
   oppHand: string[] | boolean,
   yourHand: string[] | boolean,
   community: string[] | boolean,
+  winningHand: string[] | boolean,
+  winner: string,
   pot: number,
-  noOfHands: number
+  noOfHands: number,
 }
 
 const initialState: Icontext = {
@@ -36,6 +38,8 @@ const initialState: Icontext = {
   oppHand: false,
   yourHand: false,
   community: false,
+  winningHand: false,
+  winner: '',
   pot: 0,
   noOfHands: 0
 }
@@ -95,6 +99,7 @@ export const ServerProvider = (props: any) => {
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
         community: response['community-cards'],
         stage: 'showdown',
+        pot: response.pot
       })
     }
     if (response.method === "folded") {
@@ -111,6 +116,9 @@ export const ServerProvider = (props: any) => {
         players: cState.players.map((player, index) => {
           return {...player, ...response.players[index]}
         }),
+        pot: response.pot,
+        winner: response.winner,
+        winningHand: response['winning-hand'],
         stage: 'winner'
       })
     }

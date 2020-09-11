@@ -10,3 +10,4 @@ class Player():
     
     def bet(self, amount):
         self.bankroll -= amount
+        self.bet_size = amount

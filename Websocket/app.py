@@ -159,12 +159,14 @@ async def call(request):
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
           'bankroll': games[gid].player_one.bankroll,
-          'hand': games[gid].current_hand.one_cards
+          'hand': games[gid].current_hand.one_cards,
+          'bet-size': 0
           }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
           'bankroll': games[gid].player_two.bankroll,
-          'hand': games[gid].current_hand.two_cards
+          'hand': games[gid].current_hand.two_cards,
+          'bet-size': 0
         }
       ],
       'pot': games[gid].current_hand.pot
@@ -254,10 +256,10 @@ async def new_hand(response, uid, gid, clients):
           'action': games[gid].current_hand.dealer,
           'pot': games[gid].current_hand.pot
         })
-        response['players'][0]['blind'] = games[gid].current_hand.p_one_blind
+        response['players'][0]['bet-size'] = games[gid].player_one.bet_size
         response['players'][0]['bankroll'] = games[gid].player_one.bankroll
         response['players'][0]['folded'] = games[gid].player_one.folded
-        response['players'][1]['blind'] = games[gid].current_hand.p_two_blind
+        response['players'][1]['bet-size'] = games[gid].player_two.bet_size
         response['players'][1]['bankroll'] = games[gid].player_two.bankroll
         response['players'][1]['folded'] = games[gid].player_one.folded
         for client in clients:

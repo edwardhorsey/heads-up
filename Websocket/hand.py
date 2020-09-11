@@ -63,10 +63,8 @@ class Hand():
 
     def deal_blinds(self, p_one, p_two, dealer):
         multiplier = [1, 0.5] if dealer == 'one' else [0.5, 1]
-        self.p_one_blind = multiplier[0]*self.big_blind
-        self.p_two_blind = multiplier[1]*self.big_blind
-        self.bet(p_one, self.p_one_blind)
-        self.bet(p_two, self.p_two_blind)
+        self.bet(p_one, multiplier[0]*self.big_blind)
+        self.bet(p_two, multiplier[1]*self.big_blind)
 
     def calculate_winner(self):
         best_one = Hand_Evaluater(self.one_cards, self.community).find_best_hand()
