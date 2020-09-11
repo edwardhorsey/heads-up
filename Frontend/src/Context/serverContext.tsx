@@ -22,6 +22,7 @@ interface Icontext {
   winner: string | boolean,
   pot: number,
   noOfHands: number,
+  noOfRounds: number
 }
 
 const initialState: Icontext = {
@@ -41,7 +42,8 @@ const initialState: Icontext = {
   winningHand: false,
   winner: false,
   pot: 0,
-  noOfHands: 0
+  noOfHands: 0,
+  noOfRounds: 0
 }
 
 export const ServerContext = createContext<Icontext | any>(initialState)
@@ -70,7 +72,7 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === 'new-hand') {
-      setTimeout(()=>{
+      const newHand = () => {
         setCState({...cState,
           players: response.players,
           action: response.action === 'two' ? 1: 0,
@@ -81,7 +83,8 @@ export const ServerProvider = (props: any) => {
           noOfHands: response['number-of-hands'],
           winner: response.winner
         })
-      }, 2000)
+      }
+      cState.noOfHands === 0 ? newHand() : setTimeout(()=>{newHand()}, 2000)
     }
     if (response.method === "all-in") {
       setCState({...cState,
@@ -114,7 +117,6 @@ export const ServerProvider = (props: any) => {
       })
     }
     if (response.method === "winner") {
-      console.log(response)
       setCState({...cState,
         players: cState.players.map((player, index) => {
           return {...player, ...response.players[index]}
@@ -125,9 +127,25 @@ export const ServerProvider = (props: any) => {
         stage: 'winner'
       })
     }
+    if (response.method === "player-bust") {
+      setTimeout(()=>{
+        setCState({...cState,
+          stage: 'end'
+        })
+      }, 2000)
+    }
+    if (response.method === "back-to-lobby") {
+      setCState({...cState,
+        players: cState.players.map((player, index) => {
+          return {...player, ...response.players[index]}
+        }),
+        yourHand: response.players[cState.whichPlayer].hand,
+        oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
+        noOfRounds: response['number-of-rounds']
+      })
+    }
 
   }
-
   return <ServerContext.Provider value={{cState, setCState}}>{props.children}</ServerContext.Provider>
 
 }

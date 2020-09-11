@@ -3,6 +3,7 @@ import { socket, ServerContext } from '../../Context/serverContext';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
+import { SSL_OP_CRYPTOPRO_TLSEXT_BUG } from "constants";
 
 interface Iplayer {
   name: string,
@@ -25,7 +26,7 @@ interface IProps {
 const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const context = useContext(ServerContext);
-  const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community, stage } = context.cState;
+  const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community, stage, endOfRound } = context.cState;
 
   const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
 
@@ -43,10 +44,16 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
     }
   }
 
+  const playerBust = () => {
+    const bust = yourself.bankroll <= 0 ? [yourself, opponent] : [opponent, yourself];
+    return <p>{bust[0].name} has bust, {bust[1].name} wins the round!</p>
+    }
+
   return (
     <article className={styles.Hand}>
         <p>{`#${noOfHands}`}</p>
         {winner ? announceWinner() : ''}
+        {stage === 'end' ? playerBust(): ''}
         <div className={styles.players}>
           {opponentsCards()}
         </div>

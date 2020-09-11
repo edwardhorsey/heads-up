@@ -3,9 +3,6 @@ import { socket, ServerContext } from '../../Context/serverContext';
 import styles from "./UserMoves.module.scss";
 import Button from "../Button";
 
-interface Iplayer {
-}
-
 interface IProps {
 }
 
@@ -36,6 +33,8 @@ const UserMoves: React.FC<IProps> = ({}) => {
       return '';
     } else if (stage === "winner") {
       return '';
+    } else if (stage === "end") {
+      return <div className={'backToLobby'}><Button logic={() => backToLobby()} text={'Back to lobby'}/></div>;
     } else {
       return (
       <>
@@ -73,9 +72,14 @@ const UserMoves: React.FC<IProps> = ({}) => {
     socket.send(JSON.stringify(request));
   }
 
-  const nextHand = () => {
-    console.log(nextHand);
-  }
+  const backToLobby = () => {
+    const request = {
+      method: 'back-to-lobby',
+      uid: uid,
+      gid: gid,
+    }
+    socket.send(JSON.stringify(request));
+    }
 
   return (
     <article className={styles.UserMoves}>

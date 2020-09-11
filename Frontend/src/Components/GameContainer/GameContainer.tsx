@@ -9,7 +9,7 @@ const GameContainer: React.FC = () => {
   // const [input, setInput] = useState('Game Container')
 
   const context = useContext(ServerContext);
-  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community } = context.cState;
+  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds } = context.cState;
   console.log(context.cState)
 
   const yourself = players[whichPlayer]; // yourself is user
@@ -28,10 +28,13 @@ const GameContainer: React.FC = () => {
   return (
     <section className={styles.GameContainer}>
       <h2>Game Container</h2>
-      <h3>GameID: {gid}</h3>
+      <div className={styles.gameStats}>
+        <p>GameID: {gid}</p>
+        <p>Rounds: {noOfRounds}</p>
+      </div>
       <h3>Welcome {yourself.name} and {opponent.name}</h3>
       <GameNav yourself={yourself} opponent={opponent} />
-      {!yourself.ready ? <Button logic={readyToPlayHand} text="Play hand" /> : ''}
+      {!yourself.ready ? <Button logic={readyToPlayHand} text="Play round" /> : ''}
       {yourHand ? <GameHand noOfHands={noOfHands} yourHand={yourHand} oppHand={oppHand} community={community} pot={pot} yourself={yourself} opponent={opponent} /> : ''}
     </section>
   );

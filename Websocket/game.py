@@ -14,9 +14,15 @@ class Game():
         self.current_blind = 10
         self.previous_hands = []
         self.number_of_hands = 0
+        self.number_of_rounds = 0
 
     def random_dealer(self):
         return 'one' if randrange(2) == 1 else 'two'
+
+    def new_round(self):
+        self.number_of_rounds += 1
+        self.player_one_ready = False
+        self.player_two_ready = False
 
     def add_player(self, player_two):
         self.player_two = player_two

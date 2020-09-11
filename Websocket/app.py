@@ -41,7 +41,6 @@ async def create_game(request):
     gid = generate_GID()
     player_one = Player(uid, request['display-name'], 750)
     games[gid] = Game(gid, player_one)
-    print(games)
     response = {
         'method': 'create-game',
         'uid': str(uid),
@@ -69,7 +68,7 @@ async def join_game(request):
       'method': 'joined-game',
       'uid': str(uid),
       'gid': gid,
-      'uids': [str(client) for client in clients],
+      'number-of-rounds': games[gid].number_of_rounds,
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
@@ -95,15 +94,15 @@ async def ready_to_play(request):
     response = {
       'uid': str(uid),
       'gid': gid,
-      'uids': [str(client) for client in clients],
+      'number-of-rounds': games[gid].number_of_rounds,
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'ready': True if games[gid].player_one_ready else False
+          'ready': games[gid].player_one_ready
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'ready': True if games[gid].player_two_ready else False
+          'ready': games[gid].player_two_ready
         }
       ]
     }
@@ -124,7 +123,6 @@ async def all_in(request):
       'method': 'all-in',
       'uid': str(uid),
       'gid': gid,
-      'uids': [str(client) for client in clients],
       'action': 'one' if games[gid].current_hand.dealer == 'two' else 'two',
       'players': [ {
           'uid': str(games[gid].player_one.uid),
@@ -153,7 +151,6 @@ async def call(request):
       'method': 'showdown',
       'uid': str(uid),
       'gid': gid,
-      'uids': [str(client) for client in clients],
       'community-cards': games[gid].current_hand.community,
       'players': [ {
           'uid': str(games[gid].player_one.uid),
@@ -187,7 +184,6 @@ async def fold(request):
       'method': 'folded',
       'uid': str(uid),
       'gid': gid,
-      'uids': [str(client) for client in clients],
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
@@ -214,7 +210,6 @@ async def send_winner_response(uid, gid, clients):
         'method': 'winner',
         'uid': str(uid),
         'gid': gid,
-        'uids': [str(client) for client in clients],
         'winner': games[gid].current_hand.winner,
         'winning-hand': games[gid].current_hand.winning_hand,
         'pot': games[gid].current_hand.pot,
@@ -236,11 +231,11 @@ async def send_winner_response(uid, gid, clients):
     response['players'] = [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'ready': True if games[gid].player_one_ready else False
+          'ready': games[gid].player_one_ready
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'ready': True if games[gid].player_two_ready else False
+          'ready': games[gid].player_two_ready
         }
       ]
     await new_hand(response, uid, gid, clients) ## need to turn into a client req...
@@ -256,7 +251,6 @@ async def new_hand(response, uid, gid, clients):
           'pot': games[gid].current_hand.pot,
           'winner': games[gid].current_hand.winner
         })
-        print(games[gid].current_hand.winner)
         response['players'][0]['bet-size'] = games[gid].player_one.bet_size
         response['players'][0]['bankroll'] = games[gid].player_one.bankroll
         response['players'][0]['folded'] = games[gid].player_one.folded
@@ -272,7 +266,41 @@ async def new_hand(response, uid, gid, clients):
                 response['players'][1]['hand'] = games[gid].current_hand.two_cards
             await connected[client].send(json.dumps(response))
     else:
-        print('player bust')
+        response.update({
+          'method': 'player-bust',
+          'stage': 'end'
+        })
+        for client in clients:
+            await connected[client].send(json.dumps(response))
+
+async def back_to_lobby(request):
+    uid = uuid.UUID(request['uid'])
+    gid = int(request['gid'])
+    games[gid].player_one = Player(uid, games[gid].player_one.name, 750)
+    games[gid].player_one = Player(uid, games[gid].player_two.name, 750)
+    games[gid].new_round()
+    response = {
+        'method': 'back-to-lobby',
+        'uid': str(uid),
+        'gid': gid,
+        'number-of-rounds': games[gid].number_of_rounds,
+        'players': [ {
+            'uid': str(games[gid].player_one.uid),
+            'name': games[gid].player_one.name,
+            'bankroll': games[gid].player_one.bankroll,
+            'hand': False,
+            'ready': games[gid].player_one_ready
+          }, {
+            'uid': str(games[gid].player_two.uid),
+            'name': games[gid].player_two.name,
+            'bankroll': games[gid].player_two.bankroll,
+            'hand': False,
+            'ready': games[gid].player_two_ready
+          }
+        ]
+    }
+    await connected[uid].send(json.dumps(response))
+
 
 ## running the server ##
 
@@ -302,6 +330,8 @@ async def echo(websocket, path):
                 await call(request)
             if request['method'] == 'fold':
                 await fold(request)
+            if request['method'] == 'back-to-lobby':
+                await back_to_lobby(request)
 
 
     finally:
