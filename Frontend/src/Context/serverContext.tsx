@@ -69,6 +69,7 @@ export const ServerProvider = (props: any) => {
     if (response.method === 'one-player-ready') {
       setCState({...cState,
         players: response.players,
+        noOfHands: response['number-of-hands']
       })
     }
     if (response.method === 'new-hand') {

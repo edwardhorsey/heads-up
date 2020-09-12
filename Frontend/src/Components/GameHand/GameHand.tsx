@@ -40,19 +40,18 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
       return <h3>Draw: players split the pot with {winningHand[0]} (further hand details)</h3>;
     } else {
       const winningPlayer = whichPlayer === (winner === 'one' ? 0:1) ? yourself : opponent;
-      return <h3>{winningPlayer.name} wins the pot {pot} with {winningHand[0]} (further hand details)</h3>;
+      return <p>{winningPlayer.name} wins the pot {pot} with {winningHand[0]} (further hand details)</p>;
     }
   }
 
   const playerBust = () => {
     const bust = yourself.bankroll <= 0 ? [yourself, opponent] : [opponent, yourself];
-    return <p>{bust[0].name} has bust, {bust[1].name} wins the round!</p>
+    return <h3>{bust[0].name} has bust, {bust[1].name} wins the round!</h3>
     }
 
   return (
     <article className={styles.Hand}>
         <p>{`#${noOfHands}`}</p>
-        {winner ? announceWinner() : ''}
         {stage === 'end' ? playerBust(): ''}
         <div className={styles.players}>
           {opponentsCards()}
@@ -60,6 +59,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
         <div className={styles.blindsAndBets}>
           {opponent['bet-size'] > 0 ? <p>Opponent bet: {opponent['bet-size']}</p> : ''}
         </div>
+        {winner ? announceWinner() : ''}
         <div className={styles.community}>
           {community ? readCards(community) : ''}
         </div>

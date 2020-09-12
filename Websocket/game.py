@@ -11,16 +11,22 @@ class Game():
         self.player_two_ready = False
         self.current_dealer = self.random_dealer()
         self.current_hand = None
-        self.current_blind = 10
+        self.current_blind = 100
         self.previous_hands = []
         self.number_of_hands = 0
         self.number_of_rounds = 0
+        self.one_rounds_won = 0
+        self.two_rounds_won = 0
 
     def random_dealer(self):
         return 'one' if randrange(2) == 1 else 'two'
 
     def new_round(self):
         self.number_of_rounds += 1
+        if self.player_one.bankroll <= 0:
+            self.two_rounds_won += 1
+        else:
+            self.one_rounds_won += 1
         self.number_of_hands = 0
         self.player_one_ready = False
         self.player_two_ready = False

@@ -39,7 +39,7 @@ async def chat(value):
 async def create_game(request):
     uid = uuid.UUID(request['uid'])
     gid = generate_GID()
-    player_one = Player(uid, request['display-name'], 750)
+    player_one = Player(uid, request['display-name'], 1000)
     games[gid] = Game(gid, player_one)
     response = {
         'method': 'create-game',
@@ -61,7 +61,7 @@ async def join_game(request):
     gid = int(request['gid'])
     if gid not in games:
         return await incorrect_gid(uid, gid)
-    player_two = Player(uid, request['display-name'], 750)
+    player_two = Player(uid, request['display-name'], 1000)
     games[gid].add_player(player_two)
     clients = (games[gid].player_one.uid, games[gid].player_two.uid)
     response = {
@@ -95,14 +95,17 @@ async def ready_to_play(request):
       'uid': str(uid),
       'gid': gid,
       'number-of-rounds': games[gid].number_of_rounds,
+      'number-of-hands': 0,
       'players': [ {
           'uid': str(games[gid].player_one.uid),
           'name': games[gid].player_one.name,
-          'ready': games[gid].player_one_ready
+          'ready': games[gid].player_one_ready,
+          'rounds-won': games[gid].one_rounds_won
         }, {
           'uid': str(games[gid].player_two.uid),
           'name': games[gid].player_two.name,
-          'ready': games[gid].player_two_ready
+          'ready': games[gid].player_two_ready,
+          'rounds-won': games[gid].two_rounds_won
         }
       ]
     }
@@ -217,12 +220,14 @@ async def send_winner_response(uid, gid, clients):
             'uid': str(games[gid].player_one.uid),
             'name': games[gid].player_one.name,
             'bankroll': games[gid].player_one.bankroll,
-            'profit': games[gid].current_hand.one_hand_profit
+            'profit': games[gid].current_hand.one_hand_profit,
+            'rounds-won': games[gid].one_rounds_won
           }, {
             'uid': str(games[gid].player_two.uid),
             'name': games[gid].player_two.name,
             'bankroll': games[gid].player_two.bankroll,
-            'profit': games[gid].current_hand.two_hand_profit
+            'profit': games[gid].current_hand.two_hand_profit,
+            'rounds-won': games[gid].two_rounds_won
           }
         ]
     }
@@ -278,8 +283,8 @@ async def new_hand(response, uid, gid, clients):
 async def back_to_lobby(request):
     uid = uuid.UUID(request['uid'])
     gid = int(request['gid'])
-    games[gid].player_one = Player(games[gid].player_one.uid, games[gid].player_one.name, 750)
-    games[gid].player_two = Player(games[gid].player_two.uid, games[gid].player_two.name, 750)
+    games[gid].player_one = Player(games[gid].player_one.uid, games[gid].player_one.name, 1000)
+    games[gid].player_two = Player(games[gid].player_two.uid, games[gid].player_two.name, 1000)
     response = {
         'method': 'back-to-lobby',
         'uid': str(uid),
@@ -290,13 +295,15 @@ async def back_to_lobby(request):
             'name': games[gid].player_one.name,
             'bankroll': games[gid].player_one.bankroll,
             'hand': False,
-            'ready': games[gid].player_one_ready
+            'ready': games[gid].player_one_ready,
+            'rounds-won': games[gid].one_rounds_won
           }, {
             'uid': str(games[gid].player_two.uid),
             'name': games[gid].player_two.name,
             'bankroll': games[gid].player_two.bankroll,
             'hand': False,
-            'ready': games[gid].player_two_ready
+            'ready': games[gid].player_two_ready,
+            'rounds-won': games[gid].two_rounds_won
           }
         ]
     }
