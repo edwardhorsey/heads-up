@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import PlayingCard from './PlayingCard';
+import Button from './Button';
 
 describe("Leaderboard tests", () => {
   let component: any;
@@ -8,7 +8,7 @@ describe("Leaderboard tests", () => {
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<PlayingCard winner={true} card={['q', 'hearts']} />);
+    component = shallow(<Button logic={mockFn} text={'testing'} />);
   })
   
   it("should render", () => {

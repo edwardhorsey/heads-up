@@ -1,4 +1,4 @@
-from hand_evaluater import Hand_Evaluater
+from .handevaluater import Hand_Evaluater
 
 class Hand():
     def __init__(self, deck, big_blind, dealer, one_starting, two_starting):

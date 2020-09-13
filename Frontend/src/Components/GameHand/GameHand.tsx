@@ -4,6 +4,7 @@ import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
 import { SSL_OP_CRYPTOPRO_TLSEXT_BUG } from "constants";
+import ChipsGen from "../ChipsGen";
 
 interface Iplayer {
   name: string,
@@ -57,15 +58,18 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
           {opponentsCards()}
         </div>
         <div className={styles.blindsAndBets}>
-          {opponent['bet-size'] > 0 ? <p>Opponent bet: {opponent['bet-size']}</p> : ''}
+          {opponent['bet-size'] > 0 ? (<><p>Opponent bet:</p> <ChipsGen amount={opponent['bet-size']} /></>) : ''}
         </div>
         {winner ? announceWinner() : ''}
         <div className={styles.community}>
           {community ? readCards(community) : ''}
         </div>
-        <p>Pot: {pot}</p>
+        <div className={styles.pot}>
+          <p>Pot:</p>
+          <ChipsGen amount={pot}/>
+        </div>
         <div className={styles.blindsAndBets}>
-          {yourself['bet-size'] > 0 ? <p>Your bet: {yourself['bet-size']}</p> : ''}
+          {yourself['bet-size'] > 0 ? (<><p>Your bet:/</p> <ChipsGen amount={yourself['bet-size']} /></>) : ''}
         </div>
         <div className={styles.players}>
           {yourself.folded ? cardBacks() : readCards(yourHand)}
