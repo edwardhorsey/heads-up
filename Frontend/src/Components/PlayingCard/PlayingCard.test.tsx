@@ -8,7 +8,7 @@ describe("Leaderboard tests", () => {
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<PlayingCard card={['q', 'hearts']} />);
+    component = shallow(<PlayingCard winner={true} card={['q', 'hearts']} />);
   })
   
   it("should render", () => {

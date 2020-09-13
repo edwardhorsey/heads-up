@@ -7,8 +7,8 @@ import json
 import time
 
 from random import randrange
-from game import Game
-from player import Player
+from Poker.game import Game
+from Poker.player import Player
 
 connected = {}
 game_ids = set()

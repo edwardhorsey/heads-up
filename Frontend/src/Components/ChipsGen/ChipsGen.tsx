@@ -6,7 +6,7 @@ interface IProps {
 }
 
 const ChipsGen: React.FC<IProps> = ({amount}) => {
-  const createChips = ():string => {
+  const createChips = ():number[] => {
     let total = amount;
     let array:number[] = [];
     [1000, 500, 100, 25, 5, 1].forEach(e=>{
@@ -15,13 +15,13 @@ const ChipsGen: React.FC<IProps> = ({amount}) => {
         total-=e;
       }
     });
-    return array.reduce((a:string,b:number)=>{return a + ' ' + b }, '');  
+    return array;
   }
 
   return (
-    <>
-      <div>{createChips()}</div>
-    </>
+      <div className={styles.ChipsGen}>
+        {createChips().map((chip, index) => <img key={index} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>)}
+      </div>
   );
 }
 export default ChipsGen;

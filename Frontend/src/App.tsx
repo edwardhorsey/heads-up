@@ -26,7 +26,6 @@ const App = () => {
       <div className={styles.App}>
         <h1>Heads Up Poker</h1>
         {showLobby()}
-        {/* {<ChipsGen amount={120} />} */}
       </div>
   );
 }

@@ -1,6 +1,4 @@
-from deck import Deck
 from itertools import combinations
-
 
 class Evaluate_hand():
     def __init__(self, cards):
@@ -104,19 +102,3 @@ class Hand_Evaluater():
                 return 'two'
             else:
                 return 'draw'
-
-
-# d = Deck()
-# d.shuffle()
-
-# one = [d.deal_card() for x in range(2)]
-# two = [d.deal_card() for x in range(2)]
-# comm = [d.deal_card() for x in range(5)]
-
-# best_one = Hand_Evaluater(one, comm).find_best_hand()
-# best_two = Hand_Evaluater(two, comm).find_best_hand()
-
-# print(best_one)
-# print(best_two)
-# print('result')
-# print(Hand_Evaluater.compare_two_hands(best_one, best_two))
