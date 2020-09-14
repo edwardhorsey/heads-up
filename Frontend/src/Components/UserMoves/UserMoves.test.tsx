@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import UserMoves from './UserMoves';
 
-describe("Leaderboard tests", () => {
+describe("UserMoves tests", () => {
   let component: any;
   let mockFn;
 

@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, { useContext } from "react";
 import styles from "./GameContainer.module.scss";
 import { socket, ServerContext } from '../../Context/serverContext';
 import GameNav from "../GameNav";
@@ -9,11 +9,11 @@ const GameContainer: React.FC = () => {
   // const [input, setInput] = useState('Game Container')
 
   const context = useContext(ServerContext);
-  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds } = context.cState;
-  console.log(context.cState)
+  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds } = context;
+  console.log(context)
 
-  const yourself = players[whichPlayer]; // yourself is user
-  const opponent = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
+  const yourself = {...players[whichPlayer]}; // yourself is user
+  const opponent = {...players[whichPlayer === 0 ? 1: 0]}; // opponent is opponent
 
   const readyToPlayHand = () => {
     const request = {

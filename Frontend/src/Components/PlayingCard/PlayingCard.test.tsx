@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import PlayingCard from './PlayingCard';
 
-describe("Leaderboard tests", () => {
+describe("PlayingCard tests", () => {
   let component: any;
   let mockFn;
 

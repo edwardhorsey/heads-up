@@ -6,7 +6,7 @@ import Button from "../Button";
 interface IProps {
 }
 
-const UserMoves: React.FC<IProps> = ({}) => {
+const UserMoves: React.FC<IProps> = () => {
 
   const context = useContext(ServerContext);
   const { uid, gid, players, whichPlayer, action, stage } = context.cState;

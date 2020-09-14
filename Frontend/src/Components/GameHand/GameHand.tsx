@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { socket, ServerContext } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
-import { SSL_OP_CRYPTOPRO_TLSEXT_BUG } from "constants";
 import ChipsGen from "../ChipsGen";
 
 interface Iplayer {
@@ -65,7 +64,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
           {community ? readCards(community) : ''}
         </div>
         <div className={styles.pot}>
-          <p>Pot:</p>
+          <p>Pot: {pot}</p>
           <ChipsGen amount={pot}/>
         </div>
         <div className={styles.blindsAndBets}>

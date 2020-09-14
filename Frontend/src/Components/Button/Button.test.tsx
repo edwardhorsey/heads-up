@@ -8,7 +8,7 @@ describe("Leaderboard tests", () => {
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<Button logic={mockFn} text={'testing'} />);
+    component = shallow(<Button logic={()=>{console.log('test')}} text={'testing'} />);
   })
   
   it("should render", () => {

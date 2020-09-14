@@ -7,6 +7,6 @@ interface IProps {
 }
 
 const Button: React.FC<IProps> = ({text, logic}) => {
-return <button type="submit" className={styles.Button} onClick={logic}>{text}</button>;
+  return <button type="submit" className={styles.Button} onClick={logic}>{text}</button>;
 }
 export default Button;

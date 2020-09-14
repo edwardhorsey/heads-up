@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import CreateOrJoin from './CreateOrJoin';
 
-describe("Leaderboard tests", () => {
+describe("CreateOrJoin tests", () => {
   let component: any;
   let mockFn;
 

@@ -1,19 +1,16 @@
-import React, {useState, useContext} from "react";
+import React, { useContext } from "react";
 import styles from "./Lobby.module.scss";
 import CreateOrJoin from "../CreateOrJoin";
-import { socket, ServerContext } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
 import WaitingRoom from "../WaitingRoom";
 
 const Lobby: React.FC = () => {
-  // const [input, setInput] = useState('Game ID')
-
   const context = useContext(ServerContext);
-
   return (
     <section className={styles.Lobby}>
       <h2>Lobby</h2>
-      <h3>Welcome, {context.cState.displayName}</h3>
-      {context.cState.gid ? <WaitingRoom /> : <CreateOrJoin />}
+      <h3>Welcome, {context.displayName}</h3>
+      {context.gid ? <WaitingRoom /> : <CreateOrJoin />}
     </section>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import GameNav from './GameNav';
 
-describe("Leaderboard tests", () => {
+describe("GameNav tests", () => {
   let component: any;
   let mockFn;
   let testProp = {
