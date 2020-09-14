@@ -6,12 +6,8 @@ import GameHand from "../GameHand";
 import Button from "../Button";
 
 const GameContainer: React.FC = () => {
-  // const [input, setInput] = useState('Game Container')
-
   const context = useContext(ServerContext);
-  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds } = context;
-  console.log(context)
-
+  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds } = context.cState;
   const yourself = {...players[whichPlayer]}; // yourself is user
   const opponent = {...players[whichPlayer === 0 ? 1: 0]}; // opponent is opponent
 

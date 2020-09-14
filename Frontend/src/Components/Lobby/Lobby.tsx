@@ -9,8 +9,8 @@ const Lobby: React.FC = () => {
   return (
     <section className={styles.Lobby}>
       <h2>Lobby</h2>
-      <h3>Welcome, {context.displayName}</h3>
-      {context.gid ? <WaitingRoom /> : <CreateOrJoin />}
+      <h3>Welcome, {context.cState.displayName}</h3>
+      {context.cState.gid ? <WaitingRoom /> : <CreateOrJoin />}
     </section>
   );
 };
