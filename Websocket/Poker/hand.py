@@ -14,8 +14,8 @@ class Hand():
         self.two_cards = []
         self.community = []
         self.pot = 0
-        self.winner = False
-        self.winning_hand = False
+        self.winner = ''
+        self.winning_hand = []
 
     def deal_cards(self):
         self.one_cards = [self.deck.deal_card(), self.deck.deal_card()]

@@ -83,10 +83,12 @@ async def join_game(request):
     for client in clients:
         await connected[client].send(json.dumps(response))
 
-async def ready_to_play(request):
-    uid = uuid.UUID(request['uid'])
+def getBaseStats(request):
     gid = int(request['gid'])
-    clients = (games[gid].player_one.uid, games[gid].player_two.uid)
+    return uuid.UUID(request['uid']), gid, (games[gid].player_one.uid, games[gid].player_two.uid)
+
+async def ready_to_play(request):
+    uid, gid, clients = getBaseStats(request)
     if games[gid].player_one.uid == uid and request['ready']:
         games[gid].player_one_ready = True
     elif games[gid].player_two.uid == uid and request['ready']:
@@ -117,9 +119,7 @@ async def ready_to_play(request):
             await connected[client].send(json.dumps(response))
 
 async def all_in(request):
-    uid = uuid.UUID(request['uid'])
-    gid = int(request['gid'])
-    clients = (games[gid].player_one.uid, games[gid].player_two.uid)
+    uid, gid, clients = getBaseStats(request)
     all_in_player = games[gid].player_one if games[gid].player_one.uid == uid else games[gid].player_two
     games[gid].current_hand.all_in(all_in_player)
     response = {
@@ -145,9 +145,7 @@ async def all_in(request):
         await connected[client].send(json.dumps(response))
 
 async def call(request):
-    uid = uuid.UUID(request['uid'])
-    gid = int(request['gid'])
-    clients = (games[gid].player_one.uid, games[gid].player_two.uid)
+    uid, gid, clients = getBaseStats(request)
     calling_player = games[gid].player_one if games[gid].player_one.uid == uid else games[gid].player_two
     games[gid].current_hand.call(calling_player, request['amount-to-call']) # deals community cards too and calculates winner
     response = {
@@ -178,9 +176,7 @@ async def call(request):
     await send_winner_response(uid, gid, clients)
 
 async def fold(request):
-    uid = uuid.UUID(request['uid'])
-    gid = int(request['gid'])
-    clients = (games[gid].player_one.uid, games[gid].player_two.uid)
+    uid, gid, clients = getBaseStats(request)
     folding_player = 'one' if games[gid].player_one.uid == uid else 'two'
     games[gid].current_hand.fold(folding_player, games[gid].player_one, games[gid].player_two)
     response = {
@@ -243,7 +239,7 @@ async def send_winner_response(uid, gid, clients):
           'ready': games[gid].player_two_ready
         }
       ]
-    await new_hand(response, uid, gid, clients) ## need to turn into a client req...
+    await new_hand(response, uid, gid, clients) ## need to turn into a client req ?
 
 async def new_hand(response, uid, gid, clients):
     if games[gid].player_one.bankroll > games[gid].current_blind and games[gid].player_two.bankroll > games[gid].current_blind:
@@ -257,12 +253,16 @@ async def new_hand(response, uid, gid, clients):
           'winner': games[gid].current_hand.winner,
           'community': games[gid].current_hand.community
         })
-        response['players'][0]['bet-size'] = games[gid].player_one.bet_size
-        response['players'][0]['bankroll'] = games[gid].player_one.bankroll
-        response['players'][0]['folded'] = games[gid].player_one.folded
-        response['players'][1]['bet-size'] = games[gid].player_two.bet_size
-        response['players'][1]['bankroll'] = games[gid].player_two.bankroll
-        response['players'][1]['folded'] = games[gid].player_one.folded
+        response['players'][0].update({
+          'bet-size': games[gid].player_one.bet_size,
+          'bankroll': games[gid].player_one.bankroll,
+          'folded': games[gid].player_one.folded,
+        })
+        response['players'][1].update({
+          'bet-size': games[gid].player_two.bet_size,
+          'bankroll': games[gid].player_two.bankroll,
+          'folded': games[gid].player_two.folded,
+        })
         for client in clients:
             if str(client) == response['players'][0]['uid']:
                 response['players'][0]['hand'] = games[gid].current_hand.one_cards

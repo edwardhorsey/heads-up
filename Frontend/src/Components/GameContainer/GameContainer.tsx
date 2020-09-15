@@ -31,7 +31,7 @@ const GameContainer: React.FC = () => {
       <h3>Welcome {yourself.name} and {opponent.name}</h3>
       <GameNav yourself={yourself} opponent={opponent} />
       {!yourself.ready ? <Button logic={readyToPlayHand} text="Play round" /> : ''}
-      {yourHand ? <GameHand noOfHands={noOfHands} yourHand={yourHand} oppHand={oppHand} community={community} pot={pot} yourself={yourself} opponent={opponent} /> : ''}
+      {yourHand.length > 0 ? <GameHand noOfHands={noOfHands} yourHand={yourHand} oppHand={oppHand} community={community} pot={pot} yourself={yourself} opponent={opponent} /> : ''}
     </section>
   );
 };

@@ -30,7 +30,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
 
-  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={(stage === 'winner' && winningHand) || (stage === 'end' && winningHand) ? isAWinningCard(`${card}`) : false} card={card}/>)
+  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={(stage === 'winner' && winningHand.length > 0) || (stage === 'end' && winningHand.length > 0) ? isAWinningCard(`${card}`) : false} card={card}/>)
   const cardBacks = () => [<PlayingCard key={1} winner={false} card={['c', 'b']}/>, <PlayingCard key={2} winner={false} card={['c', 'b']}/>]
 
   const opponentsCards = () => oppHand ? readCards(oppHand) : cardBacks();
