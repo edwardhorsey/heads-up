@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import styles from "./CreateOrJoin.module.scss";
 import { ServerContext, socket } from '../../Context/serverContext';
 import { useFormik, FormikErrors } from 'formik';
@@ -20,9 +20,8 @@ const validate = (values: Ivalues) => {
 
 const CreateOrJoin: React.FC = () => {
   const context = useContext(ServerContext);
-  console.log('hi from CreateOrJoin', context);
 
-  const { falseGID, uid, displayName } = context.cState;
+  const { falseGID, uid, displayName } = context;
 
   const formik = useFormik({
     initialValues: {
@@ -53,7 +52,7 @@ const CreateOrJoin: React.FC = () => {
     socket.send(JSON.stringify(request));
   }
 
-  if (formik.errors.gid === "Required" && falseGID) context.setCState({...context.cState, falseGID: false });
+  if (formik.errors.gid === "Required" && falseGID) context.setCState({...context, falseGID: false });
 
   return (
     <section className={styles.CreateOrJoin}>

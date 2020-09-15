@@ -6,13 +6,26 @@ import Button from "../Button";
 interface IProps {
 }
 
+interface Umplayer {
+  bankroll?: number,
+  'bet-size'?: number,
+  folded?: boolean,
+  hand?: string[],
+  name?: string,
+  profit?: number,
+  ready?: boolean,
+  'rounds-won'?: number,
+  uid?: string
+}
+
 const UserMoves: React.FC<IProps> = () => {
 
   const context = useContext(ServerContext);
-  const { uid, gid, players, whichPlayer, action, stage } = context.cState;
+  const { uid, gid, players, whichPlayer, action, stage } = context;
 
-  const yourself = players[whichPlayer]; // yourself is user
-  const opponent = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
+  let yourself: Umplayer = {...players[whichPlayer]}; // yourself is user
+  let opponent: Umplayer = {...players[whichPlayer === 0 ? 1: 0]}; // opponent is opponent
+  console.log(yourself, opponent)
 
   const renderButtons = () => {
     if (action === whichPlayer && stage === "preflop" ) {
@@ -36,11 +49,7 @@ const UserMoves: React.FC<IProps> = () => {
     } else if (stage === "end") {
       return <div className={'backToLobby'}><Button logic={() => backToLobby()} text={'Back to lobby'}/></div>;
     } else {
-      return (
-      <>
-        <p>Waiting on opponent...</p>
-      </>
-      )
+      return <p>Waiting on opponent...</p>
     }
   }
 

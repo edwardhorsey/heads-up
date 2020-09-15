@@ -20,7 +20,7 @@ interface IProps {
 const GameNav: React.FC<IProps> = ({yourself, opponent}) => {
 
   const context = useContext(ServerContext);
-  const { stage } = context.cState;
+  const { stage } = context;
 
   return (
     <article className={styles.Nav}>

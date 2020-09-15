@@ -1,8 +1,12 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, Dispatch, SetStateAction, ReactChildren, ReactPropTypes, ReactNode, FunctionComponent } from 'react';
 
 export const socket = new WebSocket("ws://127.0.0.1:5000/");
 socket.onopen = () => console.log('connected to server')
 socket.onclose = () => console.log('disconnected from server')
+
+interface iProps {
+  children: ReactChildren
+}
 
 interface Icontext {
   uid: string,
@@ -18,11 +22,12 @@ interface Icontext {
   oppHand: string[],
   yourHand: string[],
   community: string[],
-  winningHand: string[],
+  winningHand: Array< string | string[] >,
   winner: string,
   pot: number,
   noOfHands: number,
-  noOfRounds: number
+  noOfRounds: number,
+  setCState: Dispatch<SetStateAction<Icontext>>
 }
 
 const initialState: Icontext = {
@@ -43,12 +48,13 @@ const initialState: Icontext = {
   winner: '',
   pot: 0,
   noOfHands: 0,
-  noOfRounds: 0
+  noOfRounds: 0,
+  setCState: ()=>{}
 }
 
-export const ServerContext = createContext<Icontext | any>(initialState)
+export const ServerContext = createContext<Icontext>(initialState)
 
-export const ServerProvider = (props: any) => {
+export const ServerProvider = (props: iProps) => {
   const [cState, setCState] = useState(initialState)
 
   socket.onmessage = (event) => {
@@ -149,6 +155,6 @@ export const ServerProvider = (props: any) => {
     }
 
   }
-  return <ServerContext.Provider value={{cState, setCState}}>{props.children}</ServerContext.Provider>
+  return <ServerContext.Provider value={{...cState, setCState}}>{props.children}</ServerContext.Provider>
 
 }
