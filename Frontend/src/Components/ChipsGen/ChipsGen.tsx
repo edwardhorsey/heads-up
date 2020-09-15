@@ -20,7 +20,7 @@ const ChipsGen: React.FC<IProps> = ({amount}) => {
 
   return (
       <div className={styles.ChipsGen}>
-        {createChips().map((chip, index) => <img key={index} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>)}
+        {createChips().map((chip, index) => <img key={index} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>)}
       </div>
   );
 }

@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./SetName.module.scss";
-import { ServerContext } from '../../Context/serverContext';
 import { useFormik, FormikErrors } from 'formik';
 import Button from "../Button";
 
@@ -19,8 +18,6 @@ const validate = (values: Ivalues) => {
 };
 
 const SetName: React.FC<IProps> = (props) => {
-  
-  const context = useContext(ServerContext)
 
   const formik = useFormik({
     initialValues: {
