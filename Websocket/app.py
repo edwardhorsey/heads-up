@@ -251,6 +251,7 @@ async def new_hand(response, uid, gid, clients):
           'action': games[gid].current_hand.dealer,
           'pot': games[gid].current_hand.pot,
           'winner': games[gid].current_hand.winner,
+          'winning-hand': games[gid].current_hand.winning_hand,
           'community': games[gid].current_hand.community
         })
         response['players'][0].update({

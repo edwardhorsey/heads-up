@@ -8,7 +8,7 @@ import Button from "../Button";
 
 const GameContainer: React.FC = () => {
   const context = useContext(ServerContext);
-  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds } = context;
+  const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds, stage } = context;
   const yourself: Iplayer = players[whichPlayer]; // yourself is user
   const opponent: Iplayer = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
 
@@ -29,7 +29,7 @@ const GameContainer: React.FC = () => {
         <p>GameID: {gid}</p>
         <p>Rounds: {noOfRounds}</p>
       </div>
-      <h3>Welcome {yourself.name} and {opponent.name}</h3>
+      {stage === 'initial' ? <h3>Welcome {yourself.name} and {opponent.name}</h3>: ''}
       <GameNav yourself={yourself} opponent={opponent} />
       {!yourself.ready ? <Button logic={readyToPlayHand} text="Play round" /> : ''}
       {yourHand.length > 0 ? <GameHand noOfHands={noOfHands} yourHand={yourHand} oppHand={oppHand} community={community} pot={pot} yourself={yourself} opponent={opponent} /> : ''}

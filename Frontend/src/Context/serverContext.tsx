@@ -108,7 +108,8 @@ export const ServerProvider = (props: iProps) => {
           community: response['community-cards'],
           pot: response.pot,
           noOfHands: response['number-of-hands'],
-          winner: response.winner
+          winner: response.winner,
+          winningHand: response['winning-hand']
         })
       }
       cState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 2000)
