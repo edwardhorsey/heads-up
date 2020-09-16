@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styles from "./GameContainer.module.scss";
-import { ServerContext } from '../../Context/serverContext';
+import { ServerContext, Iplayer } from '../../Context/serverContext';
 import socket from "../../Socket/socket";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";
@@ -9,8 +9,8 @@ import Button from "../Button";
 const GameContainer: React.FC = () => {
   const context = useContext(ServerContext);
   const { uid, gid, players, whichPlayer, noOfHands, yourHand, oppHand, pot, community, noOfRounds } = context;
-  const yourself = {...players[whichPlayer]}; // yourself is user
-  const opponent = {...players[whichPlayer === 0 ? 1: 0]}; // opponent is opponent
+  const yourself: Iplayer = players[whichPlayer]; // yourself is user
+  const opponent: Iplayer = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
 
   const readyToPlayHand = () => {
     const request = {

@@ -8,12 +8,13 @@ import GameContainer from './Components/GameContainer';
 const App = () => {
   const [ displayName, setDisplayName ] = useState('');
   
-  const context = useContext(ServerContext)
+  const context = useContext(ServerContext);
+  const { setCState } = context;
   
   const { readyToStart } = context;
   const setName = (name: string): void => {
     setDisplayName(name);
-    context.setCState({...context, displayName: name})
+    setCState({...context, displayName: name})
   };
 
   const showLobby = () => !displayName ? <SetName setName={setName} /> : beginGame();

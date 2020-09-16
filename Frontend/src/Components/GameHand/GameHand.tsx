@@ -1,22 +1,14 @@
 import React, { useContext } from "react";
-import { ServerContext } from '../../Context/serverContext';
+import { ServerContext, Iplayer } from '../../Context/serverContext';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
 import ChipsGen from "../ChipsGen";
 
-interface Iplayer {
-  name: string,
-  bankroll: number,
-  ready: boolean,
-  'bet-size': number,
-  folded: boolean
-}
-
 interface IProps {
-  yourHand: [],
-  oppHand: [],
-  community: [],
+  yourHand: string[],
+  oppHand: string[],
+  community: string[],
   pot: number,
   yourself: Iplayer,
   opponent: Iplayer,
@@ -28,9 +20,12 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
   const context = useContext(ServerContext);
   const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community, stage } = context;
 
-  const isAWinningCard = (card: string) => winningHand[2].includes(card);
+  const isAWinningCard = (card: string) => {
+    console.log(card, winningHand[2])
+    return winningHand[2].join('').includes(card)
+  };
 
-  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={(stage === 'winner' && winningHand.length > 0) || (stage === 'end' && winningHand.length > 0) ? isAWinningCard(`${card}`) : false} card={card}/>)
+  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={(stage === 'winner' && winningHand[2].length > 0) || (stage === 'end' && winningHand[2].length > 0) ? isAWinningCard(`${card}`) : false} card={card}/>)
   const cardBacks = () => [<PlayingCard key={1} winner={false} card={['c', 'b']}/>, <PlayingCard key={2} winner={false} card={['c', 'b']}/>]
 
   const opponentsCards = () => oppHand ? readCards(oppHand) : cardBacks();

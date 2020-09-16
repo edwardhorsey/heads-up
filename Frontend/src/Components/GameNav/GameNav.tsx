@@ -1,16 +1,6 @@
 import React, { useContext } from "react";
 import styles from "./GameNav.module.scss";
-import { ServerContext } from '../../Context/serverContext';
-
-
-interface Iplayer {
-  name: string,
-  bankroll: number,
-  ready: boolean,
-  blind: number,
-  profit: number,
-  'rounds-won': number
-}
+import { ServerContext, Iplayer } from '../../Context/serverContext';
 
 interface IProps {
   yourself: Iplayer,

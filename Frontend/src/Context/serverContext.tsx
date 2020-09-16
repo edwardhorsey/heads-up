@@ -1,12 +1,24 @@
-import React, { createContext, useState, Dispatch, SetStateAction, ReactChildren } from 'react';
+import React, { createContext, useState, Dispatch, SetStateAction, ReactChild } from 'react';
 import socket from '../Socket/socket';
-// export const socket = new WebSocket("ws://127.0.0.1:5000/");
-// socket.onopen = () => console.log('connected to server');
-// socket.onclose = () => console.log('disconnected from server');
 
 interface iProps {
-  children: ReactChildren
+  children: ReactChild
 }
+
+export interface Iplayer {
+  name: string,
+  bankroll: number,
+  ready: boolean,
+  'bet-size': number,
+  folded: boolean,
+  blind: number,
+  'rounds-won': number,
+  profit: number
+}
+
+// interface IwinningHand {
+//   [string, string, string[]]
+// }
 
 interface Icontext {
   uid: string,
@@ -17,12 +29,12 @@ interface Icontext {
   readyToStart: boolean,
   action: number | null,
   stage: string,
-  players: object[],
+  players: Array<Iplayer>,
   whichPlayer: number,
   oppHand: string[],
   yourHand: string[],
   community: string[],
-  winningHand: Array< string | string[] >,
+  winningHand: [string, string, string[]],
   winner: string,
   pot: number,
   noOfHands: number,
@@ -44,7 +56,7 @@ const initialState: Icontext = {
   oppHand: [],
   yourHand: [],
   community: [],
-  winningHand: [],
+  winningHand: ['', '', []],
   winner: '',
   pot: 0,
   noOfHands: 0,
