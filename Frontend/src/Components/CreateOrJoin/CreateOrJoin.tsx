@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styles from "./CreateOrJoin.module.scss";
-import { ServerContext, socket } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
+import socket from "../../Socket/socket";
 import { useFormik, FormikErrors } from 'formik';
 import Button from "../Button";
 
@@ -12,7 +13,7 @@ const validate = (values: Ivalues) => {
   let errors: FormikErrors<Ivalues> = { };
   if (!values.gid) {
     errors.gid = "Required"
-  } else if (!Number(values.gid) || Number(values.gid) > 999) {
+  } else if (!Number(values.gid) || !/^[0-9]{1,3}$/.test(values.gid)) {
     errors.gid = "Must be a number between 1-999"
   }
   return errors;

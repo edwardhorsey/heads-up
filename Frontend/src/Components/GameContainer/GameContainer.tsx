@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styles from "./GameContainer.module.scss";
-import { socket, ServerContext } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
+import socket from "../../Socket/socket";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";
 import Button from "../Button";

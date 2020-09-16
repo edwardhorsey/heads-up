@@ -1,8 +1,8 @@
-import React, { createContext, useState, Dispatch, SetStateAction, ReactChildren, ReactPropTypes, ReactNode, FunctionComponent } from 'react';
-
-export const socket = new WebSocket("ws://127.0.0.1:5000/");
-socket.onopen = () => console.log('connected to server')
-socket.onclose = () => console.log('disconnected from server')
+import React, { createContext, useState, Dispatch, SetStateAction, ReactChildren } from 'react';
+import socket from '../Socket/socket';
+// export const socket = new WebSocket("ws://127.0.0.1:5000/");
+// socket.onopen = () => console.log('connected to server');
+// socket.onclose = () => console.log('disconnected from server');
 
 interface iProps {
   children: ReactChildren
@@ -153,8 +153,6 @@ export const ServerProvider = (props: iProps) => {
         noOfHands: response['number-of-hands'],
       })
     }
-
   }
   return <ServerContext.Provider value={{...cState, setCState}}>{props.children}</ServerContext.Provider>
-
-}
+};
