@@ -266,9 +266,9 @@ async def new_hand(response, uid, gid, clients):
         for client in clients:
             if str(client) == response['players'][0]['uid']:
                 response['players'][0]['hand'] = games[gid].current_hand.one_cards
-                response['players'][1]['hand'] = False
+                response['players'][1]['hand'] = []
             else:
-                response['players'][0]['hand'] = False
+                response['players'][0]['hand'] = []
                 response['players'][1]['hand'] = games[gid].current_hand.two_cards
             await connected[client].send(json.dumps(response))
     else:

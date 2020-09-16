@@ -15,7 +15,7 @@ class Hand():
         self.community = []
         self.pot = 0
         self.winner = ''
-        self.winning_hand = []
+        self.winning_hand = ('', [], [])
 
     def deal_cards(self):
         self.one_cards = [self.deck.deal_card(), self.deck.deal_card()]
@@ -26,7 +26,7 @@ class Hand():
         self.pot += bet_amount
 
     def all_in(self, player):
-        player.bet_size = player.bankroll
+        player.bet_size += player.bankroll
         self.bet(player, player.bankroll)
 
     def call(self, player, call_amount):

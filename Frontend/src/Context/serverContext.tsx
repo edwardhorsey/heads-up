@@ -16,9 +16,16 @@ export interface Iplayer {
   profit: number
 }
 
-// interface IwinningHand {
-//   [string, string, string[]]
-// }
+const initialPlayer: Iplayer = {
+  name: '',
+  bankroll: 0,
+  ready: false,
+  'bet-size': 0,
+  folded: false,
+  blind: 0,
+  'rounds-won': 0,
+  profit: 0
+}
 
 interface Icontext {
   uid: string,
@@ -34,7 +41,7 @@ interface Icontext {
   oppHand: string[],
   yourHand: string[],
   community: string[],
-  winningHand: [string, string, string[]],
+  winningHand: [string, number[], string[]],
   winner: string,
   pot: number,
   noOfHands: number,
@@ -51,12 +58,12 @@ const initialState: Icontext = {
   readyToStart: false,
   action: null,
   stage: 'initial',
-  players: [],
+  players: [initialPlayer, initialPlayer],
   whichPlayer: 0,
   oppHand: [],
   yourHand: [],
   community: [],
-  winningHand: ['', '', []],
+  winningHand: ['', [], []],
   winner: '',
   pot: 0,
   noOfHands: 0,
@@ -104,7 +111,7 @@ export const ServerProvider = (props: iProps) => {
           winner: response.winner
         })
       }
-      cState.noOfHands <= 1 ? newHand() : setTimeout(()=>{newHand()}, 2000)
+      cState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 2000)
     }
     if (response.method === "all-in") {
       setCState({...cState,

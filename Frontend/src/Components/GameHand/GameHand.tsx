@@ -4,6 +4,7 @@ import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
 import ChipsGen from "../ChipsGen";
+import Pot from "../Pot";
 
 interface IProps {
   yourHand: string[],
@@ -25,10 +26,15 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
     return winningHand[2].join('').includes(card)
   };
 
-  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard key={index} winner={(stage === 'winner' && winningHand[2].length > 0) || (stage === 'end' && winningHand[2].length > 0) ? isAWinningCard(`${card}`) : false} card={card}/>)
-  const cardBacks = () => [<PlayingCard key={1} winner={false} card={['c', 'b']}/>, <PlayingCard key={2} winner={false} card={['c', 'b']}/>]
+  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard
+    key={index}
+    winner={(stage === 'winner' && winningHand[2].length > 0) || (stage === 'end' && winningHand[2].length > 0) ? isAWinningCard(`${card}`) : false}
+    card={card}
+    />);
 
-  const opponentsCards = () => oppHand ? readCards(oppHand) : cardBacks();
+  const cardBacks = () => [<PlayingCard key={1} winner={false} card={['c', 'b']}/>, <PlayingCard key={2} winner={false} card={['c', 'b']}/>];
+
+  const opponentsCards = () => oppHand.length > 0 ? readCards(oppHand) : cardBacks();
 
   const announceWinner = () => {
     if (winner === 'draw') {
@@ -52,18 +58,15 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
           {opponentsCards()}
         </div>
         <div className={styles.blindsAndBets}>
-          {opponent['bet-size'] > 0 ? (<><p>Opponent bet:</p> <ChipsGen amount={opponent['bet-size']} /></>) : ''}
+          {opponent['bet-size'] > 0 && stage !== "winner" ? (<><p>Opponent bet:</p> <ChipsGen amount={opponent['bet-size']} /></>) : ''}
         </div>
         {winner ? announceWinner() : ''}
         <div className={styles.community}>
           {community ? readCards(community) : ''}
         </div>
-        <div className={styles.pot}>
-          <p>Pot: {pot}</p>
-          <ChipsGen amount={pot}/>
-        </div>
+        <Pot amount={pot} />
         <div className={styles.blindsAndBets}>
-          {yourself['bet-size'] > 0 ? (<><p>Your bet:/</p> <ChipsGen amount={yourself['bet-size']} /></>) : ''}
+          {yourself['bet-size'] > 0 && stage !== "winner" ? (<><p>Your bet:/</p> <ChipsGen amount={yourself['bet-size']} /></>) : ''}
         </div>
         <div className={styles.players}>
           {yourself.folded ? cardBacks() : readCards(yourHand)}

@@ -24,9 +24,8 @@ const UserMoves: React.FC<IProps> = () => {
   const context = useContext(ServerContext);
   const { uid, gid, players, whichPlayer, action, stage } = context;
 
-  let yourself: Umplayer = {...players[whichPlayer]}; // yourself is user
+  // let yourself: Umplayer = {...players[whichPlayer]}; // yourself is user
   let opponent: Umplayer = {...players[whichPlayer === 0 ? 1: 0]}; // opponent is opponent
-  console.log(yourself, opponent)
 
   const renderButtons = () => {
     if (action === whichPlayer && stage === "preflop" ) {
