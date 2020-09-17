@@ -14,7 +14,7 @@ const Pot: React.FC<IProps> = ({amount}) => {
   return (
     <div className={styles.pot}>
     <p>Total pot: {amount}</p>
-    <ChipsGen amount={stage === 'winner' || stage === "end" ? amount: 0}/>
+    <ChipsGen amount={['showdown', 'winner', "end"].includes(stage) ? amount: 0}/>
   </div>
   );
 }

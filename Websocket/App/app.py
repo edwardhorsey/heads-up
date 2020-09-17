@@ -7,8 +7,8 @@ import json
 import time
 
 from random import randrange
-from Poker.game import Game
-from Poker.player import Player
+from .Poker.game import Game
+from .Poker.player import Player
 
 connected = {}
 game_ids = set()
@@ -349,5 +349,5 @@ async def echo(websocket, path):
 
 start_server = websockets.serve(echo, "localhost", 5000)
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+# asyncio.get_event_loop().run_until_complete(start_server)
+# asyncio.get_event_loop().run_forever()
