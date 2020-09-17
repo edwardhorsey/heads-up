@@ -1,6 +1,6 @@
 from itertools import combinations
 
-class Evaluate_hand():
+class Evaluate():
     def __init__(self, cards):
         self.rankvalues = dict((r,i) for i,r in enumerate(['.','.','2','3','4','5','6','7','8','9','10','j','q','k','a']))
         self.cards = cards
@@ -78,10 +78,11 @@ class Hand_Evaluater():
         high_cards = [1,1,1,1,1]
         result = []
         for hand in self.combinations:
-            hand = Evaluate_hand(hand)
+            hand = Evaluate(hand)
             assessed = hand.assess()
             if Hand_Evaluater.rankings[assessed[0]] < best_hand:
                 best_hand = Hand_Evaluater.rankings[assessed[0]]
+                high_cards = assessed[1]
                 result = assessed
             elif Hand_Evaluater.rankings[assessed[0]] == best_hand:
                 if assessed[1] > high_cards:
