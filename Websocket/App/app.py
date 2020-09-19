@@ -127,18 +127,7 @@ async def all_in(request):
       'uid': str(uid),
       'gid': gid,
       'action': 'one' if games[gid].current_hand.dealer == 'two' else 'two',
-      'players': [ {
-          'uid': str(games[gid].player_one.uid),
-          'name': games[gid].player_one.name,
-          'bankroll': games[gid].player_one.bankroll,
-          'bet-size': games[gid].player_one.bet_size
-        }, {
-          'uid': str(games[gid].player_two.uid),
-          'name': games[gid].player_two.name,
-          'bankroll': games[gid].player_two.bankroll,
-          'bet-size': games[gid].player_two.bet_size
-        }
-      ],
+      'players': games[gid].print_player_response(),
       'pot': games[gid].current_hand.pot
     }
     for client in clients:
@@ -154,20 +143,7 @@ async def call(request):
       'uid': str(uid),
       'gid': gid,
       'community-cards': games[gid].current_hand.community,
-      'players': [ {
-          'uid': str(games[gid].player_one.uid),
-          'name': games[gid].player_one.name,
-          'bankroll': games[gid].player_one.bankroll,
-          'hand': games[gid].current_hand.one_cards,
-          'bet-size': 0
-          }, {
-          'uid': str(games[gid].player_two.uid),
-          'name': games[gid].player_two.name,
-          'bankroll': games[gid].player_two.bankroll,
-          'hand': games[gid].current_hand.two_cards,
-          'bet-size': 0
-        }
-      ],
+      'players': games[gid].print_player_response(),
       'pot': games[gid].current_hand.pot
     }
     for client in clients:
@@ -184,16 +160,7 @@ async def fold(request):
       'method': 'folded',
       'uid': str(uid),
       'gid': gid,
-      'players': [ {
-          'uid': str(games[gid].player_one.uid),
-          'name': games[gid].player_one.name,
-          'bankroll': games[gid].player_one.bankroll
-        }, {
-          'uid': str(games[gid].player_two.uid),
-          'name': games[gid].player_two.name,
-          'bankroll': games[gid].player_two.bankroll
-        }
-      ]
+      'players': games[gid].print_player_response(),
     }
     if games[gid].player_one.folded:
         response['players'][0]['folded'] = True
@@ -213,20 +180,7 @@ async def send_winner_response(uid, gid, clients):
         'winner': games[gid].current_hand.winner,
         'winning-hand': games[gid].current_hand.winning_hand,
         'pot': games[gid].current_hand.pot,
-        'players': [ {
-            'uid': str(games[gid].player_one.uid),
-            'name': games[gid].player_one.name,
-            'bankroll': games[gid].player_one.bankroll,
-            'profit': games[gid].current_hand.one_hand_profit,
-            'rounds-won': games[gid].one_rounds_won
-          }, {
-            'uid': str(games[gid].player_two.uid),
-            'name': games[gid].player_two.name,
-            'bankroll': games[gid].player_two.bankroll,
-            'profit': games[gid].current_hand.two_hand_profit,
-            'rounds-won': games[gid].two_rounds_won
-          }
-        ]
+        'players': games[gid].print_player_response(),
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
@@ -253,17 +207,8 @@ async def new_hand(response, uid, gid, clients):
           'pot': games[gid].current_hand.pot,
           'winner': games[gid].current_hand.winner,
           'winning-hand': games[gid].current_hand.winning_hand,
-          'community': games[gid].current_hand.community
-        })
-        response['players'][0].update({
-          'bet-size': games[gid].player_one.bet_size,
-          'bankroll': games[gid].player_one.bankroll,
-          'folded': games[gid].player_one.folded,
-        })
-        response['players'][1].update({
-          'bet-size': games[gid].player_two.bet_size,
-          'bankroll': games[gid].player_two.bankroll,
-          'folded': games[gid].player_two.folded,
+          'community': games[gid].current_hand.community,
+          'players': games[gid].print_player_response()
         })
         for client in clients:
             if str(client) == response['players'][0]['uid']:
@@ -292,23 +237,10 @@ async def back_to_lobby(request):
         'uid': str(uid),
         'gid': gid,
         'number-of-rounds': games[gid].number_of_rounds,
-        'players': [ {
-            'uid': str(games[gid].player_one.uid), 
-            'name': games[gid].player_one.name,
-            'bankroll': games[gid].player_one.bankroll,
-            'hand': False,
-            'ready': games[gid].player_one_ready,
-            'rounds-won': games[gid].one_rounds_won
-          }, {
-            'uid': str(games[gid].player_two.uid),
-            'name': games[gid].player_two.name,
-            'bankroll': games[gid].player_two.bankroll,
-            'hand': False,
-            'ready': games[gid].player_two_ready,
-            'rounds-won': games[gid].two_rounds_won
-          }
-        ]
+        'players': games[gid].print_player_response()
     }
+    response['players'][0]['hand'] = []
+    response['players'][1]['hand'] = []
     await connected[uid].send(json.dumps(response))
 
 
