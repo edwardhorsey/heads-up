@@ -6,6 +6,7 @@ interface iProps {
 }
 
 export interface Iplayer {
+  uid: string,
   name: string,
   bankroll: number,
   ready: boolean,
@@ -17,6 +18,7 @@ export interface Iplayer {
 }
 
 const initialPlayer: Iplayer = {
+  uid: '',
   name: '',
   bankroll: 0,
   ready: false,
