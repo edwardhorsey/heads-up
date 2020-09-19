@@ -3,6 +3,7 @@ import styles from "./Lobby.module.scss";
 import CreateOrJoin from "../CreateOrJoin";
 import { ServerContext } from '../../Context/serverContext';
 import WaitingRoom from "../WaitingRoom";
+import Button from "../Button";
 
 const Lobby: React.FC = () => {
   const context = useContext(ServerContext);

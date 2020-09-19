@@ -148,6 +148,7 @@ async def call(request):
     uid, gid, clients = getBaseStats(request)
     calling_player = games[gid].player_one if games[gid].player_one.uid == uid else games[gid].player_two
     games[gid].current_hand.call(calling_player, request['amount-to-call']) # deals community cards too and calculates winner
+    games[gid].reset_players_bet_sizes()
     response = {
       'method': 'showdown',
       'uid': str(uid),
