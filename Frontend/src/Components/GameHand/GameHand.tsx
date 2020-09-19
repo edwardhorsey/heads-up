@@ -3,8 +3,9 @@ import { ServerContext, Iplayer } from '../../Context/serverContext';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
-import ChipsGen from "../ChipsGen";
 import Pot from "../Pot";
+import PlayerChips from "../PlayersChips/PlayersChips";
+import CommunityCards from "../CommunityCards";
 
 interface IProps {
   yourHand: string[],
@@ -56,17 +57,11 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
         <div className={styles.players}>
           {opponentsCards()}
         </div>
-        <div className={styles.blindsAndBets}>
-          {opponent['bet-size'] > 0 && stage !== "winner" ? (<><p>Opponent bet:</p> <ChipsGen amount={opponent['bet-size']} /></>) : ''}
-        </div>
+        <PlayerChips which={'Opponent'} stage={stage} player={opponent} />
         {winner ? announceWinner() : ''}
-        <div className={styles.community}>
-          {community ? readCards(community) : ''}
-        </div>
+        {community ? <CommunityCards cards={readCards(community)} /> : ''}
         <Pot amount={pot} />
-        <div className={styles.blindsAndBets}>
-          {yourself['bet-size'] > 0 && stage !== "winner" ? (<><p>Your bet:/</p> <ChipsGen amount={yourself['bet-size']} /></>) : ''}
-        </div>
+        <PlayerChips which={'Your'} stage={stage} player={yourself} />
         <div className={styles.players}>
           {yourself.folded ? cardBacks() : readCards(yourHand)}
         </div>
