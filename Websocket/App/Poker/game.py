@@ -46,3 +46,30 @@ class Game():
             self.current_hand = Hand(Deck(), self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
             self.current_hand.deal_cards()
+
+    def reset_players_bet_sizes(self):
+        self.player_one.bet_size = 0
+        self.player_two.bet_size = 0
+
+    def print_player_response(self):
+        return [{
+          'uid': str(self.player_one.uid), 
+          'name': self.player_one.name,
+          'bankroll': self.player_one.bankroll,
+          'ready': self.player_one_ready,
+          'bet-size': self.player_one.bet_size,
+          'hand': self.current_hand.one_cards,
+          'folded': self.player_one.folded,
+          'rounds-won': self.one_rounds_won,
+          'profit': self.current_hand.one_hand_profit,
+        }, {
+          'uid': str(self.player_two.uid),
+          'name': self.player_two.name,
+          'bankroll': self.player_two.bankroll,
+          'ready': self.player_two_ready,
+          'bet-size': self.player_two.bet_size,
+          'hand': self.current_hand.two_cards,
+          'folded': self.player_two.folded,
+          'rounds-won': self.two_rounds_won,
+          'profit': self.current_hand.two_hand_profit,
+        }]
