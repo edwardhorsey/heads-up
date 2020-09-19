@@ -22,13 +22,12 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
   const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community, stage } = context;
 
   const isAWinningCard = (card: string) => {
-    console.log(card, winningHand[2])
     return winningHand[2].join('').includes(card)
   };
 
   const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard
     key={index}
-    winner={(stage === 'winner' && winningHand[2].length > 0) || (stage === 'end' && winningHand[2].length > 0) ? isAWinningCard(`${card}`) : false}
+    winner={(['winner', 'end'].includes(stage) && winningHand[2].length > 0) ? isAWinningCard(card) : false}
     card={card}
     />);
 

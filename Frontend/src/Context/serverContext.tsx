@@ -6,10 +6,12 @@ interface iProps {
 }
 
 export interface Iplayer {
+  uid: string,
   name: string,
   bankroll: number,
   ready: boolean,
   'bet-size': number,
+  hand: string[],
   folded: boolean,
   blind: number,
   'rounds-won': number,
@@ -17,10 +19,12 @@ export interface Iplayer {
 }
 
 const initialPlayer: Iplayer = {
+  uid: '',
   name: '',
   bankroll: 0,
   ready: false,
   'bet-size': 0,
+  hand: [],
   folded: false,
   blind: 0,
   'rounds-won': 0,
