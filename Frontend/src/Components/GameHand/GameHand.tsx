@@ -6,6 +6,9 @@ import UserMoves from "../UserMoves";
 import Pot from "../Pot";
 import PlayerChips from "../PlayersChips/PlayersChips";
 import CommunityCards from "../CommunityCards";
+import PlayersCards from "../PlayersCards";
+import WinnerAnnounce from "../WinnerAnnounce";
+import RoundWinner from "../RoundWinner";
 
 interface IProps {
   yourHand: string[],
@@ -22,9 +25,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
   const context = useContext(ServerContext);
   const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community, stage } = context;
 
-  const isAWinningCard = (card: string) => {
-    return winningHand[2].join('').includes(card)
-  };
+  const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
 
   const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard
     key={index}
@@ -38,33 +39,29 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const announceWinner = () => {
     if (winner === 'draw') {
-      return <h3>Draw: players split the pot with {winningHand[0]} (further hand details)</h3>;
+      return `Draw: players split the pot with ${winningHand[0]} (further hand details)`;
     } else {
       const winningPlayer = whichPlayer === (winner === 'one' ? 0:1) ? yourself : opponent;
-      return <p>{winningPlayer.name} wins the pot {pot} with {winningHand[0]} (further hand details)</p>;
+      return `${winningPlayer.name} wins the pot ${pot} with ${winningHand[0]} (further hand details)`;
     }
   }
 
   const playerBust = () => {
     const bust = yourself.bankroll <= 0 ? [yourself, opponent] : [opponent, yourself];
-    return <h3>{bust[0].name} has bust, {bust[1].name} wins the round!</h3>
+    return `${bust[0].name} has bust, ${bust[1].name} wins the round!`
     }
 
   return (
     <article className={styles.Hand}>
         <p>{`#${noOfHands}`}</p>
-        {stage === 'end' ? playerBust(): ''}
-        <div className={styles.players}>
-          {opponentsCards()}
-        </div>
+        {stage === 'end' ? <RoundWinner text={playerBust()}/> : ''}
+        <PlayersCards cards={opponentsCards()} />
         <PlayerChips which={'Opponent'} stage={stage} player={opponent} />
-        {winner ? announceWinner() : ''}
+        {winner ? <WinnerAnnounce text={announceWinner()} /> : ''}
         {community ? <CommunityCards cards={readCards(community)} /> : ''}
         <Pot amount={pot} />
         <PlayerChips which={'Your'} stage={stage} player={yourself} />
-        <div className={styles.players}>
-          {yourself.folded ? cardBacks() : readCards(yourHand)}
-        </div>
+        <PlayersCards cards={yourself.folded ? cardBacks() : readCards(yourHand)} />
         <UserMoves />
     </article>
   )

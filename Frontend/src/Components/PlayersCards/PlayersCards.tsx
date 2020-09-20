@@ -1,19 +1,18 @@
 import React from "react";
 import { useTransition, animated } from 'react-spring';
-import styles from "./CommunityCards.module.scss";
-
+import styles from "./PlayersCards.module.scss";
 
 interface IProps {
   cards: JSX.Element[]
 }
 
-const CommunityCards: React.FC<IProps> = ({cards}) => {
+const PlayersCards: React.FC<IProps> = ({cards}) => {
 
-  const transitions = useTransition(cards, [0,1,2,3,4], {
-    from: { transform: `translate3d(-70px, 0, 0)`, opacity: 0 },
+  const transitions = useTransition(cards, [0,1], {
+    from: { transform: `translate3d(0, -10px, 0)`, opacity: 0 },
     enter: { transform: 'translate3d(0, 0, 0)', opacity: 1 },
     leave: { transform: 'translate3d(0,0px,0)' },
-    trail: 100,
+    trail: 50,
   });
 
   const output = transitions.map(({ item, props, key }) =>
@@ -21,9 +20,9 @@ const CommunityCards: React.FC<IProps> = ({cards}) => {
   );
 
   return (
-    <article className={styles.Community}>
+    <article className={styles.PlayersCards}>
       {output}
     </article>
   );
 }
-export default CommunityCards;
+export default PlayersCards;
