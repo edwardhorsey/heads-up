@@ -10,17 +10,6 @@ interface IChipHash {
 }
 
 const ChipsGen: React.FC<IProps> = ({amount}) => {
-  // const calculateChips = ():number[] => {
-  //   let total = amount;
-  //   let array:number[] = [];
-  //   [1000, 500, 100, 25, 5, 1].forEach(e=>{
-  //     while(total-e>=0){
-  //       array.push(e);
-  //       total-=e;
-  //     }
-  //   });
-  //   return array;
-  // }
 
   const calculateChips = ():IChipHash => {
     let total = amount;
@@ -42,16 +31,18 @@ const ChipsGen: React.FC<IProps> = ({amount}) => {
     return obj;
   }
 
+  const hash = calculateChips()
   
   return (
     <div className={styles.ChipsGen}>
         {[1000, 500, 100, 25, 5, 1].map((chip, index) => {
-          
-          const inlineStyle = { top: `-${10*index}px` }
-
-        return <img key={index} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>})
-
-        // div called base, and map (like above) through the hash table of chips. for each base. and return into the map
+          let chipsStack = [];
+          for (let i = 0; i < hash[chip]; i++) {
+            const inlineStyle = { top: `-${10*i}px` }
+            chipsStack.push(<img key={index} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>)
+          }
+          return chipsStack.length > 0 ? <div className={styles.parent}>{chipsStack}</div> : '';
+        })
         }
       </div>
   );
