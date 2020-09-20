@@ -4,6 +4,7 @@ import SetName from './Components/SetName';
 import Lobby from './Components/Lobby';
 import { ServerContext } from './Context/serverContext';
 import GameContainer from './Components/GameContainer';
+import ChipsGen from './Components/ChipsGen';
 
 const App = () => {
   const [ displayName, setDisplayName ] = useState('');
@@ -24,7 +25,8 @@ const App = () => {
   return (
       <div className={styles.App}>
         <h1>Heads Up Poker</h1>
-        {showLobby()}
+        {/* {showLobby()} */}
+        <ChipsGen amount={1775}/>
       </div>
   );
 }

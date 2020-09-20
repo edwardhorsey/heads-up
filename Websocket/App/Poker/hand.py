@@ -73,4 +73,5 @@ class Hand():
         elif self.winner == 'two':
             self.winning_hand = (best_two)
         elif self.winner == 'draw':
-            self.winning_hand = (best_one, best_two) ## alter so winning hand contains all winning cards including both opponents
+            winning_cards = list(set(*best_one[2], *best_two[2]))
+            self.winning_hand = (best_one[0], best_one[1], winning_cards) ## alter so winning hand contains all winning cards including both opponents
