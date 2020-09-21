@@ -26,8 +26,7 @@ const App = () => {
   return (
       <div className={styles.App}>
         <h1>Heads Up Poker</h1>
-        {/* {showLobby()} */}
-        <RoundWinner text={'your on a train'} />
+        {showLobby()}
       </div>
   );
 }

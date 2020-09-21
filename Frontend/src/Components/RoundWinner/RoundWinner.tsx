@@ -10,11 +10,11 @@ interface IProps {
 const RoundWinner: React.FC<IProps> = ({text}) => {
 
   const transitions = useTransition(text, null, {
-    from: { transform: 'perspective(600px) rotateX(180deg)', opacity: 0 },
+    from: { transform: 'perspective(600px) rotateX(0deg)', opacity: 0 },
     enter: [
       { opacity: 1, height: 80 },
-      { transform: 'perspective(600px) rotateX(0deg)', color: '#28d79f' },
-      { transform: 'perspective(600px) rotateX(180deg)' }
+      { transform: 'perspective(600px) rotateX(180deg)'  },
+      { transform: 'perspective(600px) rotateX(0deg)' },
     ],
     leave: { transform: 'translate3d(0,0px,0)' }
   });
