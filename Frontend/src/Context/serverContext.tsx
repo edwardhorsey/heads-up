@@ -11,7 +11,7 @@ export interface Iplayer {
   bankroll: number,
   ready: boolean,
   'bet-size': number,
-  hand: string[],
+  hand: string[][],
   folded: boolean,
   blind: number,
   'rounds-won': number,
