@@ -13,14 +13,18 @@ interface IProps {
 
 const PlayerChips: React.FC<IProps> = ({which, player, stage}) => {
 
-  const aniProps = useSpring({opacity: 1, from: {opacity: 0}})
+  const aniProps = useSpring({
+    opacity: 1, from: {opacity: 0},
+    
+    }
+    )
 
   return (
 
     <div className={styles.PlayersChips}>
     {player['bet-size'] > 0 && stage !== "winner" ? (
       <>
-        <p>{which} bet:</p>
+        <p>{which} bet: {player['bet-size']}</p>
         <animated.div style={aniProps}>
           <ChipsGen amount={player['bet-size']} />
         </animated.div>

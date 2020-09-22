@@ -29,12 +29,20 @@ class Hand():
         player.bet_size += player.bankroll
         self.bet(player, player.bankroll)
 
-    def call(self, player, call_amount):
-        player.bet(call_amount)
-        player.bet_size = call_amount
+    def call(self, calling_player, call_amount, all_in_player):
+        print('call amount:', call_amount, all_in_player.name, all_in_player.bankroll, calling_player.name, calling_player.bankroll)
+        if call_amount <= all_in_player.bet_size:
+            difference = all_in_player.bet_size - call_amount
+            all_in_player.bankroll += difference
+        elif call_amount > calling_player.bankroll:
+            call_amount = calling_player.bankroll
+        calling_player.bet(call_amount - calling_player.bet_size)
+        all_in_player.bet_size = call_amount
+        calling_player.bet_size = call_amount
         self.pot += call_amount
         self.run_cards()
         self.calculate_winner()
+        print(all_in_player.name, all_in_player.bankroll, calling_player.name, calling_player.bankroll)
         
     def transfer_winnings(self, one, two):
         if self.winner == 'one':
@@ -62,7 +70,9 @@ class Hand():
     def deal_blinds(self, p_one, p_two, dealer):
         multiplier = [1, 0.5] if dealer == 'one' else [0.5, 1]
         self.bet(p_one, multiplier[0]*self.big_blind)
+        p_one.bet_size = multiplier[0]*self.big_blind
         self.bet(p_two, multiplier[1]*self.big_blind)
+        p_two.bet_size = multiplier[1]*self.big_blind
 
     def calculate_winner(self):
         best_one = Hand_Evaluater(self.one_cards, self.community).find_best_hand()
@@ -73,5 +83,5 @@ class Hand():
         elif self.winner == 'two':
             self.winning_hand = (best_two)
         elif self.winner == 'draw':
-            winning_cards = list(set(list(*best_one[2], *best_two[2])))
+            winning_cards = list(set(list(best_one[2] + best_two[2])))
             self.winning_hand = (best_one[0], best_one[1], winning_cards) ## alter so winning hand contains all winning cards including both opponents

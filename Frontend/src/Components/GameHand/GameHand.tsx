@@ -23,7 +23,7 @@ interface IProps {
 const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const context = useContext(ServerContext);
-  const { whichPlayer, yourHand, oppHand, winner, winningHand, noOfHands, pot, community, stage } = context;
+  const { whichPlayer, yourHand, oppHand, winner, winningHand, pot, community, stage } = context;
 
   const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
 
@@ -53,7 +53,6 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   return (
     <article className={styles.Hand}>
-        <p>{`#${noOfHands}`}</p>
         {stage === 'end' ? <RoundWinner text={playerBust()}/> : ''}
         <PlayersCards cards={opponentsCards()} />
         <PlayerChips which={'Opponent'} stage={stage} player={opponent} />

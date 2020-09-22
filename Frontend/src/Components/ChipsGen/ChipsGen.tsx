@@ -39,7 +39,7 @@ const ChipsGen: React.FC<IProps> = ({amount}) => {
           let chipsStack = [];
           for (let i = 0; i < hash[chip]; i++) {
             const inlineStyle = { top: `-${10*i}px` }
-            chipsStack.push(<img key={index} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>)
+            chipsStack.push(<img key={index} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>);
           }
           return chipsStack.length > 0 ? <div className={styles.parent}>{chipsStack}</div> : '';
         })

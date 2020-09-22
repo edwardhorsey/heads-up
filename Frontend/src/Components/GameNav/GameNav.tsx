@@ -10,7 +10,7 @@ interface IProps {
 const GameNav: React.FC<IProps> = ({yourself, opponent}) => {
 
   const context = useContext(ServerContext);
-  const { stage } = context;
+  const { stage, noOfHands } = context;
 
   return (
     <article className={styles.Nav}>
@@ -20,6 +20,9 @@ const GameNav: React.FC<IProps> = ({yourself, opponent}) => {
           {yourself['rounds-won'] > 0 ? <p>Rounds won {yourself['rounds-won']}</p> : ''}
           {yourself.ready && !opponent.ready ? <p className={styles.Ready}>Ready</p> : ''}
           {stage === 'winner' ? <p className={yourself.profit >= 0 ? styles.profit : styles.loss}>{yourself.profit}</p> : ''}
+        </div>
+        <div>
+        {noOfHands ? <p>{`#${noOfHands}`}</p>: ''}
         </div>
         <div>
           <p className={styles.playerName}>{opponent.name}</p>
