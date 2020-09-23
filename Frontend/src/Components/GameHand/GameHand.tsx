@@ -53,9 +53,9 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   return (
     <article className={styles.Hand}>
-        {stage === 'end' ? <RoundWinner text={playerBust()}/> : ''}
         <PlayersCards cards={opponentsCards()} />
         <PlayerChips which={'Opponent'} stage={stage} player={opponent} />
+        {stage === 'end' ? <RoundWinner text={playerBust()}/> : ''}
         {winner ? <WinnerAnnounce text={announceWinner()} /> : ''}
         {community ? <CommunityCards cards={readCards(community)} /> : ''}
         <Pot amount={pot} />

@@ -9,19 +9,22 @@ interface IProps {
 
 const WinnerAnnounce: React.FC<IProps> = ({text}) => {
 
-  // const transitions = useTransition(cards, [0,1], {
-  //   from: { transform: `translate3d(0, -10px, 0)`, opacity: 0 },
-  //   enter: { transform: 'translate3d(0, 0, 0)', opacity: 1 },
-  //   leave: { transform: 'translate3d(0,0px,0)' },
-  //   trail: 50,
-  // });
+  const transitions = useTransition(text, null, {
+    from: { transform: 'scale(1)', opacity: 0 },
+    enter: [
+      { opacity: 1 },
+      { transform: 'scale(1.05)' },
+      { transform: 'scale(1)' },
+    ],
+    leave: { opacity: 0 }
+  });
 
-  // const output = transitions.map(({ item, props, key }) =>
-  // <animated.div key={key} style={props}>{item}</animated.div>
-  // );
+  const output = transitions.map(({ item, props, key }) =>
+  <animated.div key={key} style={props}>{item}</animated.div>
+  );
 
   return (
-    <p className={styles.WinnerAnnounce}>{text}</p>
+    <p className={styles.WinnerAnnounce}>{output}</p>
   );
 }
 export default WinnerAnnounce;

@@ -1,4 +1,10 @@
 .GameContainer {
   background-color: rgb(229, 245, 252);
   border-radius: 5px;
+  .gameStats {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(163, 163, 163);
+    margin-bottom: 5px;
+  }
 }

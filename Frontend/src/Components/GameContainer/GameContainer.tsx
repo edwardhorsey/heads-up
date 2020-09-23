@@ -26,7 +26,7 @@ const GameContainer: React.FC = () => {
     <section className={styles.GameContainer}>
       <div className={styles.gameStats}>
         <h3>GameID: {gid}</h3>
-        <p>Rounds: {noOfRounds}</p>
+        <p>Total rounds: {noOfRounds}</p>
       </div>
       {stage === 'initial' ? <h3>Welcome {yourself.name} and {opponent.name}</h3>: ''}
       <GameNav yourself={yourself} opponent={opponent} />
