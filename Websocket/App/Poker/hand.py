@@ -29,20 +29,20 @@ class Hand():
         player.bet_size += player.bankroll
         self.bet(player, player.bankroll)
 
-    def call(self, calling_player, call_amount, all_in_player):
-        print('call amount:', call_amount, all_in_player.name, all_in_player.bankroll, calling_player.name, calling_player.bankroll)
-        if call_amount <= all_in_player.bet_size:
-            difference = all_in_player.bet_size - call_amount
+
+    def call(self, calling_player, total_bet, all_in_player):
+        amount_left_to_call = total_bet - calling_player.bet_size
+        if amount_left_to_call > calling_player.bankroll:
+            difference = amount_left_to_call - calling_player.bankroll
             all_in_player.bankroll += difference
-        elif call_amount > calling_player.bankroll:
-            call_amount = calling_player.bankroll
-        calling_player.bet(call_amount - calling_player.bet_size)
-        all_in_player.bet_size = call_amount
-        calling_player.bet_size = call_amount
-        self.pot += call_amount
+            all_in_player.bet_size -= difference
+            self.pot -= difference
+            amount_left_to_call = calling_player.bankroll
+        self.bet(calling_player, amount_left_to_call)
+        calling_player.bet_size += amount_left_to_call
         self.run_cards()
         self.calculate_winner()
-        print(all_in_player.name, all_in_player.bankroll, calling_player.name, calling_player.bankroll)
+
         
     def transfer_winnings(self, one, two):
         if self.winner == 'one':
@@ -84,4 +84,4 @@ class Hand():
             self.winning_hand = (best_two)
         elif self.winner == 'draw':
             winning_cards = list(set(list(best_one[2] + best_two[2])))
-            self.winning_hand = (best_one[0], best_one[1], winning_cards) ## alter so winning hand contains all winning cards including both opponents
+            self.winning_hand = (best_one[0], best_one[1], winning_cards)
