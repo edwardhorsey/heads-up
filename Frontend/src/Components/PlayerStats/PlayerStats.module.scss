@@ -1,0 +1,26 @@
+.playerStats {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  .playerName {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    border-radius: 5px;
+    .name {
+      font-weight: 700;
+    }
+  }
+  .background {
+    background-color: rgba(171, 210, 30, 0.151);
+    box-shadow: 0.5px 0.5px 0.5px rgb(201, 199, 199);
+  }
+  .profit {
+    font-weight: 600;
+    color: green;
+  }
+  .loss {
+    font-weight: 600;
+    color: red;
+  }
+}
