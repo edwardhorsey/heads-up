@@ -10,7 +10,6 @@ const App = () => {
   
   const context = useContext(ServerContext);
   const { setCState, noOfHands } = context;
-  console.log(context)
   
   const { readyToStart } = context;
   const setName = (name: string): void => {

@@ -121,9 +121,7 @@ async def ready_to_play(request):
 async def all_in(request):
     uid, gid, clients = getBaseStats(request)
     all_in_player = games[gid].player_one if games[gid].player_one.uid == uid else games[gid].player_two
-    print(all_in_player.bet_size)
     games[gid].current_hand.all_in(all_in_player)
-    print(all_in_player.bet_size)
     response = {
       'method': 'all-in',
       'uid': str(uid),

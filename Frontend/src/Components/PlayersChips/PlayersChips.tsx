@@ -13,11 +13,7 @@ interface IProps {
 
 const PlayerChips: React.FC<IProps> = ({which, player, stage}) => {
 
-  const aniProps = useSpring({
-    opacity: 1, from: {opacity: 0},
-    
-    }
-    )
+  const aniProps = useSpring({ opacity: 1, from: {opacity: 0} })
 
   return (
 
