@@ -173,6 +173,9 @@ async def fold(request):
     await send_winner_response(uid, gid, clients)
 
 async def send_winner_response(uid, gid, clients):
+    for game in games:
+        for key in games[game].keys():
+            print(key, game[key])
     games[gid].current_hand.transfer_winnings(games[gid].player_one, games[gid].player_two)
     response = {
         'method': 'winner',

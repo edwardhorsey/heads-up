@@ -1,0 +1,32 @@
+// @import "../../variables.module.scss";
+
+.ConnectedStatus {
+  // border: 2px solid $greygreenborder;
+  background-color: lightcyan;
+  padding: 0 15px;
+  display: flex;
+  border-radius: 5px;
+  justify-content: space-between;
+  // box-shadow: $regularboxshadow;
+  height: 45px;
+  p {
+    margin: auto 0;
+  }
+  .circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid black;
+    box-sizing: border-box;
+    margin: auto 0;
+  }
+  .connected {
+    background-color: green;
+  }
+  .disconnected {
+    background-color: rgb(64, 71, 66);
+  }
+  .error {
+    background-color: maroon;
+  }
+}

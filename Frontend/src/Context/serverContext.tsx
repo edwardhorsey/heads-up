@@ -32,6 +32,7 @@ const initialPlayer: Iplayer = {
 }
 
 interface Icontext {
+  status: string,
   uid: string,
   displayName: string,
   opponentName: string,
@@ -54,6 +55,7 @@ interface Icontext {
 }
 
 const initialState: Icontext = {
+  status: 'disconnected',
   uid: '',
   displayName: '',
   opponentName: '',
@@ -79,6 +81,21 @@ export const ServerContext = createContext<Icontext>(initialState)
 
 export const ServerProvider = (props: iProps) => {
   const [cState, setCState] = useState(initialState)
+
+  socket.onopen = () => {
+    console.log("connected to server");
+    setCState({ ...cState, status: "connected" });
+  };
+
+  socket.onclose = () => {
+    console.log("disconnected from server");
+    setCState({ ...cState, status: "disconnected" });
+  };
+
+  socket.onerror = (event) => {
+    console.log("WebSocket error observed:", event);
+    setCState({ ...cState, status: "error" });
+  };
 
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data)

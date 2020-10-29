@@ -4,6 +4,7 @@ import SetName from './Components/SetName';
 import Lobby from './Components/Lobby';
 import { ServerContext } from './Context/serverContext';
 import GameContainer from './Components/GameContainer';
+import ConnectedStatus from './Components/ConnectedStatus';
 
 const App = () => {
   const [ displayName, setDisplayName ] = useState('');
@@ -25,6 +26,7 @@ const App = () => {
       <div className={styles.App}>
         {!noOfHands ? <h1>Heads Up Poker</h1> : '' }
         {showLobby()}
+        <ConnectedStatus />
       </div>
   );
 }
