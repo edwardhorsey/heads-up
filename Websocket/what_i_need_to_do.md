@@ -1,13 +1,9 @@
-refactor
-- string template for variables for responses from server
-
-features
-- erase inactive games from server
-- chat box into front end
-
-styles
-- bets and HUDs: top right opp, bottom left 
-user
-
-bugs
-- adjust bet sizing on allins to opponents stack size
+- Timings for player turns
+- Auto disconnect and rejoin for players
+- Database table for uids 
+- Database table for game objects
+- Turn into a flop, turn, river game - replace showdown /
+- Refactor into how many funcs? 3
+- - Connect
+- - Disconnect
+- - Game functionality
