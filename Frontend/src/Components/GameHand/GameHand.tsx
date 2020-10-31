@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { ServerContext, Iplayer } from '../../Context/serverContext';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
@@ -22,7 +22,7 @@ interface IProps {
 }
 
 const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
-
+  const state = useState() // add state for storing the round winner message.
   const context = useContext(ServerContext);
   const { whichPlayer, yourHand, oppHand, winner, winningHand, pot, community, stage, noOfHands } = context;
 

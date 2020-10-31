@@ -1,9 +1,12 @@
-- Timings for player turns
+- Timings for player turns - use setTimout to automatically fold after 10 seconds
+- Graphic for FOCUS on current player
 - Auto disconnect and rejoin for players
 - Database table for uids 
 - Database table for game objects
 - Turn into a flop, turn, river game - replace showdown /
 - Refactor into how many funcs? 3
-- - Connect
-- - Disconnect
-- - Game functionality
+  - Connect
+  - Disconnect
+  - Game functionality
+
+- round winner bug

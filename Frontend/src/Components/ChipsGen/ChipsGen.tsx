@@ -9,6 +9,8 @@ interface IChipHash {
   [key: number]: number
 }
 
+let counter = 0;
+
 const ChipsGen: React.FC<IProps> = ({amount}) => {
 
   const calculateChips = ():IChipHash => {
@@ -35,11 +37,11 @@ const ChipsGen: React.FC<IProps> = ({amount}) => {
   
   return (
     <div className={styles.ChipsGen}>
-        {[1000, 500, 100, 25, 5, 1].map((chip, index) => {
+        {[1000, 500, 100, 25, 5, 1].map((chip) => {
           let chipsStack = [];
           for (let i = 0; i < hash[chip]; i++) {
             const inlineStyle = { top: `-${10*i}px` }
-            chipsStack.push(<img key={index} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>);
+            chipsStack.push(<img key={counter++} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>);
           }
           return chipsStack.length > 0 ? <div className={styles.parent}>{chipsStack}</div> : '';
         })

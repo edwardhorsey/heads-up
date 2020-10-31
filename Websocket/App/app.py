@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import asyncio
-import websockets
 import uuid
 import json
 import time
@@ -243,42 +242,3 @@ async def back_to_lobby(request):
     response['players'][0]['hand'] = []
     response['players'][1]['hand'] = []
     await connected[uid].send(json.dumps(response))
-
-
-## running the server ##
-
-async def echo(websocket, path):
-    uid = createUser()
-    connected[uid] = websocket
-    first_send = {
-      'method': 'connected',
-      'uid': str(uid)
-    }
-    await websocket.send(json.dumps(first_send))
-
-    try:
-        async for message in websocket:
-            request = json.loads(message)
-            if request['method'] == 'chat':
-                await chat(request['value'])
-            if request['method'] == 'create-game':
-                await create_game(request)
-            if request['method'] == 'join-game':
-                await join_game(request)
-            if request['method'] == 'ready-to-play':
-                await ready_to_play(request)
-            if request['method'] == 'all-in':
-                await all_in(request)
-            if request['method'] == 'call':
-                await call(request)
-            if request['method'] == 'fold':
-                await fold(request)
-            if request['method'] == 'back-to-lobby':
-                await back_to_lobby(request)
-
-
-    finally:
-        # Unregister.
-        connected.pop(uid)
-
-start_server = websockets.serve(echo, "localhost", 5000)
