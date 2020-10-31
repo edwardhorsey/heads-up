@@ -14,10 +14,20 @@ from App.app import call
 from App.app import fold
 from App.app import back_to_lobby
 
+import boto3
+
+users_table_name = 'heads-up-poker-users'
+users_primary_column = 'connectUsers'
+database = boto3.resource('dynamodb', 'eu-west-1')
+users_table = database.Table(users_table_name)
+
 ## running the server ##
 
 async def echo(websocket, path):
     uid = createUser()
+    new_item = {'connectedUIDs': str(uid)}
+    users_table.put_item(Item=new_item)
+
     connected[uid] = websocket
     first_send = {
       'method': 'connected',
@@ -47,6 +57,7 @@ async def echo(websocket, path):
 
     finally:
         # Unregister.
+        users_table.delete_item(Key=new_item)
         connected.pop(uid)
 
 start_server = websockets.serve(echo, "localhost", 5000)
