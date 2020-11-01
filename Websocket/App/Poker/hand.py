@@ -1,9 +1,9 @@
 from .hand_evaluater import Hand_Evaluater
+from .deck import Deck
 
 class Hand():
     def __init__(self, deck, big_blind, dealer, one_starting, two_starting):
         self.deck = deck
-        deck.shuffle()
         self.big_blind = big_blind
         self.one_starting_chips = one_starting
         self.one_hand_profit = 0
@@ -18,8 +18,8 @@ class Hand():
         self.winning_hand = ('', [], [])
 
     def deal_cards(self):
-        self.one_cards = [self.deck.deal_card(), self.deck.deal_card()]
-        self.two_cards = [self.deck.deal_card(), self.deck.deal_card()]
+        self.one_cards = [self.deck.pop(), self.deck.pop()]
+        self.two_cards = [self.deck.pop(), self.deck.pop()]
 
     def bet(self, player, bet_amount):
         player.bet(bet_amount)
@@ -65,7 +65,7 @@ class Hand():
 
     def run_cards(self):
         for x in range(0, 5):
-            self.community.append(self.deck.deal_card())
+            self.community.append(self.deck.pop())
 
     def deal_blinds(self, p_one, p_two, dealer):
         multiplier = [1, 0.5] if dealer == 'one' else [0.5, 1]

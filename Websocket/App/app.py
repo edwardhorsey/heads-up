@@ -4,6 +4,7 @@ import asyncio
 import uuid
 import json
 import time
+import jsonpickle
 
 from random import randrange
 from .Poker.game import Game
@@ -22,7 +23,7 @@ def generate_GID():
         return generate_GID()
 
 def createUser():
-    return uuid.uuid4()
+    return str(uuid.uuid4())
 
 async def chat(value):
     response = {
@@ -36,13 +37,13 @@ async def chat(value):
         await connected[conn].send(json.dumps(response))
 
 async def create_game(request):
-    uid = uuid.UUID(request['uid'])
+    uid = request['uid']
     gid = generate_GID()
     player_one = Player(uid, request['display-name'], 1000)
     games[gid] = Game(gid, player_one)
     response = {
         'method': 'create-game',
-        'uid': str(uid),
+        'uid': uid,
         'gid': gid,
     }
     await connected[uid].send(json.dumps(response))
@@ -50,13 +51,13 @@ async def create_game(request):
 async def incorrect_gid(uid, gid):
     response = {
         'method': 'incorrect-gid',
-        'uid': str(uid),
+        'uid': uid,
         'gid': gid
     }
     await connected[uid].send(json.dumps(response))
 
 async def join_game(request):
-    uid = uuid.UUID(request['uid'])
+    uid = request['uid']
     gid = int(request['gid'])
     if gid not in games:
         return await incorrect_gid(uid, gid)
@@ -65,15 +66,15 @@ async def join_game(request):
     clients = (games[gid].player_one.uid, games[gid].player_two.uid)
     response = {
       'method': 'joined-game',
-      'uid': str(uid),
+      'uid': uid,
       'gid': gid,
       'number-of-rounds': games[gid].number_of_rounds,
       'players': [ {
-          'uid': str(games[gid].player_one.uid),
+          'uid': games[gid].player_one.uid,
           'name': games[gid].player_one.name,
           'bankroll': games[gid].player_one.bankroll
         }, {
-          'uid': str(games[gid].player_two.uid),
+          'uid': games[gid].player_two.uid,
           'name': games[gid].player_two.name,
           'bankroll': games[gid].player_two.bankroll
         }
@@ -84,7 +85,7 @@ async def join_game(request):
 
 def getBaseStats(request):
     gid = int(request['gid'])
-    return uuid.UUID(request['uid']), gid, (games[gid].player_one.uid, games[gid].player_two.uid)
+    return request['uid'], gid, (games[gid].player_one.uid, games[gid].player_two.uid)
 
 async def ready_to_play(request):
     uid, gid, clients = getBaseStats(request)
@@ -93,17 +94,17 @@ async def ready_to_play(request):
     elif games[gid].player_two.uid == uid and request['ready']:
         games[gid].player_two_ready = True 
     response = {
-      'uid': str(uid),
+      'uid': uid,
       'gid': gid,
       'number-of-rounds': games[gid].number_of_rounds,
       'number-of-hands': 0,
       'players': [ {
-          'uid': str(games[gid].player_one.uid),
+          'uid': games[gid].player_one.uid,
           'name': games[gid].player_one.name,
           'ready': games[gid].player_one_ready,
           'rounds-won': games[gid].one_rounds_won
         }, {
-          'uid': str(games[gid].player_two.uid),
+          'uid': games[gid].player_two.uid,
           'name': games[gid].player_two.name,
           'ready': games[gid].player_two_ready,
           'rounds-won': games[gid].two_rounds_won
@@ -123,7 +124,7 @@ async def all_in(request):
     games[gid].current_hand.all_in(all_in_player)
     response = {
       'method': 'all-in',
-      'uid': str(uid),
+      'uid': uid,
       'gid': gid,
       'action': 'one' if games[gid].current_hand.dealer == 'two' else 'two',
       'players': games[gid].print_player_response(),
@@ -140,7 +141,7 @@ async def call(request):
     games[gid].reset_players_bet_sizes()
     response = {
       'method': 'showdown',
-      'uid': str(uid),
+      'uid': uid,
       'gid': gid,
       'community-cards': games[gid].current_hand.community,
       'players': games[gid].print_player_response(),
@@ -158,7 +159,7 @@ async def fold(request):
     games[gid].current_hand.fold(folding_player, games[gid].player_one, games[gid].player_two)
     response = {
       'method': 'folded',
-      'uid': str(uid),
+      'uid': uid,
       'gid': gid,
       'players': games[gid].print_player_response(),
     }
@@ -173,9 +174,11 @@ async def fold(request):
 
 async def send_winner_response(uid, gid, clients):
     games[gid].current_hand.transfer_winnings(games[gid].player_one, games[gid].player_two)
+    frozen = jsonpickle.encode(games[gid], unpicklable=False)
+    print(frozen)
     response = {
         'method': 'winner',
-        'uid': str(uid),
+        'uid': uid,
         'gid': gid,
         'winner': games[gid].current_hand.winner,
         'winning-hand': games[gid].current_hand.winning_hand,
@@ -185,11 +188,11 @@ async def send_winner_response(uid, gid, clients):
     for client in clients:
         await connected[client].send(json.dumps(response))
     response['players'] = [ {
-          'uid': str(games[gid].player_one.uid),
+          'uid': games[gid].player_one.uid,
           'name': games[gid].player_one.name,
           'ready': games[gid].player_one_ready
         }, {
-          'uid': str(games[gid].player_two.uid),
+          'uid': games[gid].player_two.uid,
           'name': games[gid].player_two.name,
           'ready': games[gid].player_two_ready
         }
@@ -228,13 +231,13 @@ async def new_hand(response, uid, gid, clients):
             await connected[client].send(json.dumps(response))
 
 async def back_to_lobby(request):
-    uid = uuid.UUID(request['uid'])
+    uid = request['uid']
     gid = int(request['gid'])
     games[gid].player_one = Player(games[gid].player_one.uid, games[gid].player_one.name, 1000)
     games[gid].player_two = Player(games[gid].player_two.uid, games[gid].player_two.name, 1000)
     response = {
         'method': 'back-to-lobby',
-        'uid': str(uid),
+        'uid': uid,
         'gid': gid,
         'number-of-rounds': games[gid].number_of_rounds,
         'players': games[gid].print_player_response()

@@ -25,13 +25,13 @@ users_table = database.Table(users_table_name)
 
 async def echo(websocket, path):
     uid = createUser()
-    new_item = {'connectedUIDs': str(uid)}
+    new_item = {'connectedUIDs': uid}
     users_table.put_item(Item=new_item)
 
     connected[uid] = websocket
     first_send = {
       'method': 'connected',
-      'uid': str(uid)
+      'uid': uid
     }
     await websocket.send(json.dumps(first_send))
 

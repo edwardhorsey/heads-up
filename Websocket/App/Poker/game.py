@@ -42,8 +42,11 @@ class Game():
             if self.number_of_hands > 1:
                 self.current_dealer = 'two' if self.current_dealer == 'one' else 'one'
             if self.current_hand:
+                self.current_hand.deck=''
                 self.previous_hands.append(self.current_hand)
-            self.current_hand = Hand(Deck(), self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
+            new_deck = Deck()
+            new_deck.shuffle()
+            self.current_hand = Hand(new_deck, self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
             self.current_hand.deal_cards()
 
@@ -53,7 +56,7 @@ class Game():
 
     def print_player_response(self):
         return [{
-          'uid': str(self.player_one.uid), 
+          'uid': self.player_one.uid, 
           'name': self.player_one.name,
           'bankroll': self.player_one.bankroll,
           'ready': self.player_one_ready,
@@ -63,7 +66,7 @@ class Game():
           'rounds-won': self.one_rounds_won,
           'profit': self.current_hand.one_hand_profit,
         }, {
-          'uid': str(self.player_two.uid),
+          'uid': self.player_two.uid,
           'name': self.player_two.name,
           'bankroll': self.player_two.bankroll,
           'ready': self.player_two_ready,

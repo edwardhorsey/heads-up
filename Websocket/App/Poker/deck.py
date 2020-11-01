@@ -8,10 +8,10 @@ class Deck():
       self.deck = self.create_deck()
 
     def create_deck(self):
-      return list(product(self.cards, self.suits))
+        return list(product(self.cards, self.suits))
 
     def shuffle(self):
         return shuffle(self.deck)
 
-    def deal_card(self):
+    def pop(self):
         return self.deck.pop()
