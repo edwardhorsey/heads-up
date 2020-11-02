@@ -50,21 +50,21 @@ async def chat(value):
     }
     for conn in connected:
         await connected[conn].send(json.dumps(response))
-        ######## put game in database
+        ######## update game in database
 
 async def create_game(request):
     uid = request['uid']
     gid = generate_GID()
     player_one = Player(uid, request['display-name'], 1000)
-    games[gid] = Game(gid, player_one)
-    this_game = games[gid] ####### get game from database
+    this_game = Game(gid, player_one)
+    games[gid] = this_game ###### creating the game in DB for first time
     response = {
         'method': 'create-game',
         'uid': uid,
         'gid': gid,
     }
     await connected[uid].send(json.dumps(response))
-    ######## put game in database
+    ######## update game in database
 
 async def incorrect_gid(uid, gid):
     response = {
@@ -73,7 +73,7 @@ async def incorrect_gid(uid, gid):
         'gid': gid
     }
     await connected[uid].send(json.dumps(response))
-    ######## put game in database
+    ######## update game in database
 
 async def join_game(request):
     uid = request['uid']
@@ -102,7 +102,7 @@ async def join_game(request):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-        ######## put game in database
+        ######## update game in database
 
 def getBaseStats(request):
     gid = int(request['gid'])
@@ -139,7 +139,7 @@ async def ready_to_play(request):
         response['method'] = 'one-player-ready'
         for client in clients:
             await connected[client].send(json.dumps(response))
-            ######## put game in database
+            ######## update game in database
 
 async def all_in(request):
     uid, gid, clients, this_game = getBaseStats(request)
@@ -155,7 +155,7 @@ async def all_in(request):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-        ######## put game in database
+        ######## update game in database
 
 async def call(request):
     uid, gid, clients, this_game = getBaseStats(request)
@@ -173,7 +173,7 @@ async def call(request):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-        ######## put game in database
+        ######## update game in database
     time.sleep(1)
     this_game.current_hand.calculate_winner()
     await send_winner_response(uid, gid, clients, this_game)
@@ -194,7 +194,7 @@ async def fold(request):
         response['players'][1]['folded'] = True
     for client in clients:
         await connected[client].send(json.dumps(response))
-        ######## put game in database
+        ######## update game in database
     time.sleep(1)
     await send_winner_response(uid, gid, clients, this_game)
 
@@ -214,7 +214,7 @@ async def send_winner_response(uid, gid, clients, this_game):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-        ######## put game in database
+        ######## update game in database
     response['players'] = [ {
           'uid': this_game.player_one.uid,
           'name': this_game.player_one.name,
@@ -249,7 +249,7 @@ async def new_hand(response, uid, gid, clients, this_game):
                 response['players'][0]['hand'] = []
                 response['players'][1]['hand'] = this_game.current_hand.two_cards
             await connected[client].send(json.dumps(response))
-            ######## put game in database
+            ######## update game in database
     else:
         response.update({
           'method': 'player-bust',
@@ -258,7 +258,7 @@ async def new_hand(response, uid, gid, clients, this_game):
         this_game.new_round()
         for client in clients:
             await connected[client].send(json.dumps(response))
-            ######## put game in database
+            ######## update game in database
 
 async def back_to_lobby(request):
     uid = request['uid']
@@ -276,4 +276,4 @@ async def back_to_lobby(request):
     response['players'][0]['hand'] = []
     response['players'][1]['hand'] = []
     await connected[uid].send(json.dumps(response))
-    ######## put game in database
+    ######## update game in database

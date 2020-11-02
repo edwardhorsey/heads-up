@@ -2,24 +2,24 @@ from .hand_evaluater import Hand_Evaluater
 from .deck import Deck
 
 class Hand():
-    def __init__(self, deck, big_blind, dealer, one_starting, two_starting):
+    def __init__(self, deck, big_blind, dealer, one_starting, two_starting, one_hand_profit = 0, two_hand_profit = 0, one_cards = [], two_cards = [], community = [], pot = 0, winner = '', winning_hand = ('', [], [])):
         self.deck = deck
         self.big_blind = big_blind
-        self.one_starting_chips = one_starting
-        self.one_hand_profit = 0
-        self.two_starting_chips = two_starting
-        self.two_hand_profit = 0
         self.dealer = dealer
-        self.one_cards = []
-        self.two_cards = []
-        self.community = []
-        self.pot = 0
-        self.winner = ''
-        self.winning_hand = ('', [], [])
+        self.one_starting_chips = one_starting
+        self.two_starting_chips = two_starting
+        self.one_hand_profit = one_hand_profit
+        self.two_hand_profit = two_hand_profit
+        self.one_cards = one_cards
+        self.two_cards = two_cards
+        self.community = community
+        self.pot = pot
+        self.winner = winner
+        self.winning_hand = winning_hand
 
     def deal_cards(self):
-        self.one_cards = [self.deck.pop(), self.deck.pop()]
-        self.two_cards = [self.deck.pop(), self.deck.pop()]
+        self.one_cards = [].append(self.deck.pop()).append(self.deck.pop())
+        self.two_cards = [].append(self.deck.pop()).append(self.deck.pop())
 
     def bet(self, player, bet_amount):
         player.bet(bet_amount)
@@ -28,7 +28,6 @@ class Hand():
     def all_in(self, player):
         player.bet_size += player.bankroll
         self.bet(player, player.bankroll)
-
 
     def call(self, calling_player, total_bet, all_in_player):
         amount_left_to_call = total_bet - calling_player.bet_size

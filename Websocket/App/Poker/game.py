@@ -2,24 +2,24 @@ from .deck import Deck
 from .hand import Hand
 from random import randrange
 
+def random_dealer():
+    return 'one' if randrange(2) == 1 else 'two'
+
 class Game():
-    def __init__(self, gid, player_one):
+    def __init__(self, gid, player_one, player_two = None, player_one_ready = False, player_two_ready = False, current_dealer = random_dealer(), current_hand = None, current_blind = 100, previous_hands = [], number_of_hands = 0, number_of_rounds = 0, one_rounds_won = 0, two_rounds_won = 0):
         self.gid = gid
         self.player_one = player_one
-        self.player_two = None
-        self.player_one_ready = False
-        self.player_two_ready = False
-        self.current_dealer = self.random_dealer()
-        self.current_hand = None
-        self.current_blind = 100
-        self.previous_hands = []
-        self.number_of_hands = 0
-        self.number_of_rounds = 0
-        self.one_rounds_won = 0
-        self.two_rounds_won = 0
-
-    def random_dealer(self):
-        return 'one' if randrange(2) == 1 else 'two'
+        self.player_two = player_two
+        self.player_one_ready = player_one_ready
+        self.player_two_ready = player_two_ready
+        self.current_dealer = current_dealer
+        self.current_hand = current_hand
+        self.current_blind = current_blind
+        self.previous_hands = previous_hands
+        self.number_of_hands = number_of_hands
+        self.number_of_rounds = number_of_rounds
+        self.one_rounds_won = one_rounds_won
+        self.two_rounds_won = two_rounds_won
 
     def new_round(self):
         self.number_of_rounds += 1
@@ -44,8 +44,7 @@ class Game():
             if self.current_hand:
                 self.current_hand.deck=''
                 self.previous_hands.append(self.current_hand)
-            new_deck = Deck()
-            new_deck.shuffle()
+            new_deck = Deck().create_shuffled_deck()
             self.current_hand = Hand(new_deck, self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
             self.current_hand.deal_cards()
