@@ -18,33 +18,33 @@ class Evaluate():
         ranks_set = list(set(self.ranks))
 
         if 3 in ranks_hash_values and 2 in ranks_hash_values:
-            return ('Full House', self.ranks, self.cards)
+            return ['Full House', self.ranks, self.cards]
 
         if 5 in suits_hash_values:
             if self.test_straight(ranks_set):
                 if ranks_set[-1] == 14:
-                    return ('Royal Flush', self.ranks, self.cards)
+                    return ['Royal Flush', self.ranks, self.cards]
                 else:
-                    return ('Straight Flush', self.ranks, self.cards)
+                    return ['Straight Flush', self.ranks, self.cards]
             else:
-                return ('Flush', self.ranks, self.cards)
+                return ['Flush', self.ranks, self.cards]
 
         if 4 in ranks_hash_values:
-            return ('Four Of A Kind', self.ranks, self.cards)
+            return ['Four Of A Kind', self.ranks, self.cards]
 
         if self.test_straight(ranks_set):
-            return ('Straight', self.ranks, self.cards)
+            return ['Straight', self.ranks, self.cards]
 
         if 3 in ranks_hash_values:
-            return ('Trips', self.ranks, self.cards)
+            return ['Trips', self.ranks, self.cards]
 
         if 2 in ranks_hash_values and len(ranks_hash_values) < 4:
-            return ('Two Pair', self.ranks, self.cards)
+            return ['Two Pair', self.ranks, self.cards]
 
         if 2 in ranks_hash_values:
-            return ('One Pair', self.ranks, self.cards)
+            return ['One Pair', self.ranks, self.cards]
 
-        return ('High Card', self.ranks, self.cards)
+        return ['High Card', self.ranks, self.cards]
 
     def make_hash(self, list):
         obj = dict()
@@ -88,6 +88,7 @@ class Hand_Evaluater():
                 if assessed[1] > high_cards:
                     high_cards = assessed[1]
                     result = assessed
+        result[2] = list(result[2])
         return result
 
     @staticmethod

@@ -42,8 +42,8 @@ class Game():
             if self.number_of_hands > 1:
                 self.current_dealer = 'two' if self.current_dealer == 'one' else 'one'
             if self.current_hand:
-                self.current_hand.deck=''
                 self.previous_hands.append(self.current_hand)
+                self.current_hand = None
             new_deck = Deck().create_shuffled_deck()
             self.current_hand = Hand(new_deck, self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
@@ -75,3 +75,20 @@ class Game():
           'rounds-won': self.two_rounds_won,
           'profit': self.current_hand.two_hand_profit,
         }]
+
+    def self_dict(self):
+        return {
+            'gid': self.gid,
+            'player_one': self.player_one.self_dict(),
+            'player_two': self.player_two.self_dict(),
+            'player_one_ready': self.player_one_ready,
+            'player_two_ready': self.player_two_ready,
+            'current_dealer': self.current_dealer,
+            'current_hand': self.current_hand.self_dict(),
+            'current_blind': self.current_blind,
+            'previous_hands': self.previous_hands,
+            'number_of_hands': self.number_of_hands,
+            'number_of_rounds': self.number_of_rounds,
+            'one_rounds_won': self.one_rounds_won,
+            'two_rounds_won': self.two_rounds_won
+        }

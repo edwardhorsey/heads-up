@@ -8,9 +8,8 @@ class Deck():
       self.deck = self.create_deck()
 
     def create_deck(self):
-        return list(product(self.cards, self.suits))
+        return [[item[0], item[1]] for item in product(self.cards, self.suits)]
 
     def create_shuffled_deck(self):
         shuffle(self.deck)
-        print(self.deck)
         return self.deck

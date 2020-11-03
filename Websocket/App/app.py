@@ -33,10 +33,10 @@ def createUser():
     return str(uuid.uuid4())
 
 def put_game(gid, game):
-    json_game = jsonpickle.encode(game, unpicklable=False)
+    game_dict = game.self_dict()
     item = {
         'gameId': gid,
-        'game': json_game
+        'game': game_dict
     }
     games_table.put_item(Item=item)
 
@@ -200,8 +200,6 @@ async def fold(request):
 
 async def send_winner_response(uid, gid, clients, this_game):
     this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
-    # frozen = jsonpickle.encode(this_game, unpicklable=False)
-    # print(frozen)
     put_game(gid, this_game)
     response = {
         'method': 'winner',

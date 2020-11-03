@@ -1,3 +1,4 @@
+from decimal import Decimal
 from .hand_evaluater import Hand_Evaluater
 from .deck import Deck
 
@@ -18,8 +19,8 @@ class Hand():
         self.winning_hand = winning_hand
 
     def deal_cards(self):
-        self.one_cards = [].append(self.deck.pop()).append(self.deck.pop())
-        self.two_cards = [].append(self.deck.pop()).append(self.deck.pop())
+        self.one_cards = [self.deck.pop(), self.deck.pop()]
+        self.two_cards = [self.deck.pop(), self.deck.pop()]
 
     def bet(self, player, bet_amount):
         player.bet(bet_amount)
@@ -63,6 +64,8 @@ class Hand():
             two.folded = True
 
     def run_cards(self):
+        if len(self.community) > 0:
+            self.community = []
         for x in range(0, 5):
             self.community.append(self.deck.pop())
 
@@ -84,3 +87,21 @@ class Hand():
         elif self.winner == 'draw':
             winning_cards = list(set(list(best_one[2] + best_two[2])))
             self.winning_hand = (best_one[0], best_one[1], winning_cards)
+
+    def self_dict(self):
+        return {
+            'deck': self.deck,
+            'big_blind': self.big_blind,
+            'dealer': self.dealer,
+            'one_starting_chips': Decimal(str(self.one_starting_chips)),
+            'two_starting_chips': Decimal(str(self.two_starting_chips)),
+            'one_hand_profit': Decimal(str(self.one_hand_profit)),
+            'two_hand_profit': Decimal(str(self.two_hand_profit)),
+            'one_cards': self.one_cards,
+            'two_cards': self.two_cards,
+            'community': self.community,
+            'pot': Decimal(str(self.pot)),
+            'winner': self.winner,
+            'winning_hand': self.winning_hand
+        }
+        
