@@ -80,11 +80,11 @@ class Game():
         return {
             'gid': self.gid,
             'player_one': self.player_one.self_dict(),
-            'player_two': self.player_two.self_dict(),
+            'player_two': self.player_two.self_dict() if self.player_two else False,
             'player_one_ready': self.player_one_ready,
             'player_two_ready': self.player_two_ready,
             'current_dealer': self.current_dealer,
-            'current_hand': self.current_hand.self_dict(),
+            'current_hand': self.current_hand.self_dict() if self.current_hand else False,
             'current_blind': self.current_blind,
             'previous_hands': self.previous_hands,
             'number_of_hands': self.number_of_hands,
