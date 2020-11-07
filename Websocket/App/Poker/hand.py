@@ -3,12 +3,12 @@ from .hand_evaluater import Hand_Evaluater
 from .deck import Deck
 
 class Hand():
-    def __init__(self, deck, big_blind, dealer, one_starting, two_starting, one_hand_profit = 0, two_hand_profit = 0, one_cards = [], two_cards = [], community = [], pot = 0, winner = '', winning_hand = ('', [], [])):
+    def __init__(self, deck, big_blind, dealer, one_starting_chips, two_starting_chips, one_hand_profit = 0, two_hand_profit = 0, one_cards = [], two_cards = [], community = [], pot = 0, winner = '', winning_hand = ('', [], [])):
         self.deck = deck
         self.big_blind = big_blind
         self.dealer = dealer
-        self.one_starting_chips = one_starting
-        self.two_starting_chips = two_starting
+        self.one_starting_chips = one_starting_chips
+        self.two_starting_chips = two_starting_chips
         self.one_hand_profit = one_hand_profit
         self.two_hand_profit = two_hand_profit
         self.one_cards = one_cards
@@ -104,4 +104,3 @@ class Hand():
             'winner': self.winner,
             'winning_hand': self.winning_hand
         }
-        

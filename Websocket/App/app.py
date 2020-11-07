@@ -2,7 +2,8 @@
 
 import asyncio
 import uuid
-import json
+# import json
+import simplejson as json 
 import time
 
 import jsonpickle
@@ -42,7 +43,10 @@ def put_game(gid, game):
 
 def get_game(gid):
     game = games_table.get_item(Key={'gameId': gid})
-    return game
+    return re_map_game(game['Item']['game'])
+
+def re_map_game(game):
+    return Game.re_map(game)
 
 async def chat(value):
     response = {
@@ -67,7 +71,6 @@ async def create_game(request):
         'uid': uid,
         'gid': gid,
     }
-    put_game(gid, this_game)
     await connected[uid].send(json.dumps(response))
 
 async def incorrect_gid(uid, gid):
@@ -83,6 +86,9 @@ async def join_game(request):
     uid = request['uid']
     gid = int(request['gid'])
     this_game = get_game(gid)
+    print('stopping soon')
+    print(this_game)
+    print('after soon')
     # if gid not in games:
     #     return await incorrect_gid(uid, gid)
     player_two = Player(uid, request['display-name'], 1000)
@@ -137,13 +143,13 @@ async def ready_to_play(request):
         }
       ]
     }
+    put_game(gid, this_game)
     if this_game.player_one_ready and this_game.player_two_ready:
         await new_hand(response, uid, gid, clients, this_game)
     else:
         response['method'] = 'one-player-ready'
         for client in clients:
             await connected[client].send(json.dumps(response))
-            put_game(gid, this_game)
 
 async def all_in(request):
     uid, gid, clients, this_game = getBaseStats(request)
@@ -157,9 +163,9 @@ async def all_in(request):
       'players': this_game.print_player_response(),
       'pot': this_game.current_hand.pot
     }
+    put_game(gid, this_game)
     for client in clients:
         await connected[client].send(json.dumps(response))
-        put_game(gid, this_game)
 
 async def call(request):
     uid, gid, clients, this_game = getBaseStats(request)

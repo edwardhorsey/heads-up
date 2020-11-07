@@ -1,5 +1,6 @@
 import asyncio
-import json
+# import json
+import simplejson as json
 import websockets
 
 from App.app import connected

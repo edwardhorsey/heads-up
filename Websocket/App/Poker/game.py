@@ -1,5 +1,8 @@
 from .deck import Deck
 from .hand import Hand
+from App.Poker.player import Player
+
+from collections.abc import Mapping
 from random import randrange
 
 def random_dealer():
@@ -42,7 +45,7 @@ class Game():
             if self.number_of_hands > 1:
                 self.current_dealer = 'two' if self.current_dealer == 'one' else 'one'
             if self.current_hand:
-                self.previous_hands.append(self.current_hand)
+                self.previous_hands.append(self.current_hand.self_dict())
                 self.current_hand = None
             new_deck = Deck().create_shuffled_deck()
             self.current_hand = Hand(new_deck, self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
@@ -92,3 +95,14 @@ class Game():
             'one_rounds_won': self.one_rounds_won,
             'two_rounds_won': self.two_rounds_won
         }
+
+    @staticmethod
+    def re_map(game):
+        alterred_dict = {**game}
+        if isinstance(game['player_one'], Mapping):
+            alterred_dict['player_one'] = Player(**game['player_one'])
+        if isinstance(game['player_two'], Mapping):
+            alterred_dict['player_two'] = Player(**game['player_two'])
+        if isinstance(game['current_hand'], Mapping):
+            alterred_dict['current_hand'] = Hand(**game['current_hand'])
+        return Game(**alterred_dict)
