@@ -43,6 +43,7 @@ def put_game(gid, game):
 
 def get_game(gid):
     game = games_table.get_item(Key={'gameId': gid})
+    print(game)
     return re_map_game(game['Item']['game'])
 
 def re_map_game(game):

@@ -2,6 +2,7 @@ from .deck import Deck
 from .hand import Hand
 from App.Poker.player import Player
 
+from decimal import Decimal
 from collections.abc import Mapping
 from random import randrange
 
@@ -53,8 +54,8 @@ class Game():
             self.current_hand.deal_cards()
 
     def reset_players_bet_sizes(self):
-        self.player_one.bet_size = 0
-        self.player_two.bet_size = 0
+        self.player_one.bet_size = Decimal(str(0))
+        self.player_two.bet_size = Decimal(str(0))
 
     def print_player_response(self):
         return [{
