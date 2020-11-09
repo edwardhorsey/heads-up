@@ -86,7 +86,7 @@ class Hand():
             self.winning_hand = (best_two)
         elif self.winner == 'draw':
             winning_cards = list(set(list(best_one[2] + best_two[2])))
-            self.winning_hand = (best_one[0], best_one[1], winning_cards)
+            self.winning_hand = [best_one[0], best_one[1], winning_cards]
 
     def self_dict(self):
         return {

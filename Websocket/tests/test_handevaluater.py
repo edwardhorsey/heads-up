@@ -15,11 +15,11 @@ class HandEvaluaterTest(unittest.TestCase):
         hand_two = [['2', 'clubs'], ['6', 'clubs'],  ['k', 'clubs'], ['k', 'hearts'], ['a', 'hearts']]
         hand_three = [['5', 'clubs'], ['6', 'hearts'], ['7', 'spades'], ['8', 'spades'], ['9', 'spades']]
         one_assessed = Evaluate(hand_one).assess()
-        one_expected = ('Royal Flush', [10,11,12,13,14], hand_one)
+        one_expected = ['Royal Flush', [10,11,12,13,14], hand_one]
         two_assessed = Evaluate(hand_two).assess()
-        two_expected = ('One Pair', [2, 6, 13, 13, 14], hand_two)
+        two_expected = ['One Pair', [2, 6, 13, 13, 14], hand_two]
         three_assessed = Evaluate(hand_three).assess()
-        three_expected = ('Straight', [5,6,7,8,9], hand_three)
+        three_expected = ['Straight', [5,6,7,8,9], hand_three]
         self.assertEqual(one_assessed, one_expected)
         self.assertEqual(two_assessed, two_expected)
         self.assertEqual(three_assessed, three_expected)

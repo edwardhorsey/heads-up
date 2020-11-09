@@ -1,5 +1,5 @@
 import asyncio
-# import json
+
 import simplejson as json
 import websockets
 
@@ -15,12 +15,11 @@ from App.app import call
 from App.app import fold
 from App.app import back_to_lobby
 
+from App.tables import users_table
+
 import boto3
 
-users_table_name = 'heads-up-poker-users'
-users_primary_column = 'connectUsers'
-database = boto3.resource('dynamodb', 'eu-west-1')
-users_table = database.Table(users_table_name)
+
 
 ## running the server ##
 

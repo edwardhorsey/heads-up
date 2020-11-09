@@ -46,7 +46,7 @@ class Game():
             if self.number_of_hands > 1:
                 self.current_dealer = 'two' if self.current_dealer == 'one' else 'one'
             if self.current_hand:
-                self.previous_hands.append(self.current_hand.self_dict())
+                # self.previous_hands.append(self.current_hand.self_dict())
                 self.current_hand = None
             new_deck = Deck().create_shuffled_deck()
             self.current_hand = Hand(new_deck, self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)

@@ -13,8 +13,8 @@ const validate = (values: Ivalues) => {
   let errors: FormikErrors<Ivalues> = { };
   if (!values.gid) {
     errors.gid = "Required"
-  } else if (!Number(values.gid) || !/^[0-9]{1,3}$/.test(values.gid)) {
-    errors.gid = "Must be a number between 1-999"
+  } else if (!Number(values.gid) || !/^[0-9]{1,4}$/.test(values.gid)) {
+    errors.gid = "Must be a number between 1-9999"
   }
   return errors;
 };
