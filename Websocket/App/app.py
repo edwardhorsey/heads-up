@@ -2,30 +2,22 @@
 
 import asyncio
 import uuid
-# import json
 import simplejson as json 
 import time
-
-import jsonpickle
-import boto3
 
 from random import randrange
 from .Poker.game import Game
 from .Poker.player import Player
 
-games_table_name = 'heads_up_poker_games'
-games_primary_column = 'gameId'
-database = boto3.resource('dynamodb', 'eu-west-1')
-games_table = database.Table(games_table_name)
+from .tables import games_table
 
 connected = {}
-game_ids = set()
-games = {}
+# game_ids = set()
+# games = {}
 
 def generate_GID():
-    gid = randrange(1000)
-    if gid not in game_ids:
-        game_ids.add(gid)
+    gid = randrange(10000)
+    if not check_item_exists(gid):
         return gid
     else:
         return generate_GID()
@@ -43,8 +35,14 @@ def put_game(gid, game):
 
 def get_game(gid):
     game = games_table.get_item(Key={'gameId': gid})
-    print(game)
     return re_map_game(game['Item']['game'])
+
+def check_item_exists(gid):
+    game = games_table.get_item(Key={'gameId': gid}, AttributesToGet=['gameId'])
+    if 'Item' in game.keys():
+        return True
+    else:
+        return False
 
 def re_map_game(game):
     return Game.re_map(game)
@@ -66,7 +64,6 @@ async def create_game(request):
     player_one = Player(uid, request['display-name'], 1000)
     this_game = Game(gid, player_one)
     put_game(gid, this_game)
-    # games[gid] = this_game ###### creating the game in DB for first time
     response = {
         'method': 'create-game',
         'uid': uid,
@@ -86,12 +83,9 @@ async def incorrect_gid(uid, gid):
 async def join_game(request):
     uid = request['uid']
     gid = int(request['gid'])
+    if not check_item_exists(gid):
+        return await incorrect_gid(uid, gid)
     this_game = get_game(gid)
-    print('stopping soon')
-    print(this_game)
-    print('after soon')
-    # if gid not in games:
-    #     return await incorrect_gid(uid, gid)
     player_two = Player(uid, request['display-name'], 1000)
     this_game.add_player(player_two)
     clients = (this_game.player_one.uid, this_game.player_two.uid)
@@ -111,9 +105,9 @@ async def join_game(request):
         }
       ]
     }
+    put_game(gid, this_game)
     for client in clients:
         await connected[client].send(json.dumps(response))
-        put_game(gid, this_game)
 
 def getBaseStats(request):
     gid = int(request['gid'])
@@ -144,11 +138,11 @@ async def ready_to_play(request):
         }
       ]
     }
-    put_game(gid, this_game)
     if this_game.player_one_ready and this_game.player_two_ready:
         await new_hand(response, uid, gid, clients, this_game)
     else:
         response['method'] = 'one-player-ready'
+        put_game(gid, this_game)
         for client in clients:
             await connected[client].send(json.dumps(response))
 
@@ -184,9 +178,9 @@ async def call(request):
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
-        put_game(gid, this_game)
     time.sleep(1)
     this_game.current_hand.calculate_winner()
+    put_game(gid, this_game)
     await send_winner_response(uid, gid, clients, this_game)
 
 async def fold(request):
@@ -203,15 +197,14 @@ async def fold(request):
         response['players'][0]['folded'] = True
     elif this_game.player_two.folded:
         response['players'][1]['folded'] = True
+    put_game(gid, this_game)
     for client in clients:
         await connected[client].send(json.dumps(response))
-        put_game(gid, this_game)
     time.sleep(1)
     await send_winner_response(uid, gid, clients, this_game)
 
 async def send_winner_response(uid, gid, clients, this_game):
     this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
-    put_game(gid, this_game)
     response = {
         'method': 'winner',
         'uid': uid,
@@ -221,9 +214,9 @@ async def send_winner_response(uid, gid, clients, this_game):
         'pot': this_game.current_hand.pot,
         'players': this_game.print_player_response(),
     }
+    put_game(gid, this_game)
     for client in clients:
         await connected[client].send(json.dumps(response))
-        put_game(gid, this_game)
     response['players'] = [ {
           'uid': this_game.player_one.uid,
           'name': this_game.player_one.name,
@@ -250,6 +243,7 @@ async def new_hand(response, uid, gid, clients, this_game):
           'community': this_game.current_hand.community,
           'players': this_game.print_player_response()
         })
+        put_game(gid, this_game)
         for client in clients:
             if str(client) == response['players'][0]['uid']:
                 response['players'][0]['hand'] = this_game.current_hand.one_cards
@@ -258,16 +252,15 @@ async def new_hand(response, uid, gid, clients, this_game):
                 response['players'][0]['hand'] = []
                 response['players'][1]['hand'] = this_game.current_hand.two_cards
             await connected[client].send(json.dumps(response))
-            put_game(gid, this_game)
     else:
         response.update({
           'method': 'player-bust',
           'stage': 'end'
         })
         this_game.new_round()
+        put_game(gid, this_game)
         for client in clients:
             await connected[client].send(json.dumps(response))
-            put_game(gid, this_game)
 
 async def back_to_lobby(request):
     uid = request['uid']
@@ -284,5 +277,5 @@ async def back_to_lobby(request):
     }
     response['players'][0]['hand'] = []
     response['players'][1]['hand'] = []
-    await connected[uid].send(json.dumps(response))
     put_game(gid, this_game)
+    await connected[uid].send(json.dumps(response))
