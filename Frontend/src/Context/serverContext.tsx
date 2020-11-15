@@ -154,6 +154,7 @@ export const ServerProvider = (props: iProps) => {
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
         community: response['community-cards'],
         stage: 'showdown',
+        action: null,
         pot: response.pot
       })
     }
@@ -163,6 +164,7 @@ export const ServerProvider = (props: iProps) => {
           return {...player, ...response.players[index]}
         }),
         stage: 'folded',
+        action: null,
       })
     }
     if (response.method === "winner") {
@@ -172,6 +174,7 @@ export const ServerProvider = (props: iProps) => {
         }),
         pot: response.pot,
         winner: response.winner,
+        action: null,
         winningHand: response['winning-hand'],
         stage: 'winner'
       })
@@ -179,6 +182,7 @@ export const ServerProvider = (props: iProps) => {
     if (response.method === "player-bust") {
       setTimeout(()=>{
         setCState({...cState,
+          action: null,
           stage: 'end'
         })
       }, 2000)

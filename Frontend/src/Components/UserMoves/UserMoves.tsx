@@ -9,7 +9,6 @@ const UserMoves: React.FC = () => {
   const context = useContext(ServerContext);
   const { uid, gid, players, whichPlayer, action, stage } = context;
 
-  // const player: Iplayer = players[whichPlayer === 0 ? 0: 1]; // opponent is you
   const opponent: Iplayer = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
 
   const renderButtons = () => {
