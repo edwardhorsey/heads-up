@@ -10,6 +10,7 @@ import PlayersCards from "../PlayersCards";
 import WinnerAnnounce from "../WinnerAnnounce";
 import RoundWinner from "../RoundWinner";
 import PlayerStats from "../PlayerStats";
+import Timer from "../Timer";
 
 interface IProps {
   yourHand: string[],
@@ -60,7 +61,10 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
         <div className={opponentNavStyles()}>
           {noOfHands ? <p>{`#${noOfHands}`}</p> : ''}
           <PlayersCards cards={opponentsCards()} />
-          <PlayerStats player={opponent} who="opp" />
+          <div className={styles.OppAndTimer}>
+            {((action !== null) && (whichPlayer !== action)) && <Timer num={10} logic={()=>{}} />}
+            <PlayerStats player={opponent} who="opp" />
+          </div>
         </div>
         <PlayerChips which={'Opponent'} stage={stage} player={opponent} />
         {stage === 'end' && <RoundWinner text={playerBust()}/>}
