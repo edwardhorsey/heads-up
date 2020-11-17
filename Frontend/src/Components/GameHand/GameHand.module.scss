@@ -2,6 +2,9 @@
   .playerNav {
     display: flex;
     justify-content: space-between;
+    .OppAndTimer {
+      display: flex;
+    }
   }
 
   .focus {

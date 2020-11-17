@@ -3,6 +3,7 @@ import { ServerContext, Iplayer } from '../../Context/serverContext';
 import socket from "../../Socket/socket";
 import styles from "./UserMoves.module.scss";
 import Button from "../Button";
+import Timer from "../Timer";
 
 const UserMoves: React.FC = () => {
 
@@ -15,6 +16,7 @@ const UserMoves: React.FC = () => {
     if (action === whichPlayer && stage === "preflop" ) {
       return (
       <>
+        <Timer num={10} logic={fold} />
         <div className={'allIn'}><Button logic={() => allIn()} text={'All in'}/></div>
         <div className={'fold'}><Button logic={() => fold()} text={'Fold'}/></div>
       </>
@@ -22,6 +24,7 @@ const UserMoves: React.FC = () => {
     } else if (action === whichPlayer && stage === "to-call") {
       return (
         <>
+          <Timer num={10} logic={fold} />
           <div className={'call'}><Button logic={() => call()} text={`Call ${opponent['bet-size']}`}/></div>
           <div className={'fold'}><Button logic={() => fold()} text={'Fold'}/></div>
         </>
@@ -33,7 +36,7 @@ const UserMoves: React.FC = () => {
     } else if (stage === "end") {
       return <div className={'backToLobby'}><Button logic={() => backToLobby()} text={'Back to lobby'}/></div>;
     } else {
-      return <p>Waiting on opponent...</p>
+      return false;
     }
   }
 
