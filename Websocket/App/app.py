@@ -77,7 +77,6 @@ async def incorrect_gid(uid, gid):
         'uid': uid,
         'gid': gid
     }
-    # put_game(gid, this_game)
     await connected[uid].send(json.dumps(response))
 
 async def join_game(request):
@@ -227,6 +226,9 @@ async def send_winner_response(uid, gid, clients, this_game):
           'ready': this_game.player_two_ready
         }
       ]
+    if this_game.current_hand:
+        this_game.put_previous_hand()
+        this_game.current_hand = None
     await new_hand(response, uid, gid, clients, this_game) ## need to turn into a client req ?
 
 async def new_hand(response, uid, gid, clients, this_game):

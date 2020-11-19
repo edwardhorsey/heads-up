@@ -40,14 +40,17 @@ class Game():
     def add_player(self, player_two):
         self.player_two = player_two
 
-    def put_previous_hand(self, gid, hand):
-        hand_dict = hand.self_dict()
-        item = {
-            'gameId': gid,
-            'previous_hands': hand_dict
-        }
-        print('inside put previous hands....', item)
-        previous_hands_table.put_item(Item=item)
+    def put_previous_hand(self):
+        hand_dict = self.current_hand.self_dict()
+        result = previous_hands_table.update_item(
+            Key={ 'gameId': self.gid },
+            UpdateExpression="SET previous_hands = list_append(if_not_exists(previous_hands, :empty_list), :i)",
+            ExpressionAttributeValues={
+                ':i': [hand_dict],
+                ':empty_list': []
+            },
+            ReturnValues="UPDATED_NEW"
+        )
 
     def new_hand(self):
         if self.player_one_ready and self.player_two_ready:
@@ -56,9 +59,6 @@ class Game():
             self.number_of_hands += 1
             if self.number_of_hands > 1:
                 self.current_dealer = 'two' if self.current_dealer == 'one' else 'one'
-            if self.current_hand:
-                self.put_previous_hand(self.gid, self.current_hand)
-                self.current_hand = None
             new_deck = Deck().create_shuffled_deck()
             self.current_hand = Hand(new_deck, self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
             self.current_hand.deal_blinds(self.player_one, self.player_two, self.current_dealer)
@@ -75,20 +75,20 @@ class Game():
           'bankroll': self.player_one.bankroll,
           'ready': self.player_one_ready,
           'bet-size': self.player_one.bet_size,
-          'hand': self.current_hand.one_cards,
+          'hand': self.current_hand.one_cards if self.current_hand else [],
           'folded': self.player_one.folded,
           'rounds-won': self.one_rounds_won,
-          'profit': self.current_hand.one_hand_profit,
+          'profit': self.current_hand.one_hand_profit if self.current_hand else None,
         }, {
           'uid': self.player_two.uid,
           'name': self.player_two.name,
           'bankroll': self.player_two.bankroll,
           'ready': self.player_two_ready,
           'bet-size': self.player_two.bet_size,
-          'hand': self.current_hand.two_cards,
+          'hand': self.current_hand.two_cards if self.current_hand else [],
           'folded': self.player_two.folded,
           'rounds-won': self.two_rounds_won,
-          'profit': self.current_hand.two_hand_profit,
+          'profit': self.current_hand.two_hand_profit if self.current_hand else None,
         }]
 
     def self_dict(self):
