@@ -2,6 +2,8 @@ from .deck import Deck
 from .hand import Hand
 from App.Poker.player import Player
 
+from App.tables import previous_hands_table
+
 from decimal import Decimal
 from collections.abc import Mapping
 from random import randrange
@@ -38,6 +40,15 @@ class Game():
     def add_player(self, player_two):
         self.player_two = player_two
 
+    def put_previous_hand(self, gid, hand):
+        hand_dict = hand.self_dict()
+        item = {
+            'gameId': gid,
+            'previous_hands': hand_dict
+        }
+        print('inside put previous hands....', item)
+        previous_hands_table.put_item(Item=item)
+
     def new_hand(self):
         if self.player_one_ready and self.player_two_ready:
             self.player_one.folded = False
@@ -46,7 +57,7 @@ class Game():
             if self.number_of_hands > 1:
                 self.current_dealer = 'two' if self.current_dealer == 'one' else 'one'
             if self.current_hand:
-                # self.previous_hands.append(self.current_hand.self_dict())
+                self.put_previous_hand(self.gid, self.current_hand)
                 self.current_hand = None
             new_deck = Deck().create_shuffled_deck()
             self.current_hand = Hand(new_deck, self.current_blind, self.current_dealer, self.player_one.bankroll, self.player_two.bankroll)
