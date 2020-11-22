@@ -41,6 +41,7 @@ class Game():
         self.player_two = player_two
 
     def put_previous_hand(self):
+        print('putting prev hand online')
         hand_dict = self.current_hand.self_dict()
         result = previous_hands_table.update_item(
             Key={ 'gameId': self.gid },
@@ -51,8 +52,10 @@ class Game():
             },
             ReturnValues="UPDATED_NEW"
         )
+        print('result' , result)
 
     def new_hand(self):
+        print('new hand')
         if self.player_one_ready and self.player_two_ready:
             self.player_one.folded = False
             self.player_two.folded = False

@@ -16,7 +16,7 @@ const UserMoves: React.FC = () => {
     if (action === whichPlayer && stage === "preflop" ) {
       return (
       <>
-        <Timer num={10} logic={fold} />
+        <Timer num={15} logic={fold} />
         <div className={'allIn'}><Button logic={() => allIn()} text={'All in'}/></div>
         <div className={'fold'}><Button logic={() => fold()} text={'Fold'}/></div>
       </>
@@ -24,7 +24,7 @@ const UserMoves: React.FC = () => {
     } else if (action === whichPlayer && stage === "to-call") {
       return (
         <>
-          <Timer num={10} logic={fold} />
+          <Timer num={15} logic={fold} />
           <div className={'call'}><Button logic={() => call()} text={`Call ${opponent['bet-size']}`}/></div>
           <div className={'fold'}><Button logic={() => fold()} text={'Fold'}/></div>
         </>

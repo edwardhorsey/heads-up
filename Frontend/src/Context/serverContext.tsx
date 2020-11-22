@@ -99,7 +99,8 @@ export const ServerProvider = (props: iProps) => {
 
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data)
-    console.log(response)
+    console.log('new data arrived')
+    console.table(response);
     if (response.method === 'connected') setCState({...cState, uid: response.uid });
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
     if (response.method === 'incorrect-gid') setCState({...cState, falseGID: true });

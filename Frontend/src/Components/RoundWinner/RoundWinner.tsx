@@ -10,13 +10,13 @@ interface IProps {
 const RoundWinner: React.FC<IProps> = ({text}) => {
 
   const transitions = useTransition(text, null, {
-    from: { transform: 'rotateX(-30deg)', opacity: 0 },
+    from: { transform: 'scale(1)', opacity: 0 },
     enter: [
-      { opacity: 1, height: 80 },
-      { transform: 'rotateX(30deg)'  },
-      { transform: 'rotateX(0deg)' },
+      { opacity: 1 },
+      { transform: 'scale(1.05)' },
+      { transform: 'scale(1)' },
     ],
-    leave: { transform: 'translate3d(0,0px,0)' }
+    leave: { opacity: 0 }
   });
 
   const output = transitions.map(({ item,  props , key }) =>

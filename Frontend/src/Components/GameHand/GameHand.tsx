@@ -53,7 +53,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const playerBust = () => {
     const bust = yourself.bankroll <= 0 ? [yourself, opponent] : [opponent, yourself];
-    return `${bust[0].name} has bust, ${bust[1].name} wins the round!`
+    return `${bust[0].name} has bust, ${bust[1].name} wins the round!`;
     }
 
   return (
@@ -62,7 +62,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
           {noOfHands ? <p>{`#${noOfHands}`}</p> : ''}
           <PlayersCards cards={opponentsCards()} />
           <div className={styles.OppAndTimer}>
-            {((action !== null) && (whichPlayer !== action)) && <Timer num={10} logic={()=>{}} />}
+            {((action !== null) && (whichPlayer !== action)) && <Timer num={15} logic={()=>{}} />}
             <PlayerStats player={opponent} who="opp" />
           </div>
         </div>

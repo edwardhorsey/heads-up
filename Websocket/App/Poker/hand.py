@@ -85,7 +85,8 @@ class Hand():
         elif self.winner == 'two':
             self.winning_hand = (best_two)
         elif self.winner == 'draw':
-            winning_cards = list(set(list(best_one[2] + best_two[2])))
+            both = best_one[2] + best_two[2]
+            winning_cards = [ list(y) for y in set(tuple(x) for x in both)]
             self.winning_hand = [best_one[0], best_one[1], winning_cards]
 
     def self_dict(self):

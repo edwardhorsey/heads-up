@@ -118,24 +118,13 @@ async def ready_to_play(request):
     if this_game.player_one.uid == uid and request['ready']:
         this_game.player_one_ready = True
     elif this_game.player_two.uid == uid and request['ready']:
-        this_game.player_two_ready = True 
+        this_game.player_two_ready = True
     response = {
       'uid': uid,
       'gid': gid,
       'number-of-rounds': this_game.number_of_rounds,
       'number-of-hands': 0,
-      'players': [ {
-          'uid': this_game.player_one.uid,
-          'name': this_game.player_one.name,
-          'ready': this_game.player_one_ready,
-          'rounds-won': this_game.one_rounds_won
-        }, {
-          'uid': this_game.player_two.uid,
-          'name': this_game.player_two.name,
-          'ready': this_game.player_two_ready,
-          'rounds-won': this_game.two_rounds_won
-        }
-      ]
+      'players': this_game.print_player_response()
     }
     if this_game.player_one_ready and this_game.player_two_ready:
         await new_hand(response, uid, gid, clients, this_game)
