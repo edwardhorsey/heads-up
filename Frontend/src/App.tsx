@@ -10,10 +10,9 @@ const App = () => {
   const [ displayName, setDisplayName ] = useState('');
   
   const context = useContext(ServerContext);
-  const { setCState, noOfHands } = context;
-  
-  const { readyToStart } = context;
+  const { setCState, inHand, readyToStart } = context;
   const setName = (name: string): void => {
+    console.log('run')
     setDisplayName(name);
     setCState({...context, displayName: name})
   };
@@ -24,7 +23,7 @@ const App = () => {
   
   return (
       <div className={styles.App}>
-        {!noOfHands ? <h1>Heads Up Poker</h1> : '' }
+        {!inHand ? <h1>Heads Up Poker</h1> : '' }
         {showLobby()}
         <ConnectedStatus />
       </div>

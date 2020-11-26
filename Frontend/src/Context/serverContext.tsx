@@ -33,6 +33,7 @@ const initialPlayer: Iplayer = {
 
 interface Icontext {
   status: string,
+  inHand: boolean,
   uid: string,
   displayName: string,
   opponentName: string,
@@ -56,6 +57,7 @@ interface Icontext {
 
 const initialState: Icontext = {
   status: 'disconnected',
+  inHand: false,
   uid: '',
   displayName: '',
   opponentName: '',
@@ -98,13 +100,14 @@ export const ServerProvider = (props: iProps) => {
   };
 
   socket.onmessage = (event) => {
-    const response = JSON.parse(event.data)
-    console.log('new data arrived')
+    const response = JSON.parse(event.data);
+    console.log('new data arrived');
     console.table(response);
     if (response.method === 'connected') setCState({...cState, uid: response.uid });
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
     if (response.method === 'incorrect-gid') setCState({...cState, falseGID: true });
     if (response.method === 'joined-game') {
+      console.log('response.players.length',response.players.length);
       setCState({ ...cState,
         gid: response.gid,
         falseGID: false,
@@ -115,8 +118,9 @@ export const ServerProvider = (props: iProps) => {
     }
     if (response.method === 'one-player-ready') {
       setCState({...cState,
-        players: response.players,
-        noOfHands: response['number-of-hands']
+        players: cState.players.map((player, index) => {
+          return {...player, ready: response.players[index].ready}
+        })
       })
     }
     if (response.method === 'new-hand') {
@@ -196,7 +200,8 @@ export const ServerProvider = (props: iProps) => {
         yourHand: response.players[cState.whichPlayer].hand,
         oppHand: response.players[cState.whichPlayer === 0 ? 1: 0].hand,
         noOfRounds: response['number-of-rounds'],
-        noOfHands: response['number-of-hands'],
+        stage: response['stage'],
+        inHand: false
       })
     }
   }

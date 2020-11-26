@@ -123,7 +123,6 @@ async def ready_to_play(request):
       'uid': uid,
       'gid': gid,
       'number-of-rounds': this_game.number_of_rounds,
-      'number-of-hands': 0,
       'players': this_game.print_player_response()
     }
     if this_game.player_one_ready and this_game.player_two_ready:
@@ -263,6 +262,7 @@ async def back_to_lobby(request):
         'method': 'back-to-lobby',
         'uid': uid,
         'gid': gid,
+        'stage': 'back-to-lobby',
         'number-of-rounds': this_game.number_of_rounds,
         'players': this_game.print_player_response()
     }

@@ -13,17 +13,11 @@ import PlayerStats from "../PlayerStats";
 import Timer from "../Timer";
 
 interface IProps {
-  yourHand: string[],
-  oppHand: string[],
-  community: string[],
-  pot: number,
   yourself: Iplayer,
-  opponent: Iplayer,
-  noOfHands: number
+  opponent: Iplayer
 }
 
 const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
-  // const state = useState() // add state for storing the round winner message.
   const context = useContext(ServerContext);
   const { whichPlayer, yourHand, oppHand, winner, winningHand, pot, community, stage, noOfHands, action } = context;
 
