@@ -107,7 +107,6 @@ export const ServerProvider = (props: iProps) => {
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
     if (response.method === 'incorrect-gid') setCState({...cState, falseGID: true });
     if (response.method === 'joined-game') {
-      console.log('response.players.length',response.players.length);
       setCState({ ...cState,
         gid: response.gid,
         falseGID: false,
