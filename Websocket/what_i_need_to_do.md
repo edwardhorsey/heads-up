@@ -1,21 +1,7 @@
-MVP
+WHAT I NEED TO DO
 
-FRONTEND
-- Timings for player turns - use setTimout to automatically fold after 10 seconds
-- Graphic for FOCUS on current player
-- Auto disconnect and rejoin for players
-
-
-BACKEND
-- Turn into a flop, turn, river game - replace showdown /
-- Refactor into how many funcs? 3
-  - Connect
-  - Disconnect
-  - Game functionality
-- second table for previous games
-- new table for previous games
-- GID is new ascending primary key on games table
-
+BOARD
+- https://trello.com/b/GJ2pQ8De/poker
 
 BUGS
 <!-- - round winner bug ## was bug in usespring -->
@@ -25,10 +11,5 @@ BUGS
 TypeError: unhashable type: 'list' -->
 - play round button appears when player still in hand. solve with a new stage?
 
-
-
 READING
 - for game db https://serialized.net/2020/09/multiplayer/
-
-
-NICE TO HAVES

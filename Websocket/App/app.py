@@ -49,11 +49,11 @@ def re_map_game(game):
 
 async def chat(value):
     response = {
-      'method': 'chat',
-      'value': {
-          'name': value['name'],
-          'message': value['message'],
-      }
+        'method': 'chat',
+        'value': {
+            'name': value['name'],
+            'message': value['message'],
+        }
     }
     for conn in connected:
         await connected[conn].send(json.dumps(response))
@@ -89,20 +89,20 @@ async def join_game(request):
     this_game.add_player(player_two)
     clients = (this_game.player_one.uid, this_game.player_two.uid)
     response = {
-      'method': 'joined-game',
-      'uid': uid,
-      'gid': gid,
-      'number-of-rounds': this_game.number_of_rounds,
-      'players': [ {
-          'uid': this_game.player_one.uid,
-          'name': this_game.player_one.name,
-          'bankroll': this_game.player_one.bankroll
+        'method': 'joined-game',
+        'uid': uid,
+        'gid': gid,
+        'number-of-rounds': this_game.number_of_rounds,
+        'players': [ {
+            'uid': this_game.player_one.uid,
+            'name': this_game.player_one.name,
+            'bankroll': this_game.player_one.bankroll
         }, {
-          'uid': this_game.player_two.uid,
-          'name': this_game.player_two.name,
-          'bankroll': this_game.player_two.bankroll
+            'uid': this_game.player_two.uid,
+            'name': this_game.player_two.name,
+            'bankroll': this_game.player_two.bankroll
         }
-      ]
+        ]
     }
     put_game(gid, this_game)
     for client in clients:
@@ -120,10 +120,10 @@ async def ready_to_play(request):
     elif this_game.player_two.uid == uid and request['ready']:
         this_game.player_two_ready = True
     response = {
-      'uid': uid,
-      'gid': gid,
-      'number-of-rounds': this_game.number_of_rounds,
-      'players': this_game.print_player_response()
+        'uid': uid,
+        'gid': gid,
+        'number-of-rounds': this_game.number_of_rounds,
+        'players': this_game.print_player_response()
     }
     if this_game.player_one_ready and this_game.player_two_ready:
         await new_hand(response, uid, gid, clients, this_game)
@@ -138,12 +138,12 @@ async def all_in(request):
     all_in_player = this_game.player_one if this_game.player_one.uid == uid else this_game.player_two
     this_game.current_hand.all_in(all_in_player)
     response = {
-      'method': 'all-in',
-      'uid': uid,
-      'gid': gid,
-      'action': 'one' if this_game.current_hand.dealer == 'two' else 'two',
-      'players': this_game.print_player_response(),
-      'pot': this_game.current_hand.pot
+        'method': 'all-in',
+        'uid': uid,
+        'gid': gid,
+        'action': 'one' if this_game.current_hand.dealer == 'two' else 'two',
+        'players': this_game.print_player_response(),
+        'pot': this_game.current_hand.pot
     }
     put_game(gid, this_game)
     for client in clients:
@@ -156,12 +156,12 @@ async def call(request):
     this_game.current_hand.call(calling_player, request['amount-to-call'], all_in_player) # deals community cards too and calculates winner
     this_game.reset_players_bet_sizes()
     response = {
-      'method': 'showdown',
-      'uid': uid,
-      'gid': gid,
-      'community-cards': this_game.current_hand.community,
-      'players': this_game.print_player_response(),
-      'pot': this_game.current_hand.pot
+        'method': 'showdown',
+        'uid': uid,
+        'gid': gid,
+        'community-cards': this_game.current_hand.community,
+        'players': this_game.print_player_response(),
+        'pot': this_game.current_hand.pot
     }
     for client in clients:
         await connected[client].send(json.dumps(response))
@@ -175,10 +175,10 @@ async def fold(request):
     folding_player = 'one' if this_game.player_one.uid == uid else 'two'
     this_game.current_hand.fold(folding_player, this_game.player_one, this_game.player_two)
     response = {
-      'method': 'folded',
-      'uid': uid,
-      'gid': gid,
-      'players': this_game.print_player_response(),
+        'method': 'folded',
+        'uid': uid,
+        'gid': gid,
+        'players': this_game.print_player_response(),
     }
     if this_game.player_one.folded:
         response['players'][0]['folded'] = True
@@ -205,15 +205,15 @@ async def send_winner_response(uid, gid, clients, this_game):
     for client in clients:
         await connected[client].send(json.dumps(response))
     response['players'] = [ {
-          'uid': this_game.player_one.uid,
-          'name': this_game.player_one.name,
-          'ready': this_game.player_one_ready
+            'uid': this_game.player_one.uid,
+            'name': this_game.player_one.name,
+            'ready': this_game.player_one_ready
         }, {
-          'uid': this_game.player_two.uid,
-          'name': this_game.player_two.name,
-          'ready': this_game.player_two_ready
+            'uid': this_game.player_two.uid,
+            'name': this_game.player_two.name,
+            'ready': this_game.player_two_ready
         }
-      ]
+    ]
     if this_game.current_hand:
         this_game.put_previous_hand()
         this_game.current_hand = None
@@ -223,15 +223,15 @@ async def new_hand(response, uid, gid, clients, this_game):
     if this_game.player_one.bankroll > this_game.current_blind and this_game.player_two.bankroll > this_game.current_blind:
         this_game.new_hand()
         response.update({
-          'method': 'new-hand',
-          'number-of-hands': this_game.number_of_hands,
-          'stage': 'preflop',
-          'action': this_game.current_hand.dealer,
-          'pot': this_game.current_hand.pot,
-          'winner': this_game.current_hand.winner,
-          'winning-hand': this_game.current_hand.winning_hand,
-          'community': this_game.current_hand.community,
-          'players': this_game.print_player_response()
+            'method': 'new-hand',
+            'number-of-hands': this_game.number_of_hands,
+            'stage': 'preflop',
+            'action': this_game.current_hand.dealer,
+            'pot': this_game.current_hand.pot,
+            'winner': this_game.current_hand.winner,
+            'winning-hand': this_game.current_hand.winning_hand,
+            'community': this_game.current_hand.community,
+            'players': this_game.print_player_response()
         })
         put_game(gid, this_game)
         for client in clients:
@@ -244,8 +244,8 @@ async def new_hand(response, uid, gid, clients, this_game):
             await connected[client].send(json.dumps(response))
     else:
         response.update({
-          'method': 'player-bust',
-          'stage': 'end'
+            'method': 'player-bust',
+            'stage': 'end'
         })
         this_game.new_round()
         put_game(gid, this_game)
