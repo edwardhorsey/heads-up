@@ -55,16 +55,16 @@ class Evaluate():
 class Hand_Evaluater():
     
     rankings = {
-      'Royal Flush': 1,
-      'Straight Flush': 2,
-      'Four Of A Kind': 3,
-      'Full House': 4,
-      'Flush': 5,
-      'Straight': 6,
-      'Trips': 7,
-      'Two Pair': 8,
-      'One Pair': 9,
-      'High Card': 10
+        'Royal Flush': 1,
+        'Straight Flush': 2,
+        'Four Of A Kind': 3,
+        'Full House': 4,
+        'Flush': 5,
+        'Straight': 6,
+        'Trips': 7,
+        'Two Pair': 8,
+        'One Pair': 9,
+        'High Card': 10
     }
 
     def __init__(self, hand, community):

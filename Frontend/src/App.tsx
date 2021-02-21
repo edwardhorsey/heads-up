@@ -12,10 +12,17 @@ const App = () => {
   const context = useContext(ServerContext);
   const { setCState, inHand, readyToStart } = context;
   const setName = (name: string): void => {
-    console.log('run')
     setDisplayName(name);
     setCState({...context, displayName: name})
   };
+
+  // const setUsername = (username: string) => {
+  //   const request = {
+  //     'method': 'set-username',
+  //     'uid': uid,
+  //   };
+  //   socket.send(JSON.stringify(request));
+  // }
 
   const showLobby = () => !displayName ? <SetName setName={setName} /> : beginGame();
 
