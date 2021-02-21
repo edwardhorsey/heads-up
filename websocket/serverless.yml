@@ -57,7 +57,7 @@ functions:
     handler: game_action_handler.handle
     events:
       - websocket:
-          route: $gameAction
+          route: onGameAction
     layers:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:

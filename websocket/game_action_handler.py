@@ -18,7 +18,7 @@ def handle(event, context):
         connectionIds.extend(page['Items'])
 
     response = {
-        'action': 'gameAction',
+        'action': 'onGameAction',
         'test': 'HI ED'
     }
 
