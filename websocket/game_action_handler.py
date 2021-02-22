@@ -6,6 +6,8 @@ dynamodb = boto3.client('dynamodb')
 
 def handle(event, context):
     
+    print(event)
+
     uid = event['requestContext']['connectionId']
     action = json.loads(event['body'])['action']
     
@@ -14,12 +16,13 @@ def handle(event, context):
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', 
     endpoint_url = "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"])
-    for page in paginator.paginate(TableName=os.environ['SOCKET_CONNECTIONS_TABLE_NAME']):
+    for page in paginator.paginate(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME']):
         connectionIds.extend(page['Items'])
 
     response = {
-        'action': 'onGameAction',
-        'test': 'HI ED'
+        'action': action,
+        'body': json.loads(event['body']),
+        'test': 'HI ED',
     }
 
     # Emit response to all connected devices

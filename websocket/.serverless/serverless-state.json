@@ -278,7 +278,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z/connectHandler.zip"
+                "S3Key": "serverless/poker/dev/1614027319480-2021-02-22T20:55:19.480Z/connectHandler.zip"
               },
               "Handler": "s_connectHandler.handler",
               "Runtime": "python3.8",
@@ -313,7 +313,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z/disconnectHandler.zip"
+                "S3Key": "serverless/poker/dev/1614027319480-2021-02-22T20:55:19.480Z/disconnectHandler.zip"
               },
               "Handler": "s_disconnectHandler.handler",
               "Runtime": "python3.8",
@@ -348,7 +348,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z/gameActionHandler.zip"
+                "S3Key": "serverless/poker/dev/1614027319480-2021-02-22T20:55:19.480Z/gameActionHandler.zip"
               },
               "Handler": "s_gameActionHandler.handler",
               "Runtime": "python3.8",
@@ -1070,7 +1070,7 @@
           "lib/**",
           "node_modules/**"
         ],
-        "artifactDirectoryName": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z"
+        "artifactDirectoryName": "serverless/poker/dev/1614027319480-2021-02-22T20:55:19.480Z"
       },
       "layers": {
         "$ref": "$[\"service\"][\"layers\"]"
@@ -1089,7 +1089,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z",
+    "artifactDirectoryName": "serverless/poker/dev/1614027319480-2021-02-22T20:55:19.480Z",
     "artifact": ""
   }
 }
