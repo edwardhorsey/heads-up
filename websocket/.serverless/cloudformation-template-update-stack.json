@@ -261,7 +261,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/poker/dev/1613935431054-2021-02-21T19:23:51.054Z/connectHandler.zip"
+          "S3Key": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z/connectHandler.zip"
         },
         "Handler": "s_connectHandler.handler",
         "Runtime": "python3.8",
@@ -270,9 +270,7 @@
         "Timeout": 29,
         "Environment": {
           "Variables": {
-            "POKER_CONNECTIONS_TABLE_NAME": {
-              "Fn::Sub": "pokerConnections-${AWS::AccountId}-dev"
-            }
+            "POKER_CONNECTIONS_TABLE_NAME": "pokerConnections-dev"
           }
         },
         "Role": {
@@ -298,7 +296,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/poker/dev/1613935431054-2021-02-21T19:23:51.054Z/disconnectHandler.zip"
+          "S3Key": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z/disconnectHandler.zip"
         },
         "Handler": "s_disconnectHandler.handler",
         "Runtime": "python3.8",
@@ -307,9 +305,7 @@
         "Timeout": 29,
         "Environment": {
           "Variables": {
-            "POKER_CONNECTIONS_TABLE_NAME": {
-              "Fn::Sub": "pokerConnections-${AWS::AccountId}-dev"
-            }
+            "POKER_CONNECTIONS_TABLE_NAME": "pokerConnections-dev"
           }
         },
         "Role": {
@@ -335,7 +331,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/poker/dev/1613935431054-2021-02-21T19:23:51.054Z/gameActionHandler.zip"
+          "S3Key": "serverless/poker/dev/1614025806592-2021-02-22T20:30:06.592Z/gameActionHandler.zip"
         },
         "Handler": "s_gameActionHandler.handler",
         "Runtime": "python3.8",
@@ -344,15 +340,9 @@
         "Timeout": 29,
         "Environment": {
           "Variables": {
-            "POKER_CONNECTIONS_TABLE_NAME": {
-              "Fn::Sub": "pokerConnections-${AWS::AccountId}-dev"
-            },
-            "POKER_GAMES_CONNECTIONS_TABLE_NAME": {
-              "Fn::Sub": "pokerGames-${AWS::AccountId}-dev"
-            },
-            "POKER_PAST_GAMES_CONNECTIONS_TABLE_NAME": {
-              "Fn::Sub": "pokerPastGames-${AWS::AccountId}-dev"
-            }
+            "POKER_CONNECTIONS_TABLE_NAME": "pokerConnections-dev",
+            "POKER_GAMES_CONNECTIONS_TABLE_NAME": "pokerGames-dev",
+            "POKER_PAST_GAMES_CONNECTIONS_TABLE_NAME": "pokerPastGames-dev"
           }
         },
         "Role": {
@@ -621,9 +611,7 @@
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
       "Properties": {
-        "TableName": {
-          "Fn::Sub": "pokerConnections-${AWS::AccountId}-dev"
-        },
+        "TableName": "pokerConnections-dev",
         "AttributeDefinitions": [
           {
             "AttributeName": "connectionId",
@@ -646,9 +634,7 @@
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
       "Properties": {
-        "TableName": {
-          "Fn::Sub": "pokerGames-${AWS::AccountId}-dev"
-        },
+        "TableName": "pokerGames-dev",
         "AttributeDefinitions": [
           {
             "AttributeName": "gameId",
@@ -671,9 +657,7 @@
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
       "Properties": {
-        "TableName": {
-          "Fn::Sub": "pokerPastGames-${AWS::AccountId}-dev"
-        },
+        "TableName": "pokerPastGames-dev",
         "AttributeDefinitions": [
           {
             "AttributeName": "gameId",

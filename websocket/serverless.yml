@@ -5,9 +5,9 @@ app: poker
 custom:
   currentStage: ${opt:stage, self:provider.stage}
   lambdaRunTime: python3.8
-  pokerConnections: pokerConnections-#{AWS::AccountId}-${self:custom.currentStage}
-  pokerGames: pokerGames-#{AWS::AccountId}-${self:custom.currentStage}
-  pokerPastGames: pokerPastGames-#{AWS::AccountId}-${self:custom.currentStage}
+  pokerConnections: pokerConnections-${self:custom.currentStage}
+  pokerGames: pokerGames-${self:custom.currentStage}
+  pokerPastGames: pokerPastGames-${self:custom.currentStage}
 
 provider:
   name: aws
@@ -20,6 +20,7 @@ provider:
 
 plugins:
   - serverless-pseudo-parameters
+  - serverless-offline
 package:
   individually: true
   exclude:
