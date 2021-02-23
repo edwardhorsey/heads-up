@@ -14,8 +14,12 @@ def handle(event, context):
     paginator = dynamodb.get_paginator('scan')
     connectionIds = []
 
-    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', 
-    endpoint_url = "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"])
+    if event["requestContext"]["domainName"] == 'localhost':
+        endpoint = 'http://localhost:3001/'
+    else:
+        endpoint = '"https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"]'
+
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
     for page in paginator.paginate(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME']):
         connectionIds.extend(page['Items'])
