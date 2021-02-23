@@ -1,18 +1,32 @@
 import json
 import boto3
 import os
+import asyncio
 
 dynamodb = boto3.client('dynamodb')
+
+async def setUsername(uid, body):
+    bit = await dynamodb.put_item(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME'], Item={'connectionId': {'S': connectionId}, 'name': {'S': body['displayName']}})
+
+    return {
+        'sendTo': [ uid ],
+        'response': {
+            'method': 'setUsername',
+            'success': bit,
+        }
+    }
+
+
 
 def handle(event, context):
     
     print(event)
 
     uid = event['requestContext']['connectionId']
-    action = json.loads(event['body'])['action']
-    
-    paginator = dynamodb.get_paginator('scan')
-    connectionIds = []
+    body = json.loads(event['body'])
+
+    if body['action'] == 'setUsername':
+        result = setUsername(uid, body)
 
     if event["requestContext"]["domainName"] == 'localhost':
         endpoint = 'http://localhost:3001/'
@@ -21,14 +35,8 @@ def handle(event, context):
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
-    for page in paginator.paginate(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME']):
-        connectionIds.extend(page['Items'])
-
-    response = {
-        'action': action,
-        'body': json.loads(event['body']),
-        'test': 'HI ED',
-    }
+    response = result['response']
+    connectionIds = result['sendTo']
 
     # Emit response to all connected devices
     for connectionId in connectionIds:
@@ -38,3 +46,15 @@ def handle(event, context):
         )
 
     return {}
+
+
+
+
+
+
+
+
+# paginator = dynamodb.get_paginator('scan')
+# connectionIds = []
+# for page in paginator.paginate(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME']):
+#     connectionIds.extend(page['Items'])
