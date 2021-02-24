@@ -16,22 +16,19 @@ async def setUsername(uid, body):
         }
     }
 
-
-
-def handle(event, context):
-    
+async def main(event, context):
     print(event)
 
     uid = event['requestContext']['connectionId']
     body = json.loads(event['body'])
 
     if body['action'] == 'setUsername':
-        result = setUsername(uid, body)
+        result = await setUsername(uid, body)
 
     if event["requestContext"]["domainName"] == 'localhost':
         endpoint = 'http://localhost:3001/'
     else:
-        endpoint = '"https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"]'
+        endpoint = "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"]
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
@@ -47,10 +44,9 @@ def handle(event, context):
 
     return {}
 
-
-
-
-
+def handle(event, context):
+    # asyncio.run(main(event, context))
+    asyncio.get_event_loop().run_until_complete(main(event, context))
 
 
 
