@@ -4,7 +4,7 @@ app: poker
 
 custom:
   currentStage: ${opt:stage, self:provider.stage}
-  lambdaRunTime: python3.8
+  lambdaRunTime: python3.6
   pokerConnections: pokerConnections-${self:custom.currentStage}
   pokerGames: pokerGames-${self:custom.currentStage}
   pokerPastGames: pokerPastGames-${self:custom.currentStage}
