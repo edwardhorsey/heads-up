@@ -22,7 +22,9 @@ async def main(event, context):
     uid = event['requestContext']['connectionId']
     body = json.loads(event['body'])
 
-    if body['action'] == 'setUsername':
+    print(body)
+
+    if body['method'] == 'setUsername':
         result = await setUsername(uid, body)
 
     if event["requestContext"]["domainName"] == 'localhost':
@@ -45,9 +47,7 @@ async def main(event, context):
     return {}
 
 def handle(event, context):
-    # asyncio.run(main(event, context))
-    loop = asyncio.get_event_loop()
-    return loop.run_until_complete(main(event, context))
+    asyncio.run(main(event, context))
 
 
 
