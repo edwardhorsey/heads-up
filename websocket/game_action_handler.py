@@ -5,28 +5,41 @@ import asyncio
 
 dynamodb = boto3.client('dynamodb')
 
-async def setUsername(uid, body):
-    bit = await dynamodb.put_item(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME'], Item={'connectionId': {'S': connectionId}, 'name': {'S': body['displayName']}})
+async def setUsername(connectionId, body):
+    status = dynamodb.put_item(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME'], Item={'connectionId': {'S': connectionId}, 'name': {'S': body['username']}})
 
     return {
-        'sendTo': [ uid ],
+        'sendTo': [ connectionId ],
         'response': {
             'method': 'setUsername',
-            'success': bit,
+            'success': status,
         }
     }
 
 async def main(event, context):
     print(event)
 
-    uid = event['requestContext']['connectionId']
+    # Player who sent request
+    connectionId = event['requestContext']['connectionId']
+
+    # Request body containing ACTION
     body = json.loads(event['body'])
 
-    print(body)
-
+    # Routes
     if body['method'] == 'setUsername':
-        result = await setUsername(uid, body)
+        result = await setUsername(connectionId, body)
+    else if body['method'] == 'createGame':
+        result = await createGame(connectionId, body)
+    else:
+        result = {
+            'sendTo': [ connectionId ],
+            'response': {
+                'method': 'setUsername',
+                'success': bit,
+            }
+        }
 
+    # Dev or Live environment
     if event["requestContext"]["domainName"] == 'localhost':
         endpoint = 'http://localhost:3001/'
     else:
@@ -34,14 +47,14 @@ async def main(event, context):
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
+    # Emit response back to user(s)
     response = result['response']
     connectionIds = result['sendTo']
 
-    # Emit response to all connected devices
     for connectionId in connectionIds:
         apigatewaymanagementapi.post_to_connection(
             Data=json.dumps(response),
-            ConnectionId=connectionId['connectionId']['S']
+            ConnectionId=connectionId
         )
 
     return {}
