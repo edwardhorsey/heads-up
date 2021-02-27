@@ -6,7 +6,6 @@ import Button from "../Button";
 interface Ivalues {
   name: string;
 }
-
 interface IProps {
   setName: (name: string) => void
 }
@@ -18,7 +17,6 @@ const validate = (values: Ivalues) => {
 };
 
 const SetName: React.FC<IProps> = (props) => {
-
   const formik = useFormik({
     initialValues: {
       name: "",

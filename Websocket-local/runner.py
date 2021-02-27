@@ -30,8 +30,8 @@ async def echo(websocket, path):
 
     connected[uid] = websocket
     first_send = {
-      'method': 'connected',
-      'uid': uid
+        'method': 'connected',
+        'uid': uid
     }
     await websocket.send(json.dumps(first_send))
 

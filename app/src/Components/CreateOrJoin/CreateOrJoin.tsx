@@ -36,10 +36,12 @@ const CreateOrJoin: React.FC = () => {
 
   const createGame = () => {
     const request = {
+      'action': 'onGameAction',
       'method': 'create-game',
       'uid': uid,
       'display-name': displayName
     };
+    console.log(request);
     socket.send(JSON.stringify(request));
   }
 

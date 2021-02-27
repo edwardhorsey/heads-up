@@ -104,8 +104,11 @@ export const ServerProvider = (props: iProps) => {
     console.log('new data arrived');
     console.table(response);
     if (response.method === 'connected') setCState({...cState, uid: response.uid });
+
     if (response.method === 'create-game') setCState({...cState, gid: response.gid });
+
     if (response.method === 'incorrect-gid') setCState({...cState, falseGID: true });
+
     if (response.method === 'joined-game') {
       setCState({ ...cState,
         gid: response.gid,
@@ -115,6 +118,7 @@ export const ServerProvider = (props: iProps) => {
         whichPlayer: cState.uid === response.players[0].uid ? 0 : 1
       })
     }
+
     if (response.method === 'one-player-ready') {
       setCState({...cState,
         players: cState.players.map((player, index) => {
@@ -122,6 +126,7 @@ export const ServerProvider = (props: iProps) => {
         })
       })
     }
+
     if (response.method === 'new-hand') {
       const newHand = () => {
         setCState({...cState,
@@ -139,6 +144,7 @@ export const ServerProvider = (props: iProps) => {
       }
       cState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 2000)
     }
+
     if (response.method === "all-in") {
       setCState({...cState,
         players: cState.players.map((player, index) => {
@@ -149,6 +155,7 @@ export const ServerProvider = (props: iProps) => {
         pot: response.pot
       })
     }
+
     if (response.method === "showdown") {
       setCState({...cState,
         players: cState.players.map((player, index) => {
@@ -162,6 +169,7 @@ export const ServerProvider = (props: iProps) => {
         pot: response.pot
       })
     }
+
     if (response.method === "folded") {
       setCState({...cState,
         players: cState.players.map((player, index) => {
@@ -171,6 +179,7 @@ export const ServerProvider = (props: iProps) => {
         action: null,
       })
     }
+
     if (response.method === "winner") {
       setCState({...cState,
         players: cState.players.map((player, index) => {
@@ -183,6 +192,7 @@ export const ServerProvider = (props: iProps) => {
         stage: 'winner'
       })
     }
+
     if (response.method === "player-bust") {
       setTimeout(()=>{
         setCState({...cState,
@@ -191,6 +201,7 @@ export const ServerProvider = (props: iProps) => {
         })
       }, 2000)
     }
+
     if (response.method === "back-to-lobby") {
       setCState({...cState,
         players: cState.players.map((player, index) => {
