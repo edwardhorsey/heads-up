@@ -3,9 +3,10 @@ import boto3
 import os
 import asyncio
 
-from app.app import setUsername
-
 dynamodb = boto3.client('dynamodb')
+
+from app.app import set_username
+from app.app import create_game
 
 # Dev or Live environment
 def get_endpoint(event):
@@ -27,9 +28,9 @@ async def main(event, context):
 
     # Routes
     if body['method'] == 'setUsername':
-        await setUsername(endpoint, connectionId, body)
+        await set_username(endpoint, connectionId, body)
     elif body['method'] == 'createGame':
-        await createGame(endpoint, connectionId, body)
+        await create_game(endpoint, connectionId, body)
     else:
         response = {
             'method': body['method'],
