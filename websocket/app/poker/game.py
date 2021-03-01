@@ -1,8 +1,8 @@
 from .deck import Deck
 from .hand import Hand
-from App.Poker.player import Player
+from app.poker.player import Player
 
-from App.tables import previous_hands_table
+# from app.tables import previous_hands_table
 
 from decimal import Decimal
 from collections.abc import Mapping

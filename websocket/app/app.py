@@ -2,11 +2,17 @@ import json
 import boto3
 import os
 import asyncio
+import uuid
 
 dynamodb = boto3.client('dynamodb')
 
-from .Poker.game import Game
-from .Poker.player import Player
+from .poker.game import Game
+from .poker.player import Player
+
+# Utils
+
+def generate_game_id():
+    return uuid.uuid4().hex
 
 # Game functions
 async def set_username(endpoint, connectionId, body):
@@ -25,12 +31,32 @@ async def set_username(endpoint, connectionId, body):
     )
 
 async def create_game(endpoint, connectionId, body):
-    gid = generate_GID() ### use uuid
-    player_one = Player(connectionId, request['display-name'], 1000) ## get displayname from db for consistency
+    gid = generate_game_id() ### use uuid
+    print(gid)
+    player_one = Player(connectionId, body['displayName'], 1000) ## get displayname from db for consistency
+
     this_game = Game(gid, player_one) ## makes game
-    put_game(gid, this_game) 
+    print(this_game)
+
+    game_dict = this_game.self_dict()
+    
+    # put game
+    # def put_game(gid, game):
+    #     game_dict = game.self_dict()
+    #     item = {
+    #         'gameId': gid,
+    #         'game': game_dict
+    #     }
+    #     games_table.put_item(Item=item)
+
+
+    # put_game(gid, this_game)
+    status = dynamodb.put_item(TableName=os.environ['POKER_GAMES_TABLE_NAME'], Item={'gameId': {'S': gid}, 'game': {'M': game_dict}})
+    print(status)
+
     response = {
-        'method': 'create-game',
+        'method': 'createGame',
+        'success': status,
         'uid': uid, ## neccesary ? 
         'gid': gid,
     }

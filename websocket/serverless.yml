@@ -5,9 +5,9 @@ app: poker
 custom:
   currentStage: ${opt:stage, self:provider.stage}
   lambdaRunTime: python3.6
-  pokerConnections: pokerConnections-${self:custom.currentStage}
-  pokerGames: pokerGames-${self:custom.currentStage}
-  pokerPastGames: pokerPastGames-${self:custom.currentStage}
+  pokerConnections: pokerConnections1-${self:custom.currentStage}
+  pokerGames: pokerGames1-${self:custom.currentStage}
+  pokerPastGames: pokerPastGames1-${self:custom.currentStage}
 
 provider:
   name: aws
@@ -63,12 +63,12 @@ functions:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:
       POKER_CONNECTIONS_TABLE_NAME: ${self:custom.pokerConnections}
-      POKER_GAMES_CONNECTIONS_TABLE_NAME: ${self:custom.pokerGames}
-      POKER_PAST_GAMES_CONNECTIONS_TABLE_NAME: ${self:custom.pokerPastGames}
+      POKER_GAMES_TABLE_NAME: ${self:custom.pokerGames}
+      POKER_PAST_GAMES_TABLE_NAME: ${self:custom.pokerPastGames}
 
 resources:
   Resources:
-    pokerConnectionsTable:
+    pokerConnections:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
@@ -83,14 +83,14 @@ resources:
         SSESpecification:
           SSEEnabled: true
 
-    pokerGamesTable:
+    pokerGames:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
         TableName: ${self:custom.pokerGames}
         AttributeDefinitions:
           - AttributeName: gameId
-            AttributeType: N
+            AttributeType: S
         KeySchema:
           - AttributeName: gameId
             KeyType: HASH
@@ -98,14 +98,14 @@ resources:
         SSESpecification:
           SSEEnabled: true
 
-    pokerPastGamesTable:
+    pokerPastGames:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
         TableName: ${self:custom.pokerPastGames}
         AttributeDefinitions:
           - AttributeName: gameId
-            AttributeType: N
+            AttributeType: S
         KeySchema:
           - AttributeName: gameId
             KeyType: HASH
