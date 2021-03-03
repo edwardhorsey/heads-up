@@ -4,7 +4,10 @@ import os
 import asyncio
 import uuid
 
-dynamodb = boto3.client('dynamodb')
+dynamodb = boto3.resource('dynamodb')
+table_connections = dynamodb.Table(os.environ['POKER_CONNECTIONS_TABLE_NAME'])
+table_games = dynamodb.Table(os.environ['POKER_GAMES_TABLE_NAME'])
+table_past_games = dynamodb.Table(os.environ['POKER_PAST_GAMES_TABLE_NAME'])
 
 from .poker.game import Game
 from .poker.player import Player
@@ -16,7 +19,7 @@ def generate_game_id():
 
 # Game functions
 async def set_username(endpoint, connectionId, body):
-    status = dynamodb.put_item(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME'], Item={'connectionId': {'S': connectionId}, 'name': {'S': body['username']}})
+    status = table_connections.put_item(Item={'connectionId': connectionId, 'name': body['username']})
 
     response = {
         'method': 'setUsername',
@@ -51,13 +54,19 @@ async def create_game(endpoint, connectionId, body):
 
 
     # put_game(gid, this_game)
-    status = dynamodb.put_item(TableName=os.environ['POKER_GAMES_TABLE_NAME'], Item={'gameId': {'S': gid}, 'game': {'M': game_dict}})
+    status = table_games.put_item(Item={'gameId': gid, 'game': game_dict})
     print(status)
 
     response = {
         'method': 'createGame',
         'success': status,
-        'uid': uid, ## neccesary ? 
+        'uid': connectionId, ## neccesary ? 
         'gid': gid,
     }
-    await connected[uid].send(json.dumps(response))
+
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+
+    apigatewaymanagementapi.post_to_connection(
+        Data=json.dumps(response),
+        ConnectionId=connectionId
+    )
