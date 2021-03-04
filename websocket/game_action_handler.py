@@ -31,6 +31,8 @@ async def main(event, context):
         await set_username(endpoint, connectionId, body)
     elif body['method'] == 'createGame':
         await create_game(endpoint, connectionId, body)
+    elif body['method'] == 'joinGame':
+        await create_game(endpoint, connectionId, body)
     else:
         response = {
             'method': body['method'],

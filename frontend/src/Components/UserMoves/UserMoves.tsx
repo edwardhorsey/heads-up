@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import { ServerContext, Iplayer } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
+import { Iplayer } from '../../Context/interfaces';
 import socket from "../../Socket/socket";
 import styles from "./UserMoves.module.scss";
 import Button from "../Button";
