@@ -14,8 +14,13 @@ from .poker.player import Player
 
 # Utils
 
+def get_display_name(connectionId):
+    user = table_connections.get_item(Key={'connectionId': connectionId})
+    return user['Item']['name'] if user else False
+
+
 def generate_game_id():
-    return uuid.uuid4().hex
+    return uuid.uuid4().hex[:10]
 
 # Game functions
 async def set_username(endpoint, connectionId, body):
@@ -34,33 +39,19 @@ async def set_username(endpoint, connectionId, body):
     )
 
 async def create_game(endpoint, connectionId, body):
-    gid = generate_game_id() ### use uuid
-    print(gid)
-    player_one = Player(connectionId, body['displayName'], 1000) ## get displayname from db for consistency
+    gid = generate_game_id()
 
-    this_game = Game(gid, player_one) ## makes game
-    print(this_game)
+    display_name = get_display_name(connectionId)
+    player_one = Player(connectionId, display_name, 1000)
 
+    this_game = Game(gid, player_one)
     game_dict = this_game.self_dict()
-    
-    # put game
-    # def put_game(gid, game):
-    #     game_dict = game.self_dict()
-    #     item = {
-    #         'gameId': gid,
-    #         'game': game_dict
-    #     }
-    #     games_table.put_item(Item=item)
 
-
-    # put_game(gid, this_game)
     status = table_games.put_item(Item={'gameId': gid, 'game': game_dict})
-    print(status)
 
     response = {
         'method': 'createGame',
         'success': status,
-        'uid': connectionId, ## neccesary ? 
         'gid': gid,
     }
 
