@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import { ServerContext, Iplayer } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
+import { Iplayer } from '../../Context/interfaces';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";

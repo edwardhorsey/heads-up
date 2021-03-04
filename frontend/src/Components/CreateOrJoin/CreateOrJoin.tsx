@@ -13,8 +13,8 @@ const validate = (values: Ivalues) => {
   let errors: FormikErrors<Ivalues> = { };
   if (!values.gid) {
     errors.gid = "Required"
-  } else if (!Number(values.gid) || !/^[0-9]{1,4}$/.test(values.gid)) {
-    errors.gid = "Must be a number between 1-9999"
+  } else if (values.gid.length !== 10 || !/^[0-9a-zA-Z]+$/.test(values.gid)) {
+    errors.gid = "Incorrect game code format"
   }
   return errors;
 };
@@ -39,7 +39,6 @@ const CreateOrJoin: React.FC = () => {
       'action': 'onGameAction',
       'method': 'createGame',
       uid,
-      displayName,
     };
     console.log(request);
     socket.send(JSON.stringify(request));
@@ -47,11 +46,12 @@ const CreateOrJoin: React.FC = () => {
 
   const joinGame = (gid: string) => {
     const request = {
-      'method': 'join-game',
+      'action': 'onGameAction',
+      'method': 'joinGame',
       'uid': uid,
-      'display-name': displayName,
       'gid': gid
     };
+    console.log(request);
     socket.send(JSON.stringify(request));
   }
 

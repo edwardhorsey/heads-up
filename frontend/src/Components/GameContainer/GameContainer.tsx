@@ -1,6 +1,7 @@
 import React, { useContext, Dispatch, SetStateAction } from "react";
 import styles from "./GameContainer.module.scss";
-import { ServerContext, Iplayer } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
+import { Iplayer } from '../../Context/interfaces';
 import socket from "../../Socket/socket";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";

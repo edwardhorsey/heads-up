@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styles from "./PlayerStats.module.scss";
-import { ServerContext, Iplayer } from '../../Context/serverContext';
+import { ServerContext } from '../../Context/serverContext';
+import { Iplayer } from '../../Context/interfaces';
 
 interface IProps {
   player: Iplayer,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Iplayer } from "../../Context/serverContext";
+import { Iplayer } from '../../Context/interfaces';
 import ChipsGen from "../ChipsGen";
 import {useSpring, animated} from 'react-spring'
 import styles from "./PlayerChips.module.scss";
