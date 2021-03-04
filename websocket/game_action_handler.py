@@ -7,6 +7,7 @@ dynamodb = boto3.client('dynamodb')
 
 from app.app import set_username
 from app.app import create_game
+from app.app import join_game
 
 # Dev or Live environment
 def get_endpoint(event):
@@ -32,7 +33,7 @@ async def main(event, context):
     elif body['method'] == 'createGame':
         await create_game(endpoint, connectionId, body)
     elif body['method'] == 'joinGame':
-        await create_game(endpoint, connectionId, body)
+        await join_game(endpoint, connectionId, body)
     else:
         response = {
             'method': body['method'],
