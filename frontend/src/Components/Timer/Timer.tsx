@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useInterval from "../../Assets/useInterval";
+import useInterval from "../../Utilities/useInterval";
 import styles from "./Timer.module.scss";
 
 interface IProps {

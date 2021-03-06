@@ -1,4 +1,4 @@
-import json
+import simplejson as json 
 import boto3
 import os
 import asyncio
@@ -85,7 +85,7 @@ async def join_game(endpoint, connectionId, body):
 
     clients = (this_game.player_one.uid, this_game.player_two.uid)
     response = {
-        'method': 'joined-game',
+        'method': 'joinGame',
         'uid': uid,
         'gid': gid,
         'number-of-rounds': this_game.number_of_rounds,
