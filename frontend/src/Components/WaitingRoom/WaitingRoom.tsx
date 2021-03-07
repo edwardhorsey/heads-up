@@ -9,7 +9,7 @@ const WaitingRoom: React.FC = () => {
   const { displayName, gid, setCState } = context
   return (
     <section className={styles.WaitingRoom}>
-      <Button logic={()=>{setCState({...context, gid: 0})}} text={'Back'} />
+      <Button logic={()=>{setCState({...context, gid: ''})}} text={'Back'} />
       <h3>Waiting room</h3>
       <p>{displayName}</p>
       <p>Game ID: {gid}</p>

@@ -7,6 +7,10 @@ export const ServerContext = createContext<Icontext>(initialState)
 export const ServerProvider = (props: iProps) => {
   const [cState, setCState] = useState(initialState)
 
+  // setTimeout(()=>{
+  //   setCState({ ...cState, uid: 'helloWorld' });
+  // }, 3000);
+
   socket.onopen = () => {
     console.log("connected to server");
     setCState({ ...cState, status: "connected" });
@@ -27,23 +31,11 @@ export const ServerProvider = (props: iProps) => {
     console.log('new data arrived');
     console.table(response);
 
-    if (response.method === 'connected') {
-      console.log('helllllo', response.uid);
-      const newState = { ...cState };
-      newState.uid = response.uid;
-      newState.displayName = 'cunt';
-      console.log(newState);
-      setCState({ ...cState, displayName: "error" });
+    if (response.method === 'connected') setCState({ ...cState, uid: response.uid })
 
-      setTimeout(()=>console.log(cState), 3000);
-    }
+    if (response.method === 'createGame') setCState({ ...cState, gid: response.gid })
 
-    if (response.method === 'createGame') {
-      setCState({...cState, gid: response.gid });
-      setTimeout(()=>console.log(cState), 3000);
-    }
-
-    if (response.method === 'incorrectGid') setCState({...cState, falseGID: true });
+    if (response.method === 'incorrectGid') setCState({ ...cState, falseGID: true });
 
     if (response.method === 'joinGame') {
       setCState({ ...cState,
@@ -78,6 +70,7 @@ export const ServerProvider = (props: iProps) => {
           winningHand: response['winning-hand']
         })
       }
+
       cState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 2000)
     }
 
