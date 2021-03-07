@@ -146,7 +146,7 @@ async def ready_to_play(endpoint, connectionId, body):
     clients = [this_game.player_one.uid, this_game.player_two.uid]
 
     if this_game.player_one_ready and this_game.player_two_ready:
-        await new_hand(response, uid, gid, clients, this_game)
+        await new_hand(endpoint, connectionId, body, this_game, response)
     else:
         response['method'] = 'onePlayerReady'
         put_game(gid, this_game)
@@ -159,9 +159,10 @@ async def ready_to_play(endpoint, connectionId, body):
                 ConnectionId=client
             )
 
-async def new_hand(endpoint, connectionId, body, response, this_game):
+async def new_hand(endpoint, connectionId, body, this_game, response):
     uid = connectionId
-    gid = response.gid
+    print(response)
+    gid = response['gid']
 
     clients = [this_game.player_one.uid, this_game.player_two.uid]   
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
