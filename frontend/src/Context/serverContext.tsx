@@ -28,14 +28,20 @@ export const ServerProvider = (props: iProps) => {
     console.table(response);
 
     if (response.method === 'connected') {
-      // console.log('helllllo', response.uid);
+      console.log('helllllo', response.uid);
       const newState = { ...cState };
       newState.uid = response.uid;
+      newState.displayName = 'cunt';
       console.log(newState);
-      setCState({ ...newState });
+      setCState({ ...cState, displayName: "error" });
+
+      setTimeout(()=>console.log(cState), 3000);
     }
 
-    if (response.method === 'createGame') setCState({...cState, gid: response.gid });
+    if (response.method === 'createGame') {
+      setCState({...cState, gid: response.gid });
+      setTimeout(()=>console.log(cState), 3000);
+    }
 
     if (response.method === 'incorrectGid') setCState({...cState, falseGID: true });
 
@@ -144,8 +150,6 @@ export const ServerProvider = (props: iProps) => {
         inHand: false
       })
     }
-
-    setTimeout(() => console.log(cState), 4000);
   }
   return <ServerContext.Provider value={{...cState, setCState}}>{props.children}</ServerContext.Provider>
 };
