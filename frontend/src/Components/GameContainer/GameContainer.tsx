@@ -1,4 +1,4 @@
-import React, { useContext, Dispatch, SetStateAction } from "react";
+import React, { useContext } from "react";
 import styles from "./GameContainer.module.scss";
 import { ServerContext } from '../../Context/serverContext';
 import { Iplayer } from '../../Context/interfaces';
@@ -6,7 +6,6 @@ import socket from "../../Socket/socket";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";
 import Button from "../Button";
-import { createStatement } from "typescript";
 
 const GameContainer: React.FC = () => {
   const context = useContext(ServerContext);
@@ -26,9 +25,11 @@ const GameContainer: React.FC = () => {
     socket.send(JSON.stringify(request));
   }
 
-  if (yourHand.length > 0 && !inHand) {
-    setCState({...context, inHand: true})
-  }
+  // Move into the servercontext?
+  // if (yourHand.length > 0 && !inHand) {
+  //   console.log('is this bad?');
+  //   setCState({...context, inHand: true})
+  // }
 
   return (
     <section className={styles.GameContainer}>

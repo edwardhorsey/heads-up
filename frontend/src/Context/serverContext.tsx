@@ -71,7 +71,7 @@ export const ServerProvider = (props: iProps) => {
         })
       }
 
-      cState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 2000)
+      cState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 3000)
     }
 
     if (response.method === "allIn") {

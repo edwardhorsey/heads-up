@@ -161,7 +161,6 @@ async def ready_to_play(endpoint, connectionId, body):
 
 async def new_hand(endpoint, connectionId, body, this_game, response):
     uid = connectionId
-    print(response)
     gid = response['gid']
 
     clients = [this_game.player_one.uid, this_game.player_two.uid]   
@@ -192,11 +191,10 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
                 response['players'][0]['hand'] = []
                 response['players'][1]['hand'] = this_game.current_hand.two_cards
             
-            for client in clients:
-                apigatewaymanagementapi.post_to_connection(
-                    Data=json.dumps(response),
-                    ConnectionId=client
-                )
+            apigatewaymanagementapi.post_to_connection(
+                Data=json.dumps(response),
+                ConnectionId=client
+            )
     else:
         response.update({
             'method': 'playerBust',
