@@ -18,10 +18,11 @@ const GameContainer: React.FC = () => {
     const request = {
       action: 'onGameAction',
       method: 'readyToPlay',
-      uid: uid,
-      gid: gid,
+      uid,
+      gid,
       ready: true
     }
+
     socket.send(JSON.stringify(request));
   }
 

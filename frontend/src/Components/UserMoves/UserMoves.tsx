@@ -45,9 +45,10 @@ const UserMoves: React.FC = () => {
     const request = {
       action: 'onGameAction',
       method: 'allIn',
-      uid: uid,
-      gid: gid,
+      uid,
+      gid,
     }
+
     socket.send(JSON.stringify(request));
   }
 
@@ -55,10 +56,11 @@ const UserMoves: React.FC = () => {
     const request = {
       action: 'onGameAction',
       method: 'call',
-      uid: uid,
-      gid: gid,
+      uid,
+      gid,
       'amount-to-call': opponent['bet-size']
     }
+
     socket.send(JSON.stringify(request));
   }
 
@@ -66,9 +68,10 @@ const UserMoves: React.FC = () => {
     const request = {
       action: 'onGameAction',
       method: 'fold',
-      uid: uid,
-      gid: gid,
+      uid,
+      gid,
     }
+
     socket.send(JSON.stringify(request));
   }
 
@@ -76,9 +79,10 @@ const UserMoves: React.FC = () => {
     const request = {
       action: 'onGameAction',
       method: 'backToLobby',
-      uid: uid,
-      gid: gid,
+      uid,
+      gid,
     }
+
     socket.send(JSON.stringify(request));
     }
 

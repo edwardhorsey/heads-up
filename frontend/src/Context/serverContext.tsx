@@ -26,7 +26,14 @@ export const ServerProvider = (props: iProps) => {
     const response = JSON.parse(event.data);
     console.log('new data arrived');
     console.table(response);
-    if (response.method === 'connected') setCState({...cState, uid: response.uid });
+
+    if (response.method === 'connected') {
+      // console.log('helllllo', response.uid);
+      const newState = { ...cState };
+      newState.uid = response.uid;
+      console.log(newState);
+      setCState({ ...newState });
+    }
 
     if (response.method === 'createGame') setCState({...cState, gid: response.gid });
 
@@ -137,6 +144,8 @@ export const ServerProvider = (props: iProps) => {
         inHand: false
       })
     }
+
+    setTimeout(() => console.log(cState), 4000);
   }
   return <ServerContext.Provider value={{...cState, setCState}}>{props.children}</ServerContext.Provider>
 };

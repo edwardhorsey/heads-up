@@ -75,7 +75,7 @@ async def incorrect_gid(uid, gid):
     response = {
         'method': 'incorrect-gid',
         'uid': uid,
-        'gid': gid
+        'gid': gid,
     }
     await connected[uid].send(json.dumps(response))
 

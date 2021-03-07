@@ -53,6 +53,7 @@ async def set_username(endpoint, connectionId, body):
 
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
+    uid = connectionId
 
     display_name = get_display_name(connectionId)
     player_one = Player(connectionId, display_name, 1000)
@@ -65,6 +66,7 @@ async def create_game(endpoint, connectionId, body):
         'method': 'createGame',
         'success': status,
         'gid': gid,
+        'uid': uid,
     }
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
@@ -92,6 +94,7 @@ async def join_game(endpoint, connectionId, body):
     response = {
         'method': 'joinGame',
         'gid': gid,
+        'uid': uid,
         'number-of-rounds': this_game.number_of_rounds,
         'players': [ {
             'uid': this_game.player_one.uid,
@@ -134,6 +137,7 @@ async def ready_to_play(endpoint, connectionId, body):
         this_game.player_two_ready = True
 
     response = {
+        'uid': uid,
         'gid': gid,
         'number-of-rounds': this_game.number_of_rounds,
         'players': this_game.print_player_response()
@@ -155,6 +159,59 @@ async def ready_to_play(endpoint, connectionId, body):
                 ConnectionId=client
             )
 
+async def new_hand(endpoint, connectionId, body, response, this_game):
+    uid = connectionId
+    gid = response.gid
+
+    clients = [this_game.player_one.uid, this_game.player_two.uid]   
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+
+    if this_game.player_one.bankroll > this_game.current_blind and this_game.player_two.bankroll > this_game.current_blind:
+        this_game.new_hand()
+
+        response.update({
+            'method': 'newHand',
+            'number-of-hands': this_game.number_of_hands,
+            'stage': 'preflop',
+            'action': this_game.current_hand.dealer,
+            'pot': this_game.current_hand.pot,
+            'winner': this_game.current_hand.winner,
+            'winning-hand': this_game.current_hand.winning_hand,
+            'community': this_game.current_hand.community,
+            'players': this_game.print_player_response()
+        })
+
+        put_game(gid, this_game)
+
+        for client in clients:
+            if client == response['players'][0]['uid']:
+                response['players'][0]['hand'] = this_game.current_hand.one_cards
+                response['players'][1]['hand'] = []
+            else:
+                response['players'][0]['hand'] = []
+                response['players'][1]['hand'] = this_game.current_hand.two_cards
+            
+            for client in clients:
+                apigatewaymanagementapi.post_to_connection(
+                    Data=json.dumps(response),
+                    ConnectionId=client
+                )
+    else:
+        response.update({
+            'method': 'playerBust',
+            'stage': 'end'
+        })
+
+        this_game.new_round()
+        put_game(gid, this_game)
+
+        for client in clients:
+            apigatewaymanagementapi.post_to_connection(
+                Data=json.dumps(response),
+                ConnectionId=client
+            )
+
+
 # async def all_in(request):
 #     uid, gid, clients, this_game = getBaseStats(request)
 #     all_in_player = this_game.player_one if this_game.player_one.uid == uid else this_game.player_two
@@ -170,6 +227,7 @@ async def ready_to_play(endpoint, connectionId, body):
 #     put_game(gid, this_game)
 #     for client in clients:
 #         await connected[client].send(json.dumps(response))
+
 
 # async def call(request):
 #     uid, gid, clients, this_game = getBaseStats(request)
@@ -192,6 +250,7 @@ async def ready_to_play(endpoint, connectionId, body):
 #     put_game(gid, this_game)
 #     await send_winner_response(uid, gid, clients, this_game)
 
+
 # async def fold(request):
 #     uid, gid, clients, this_game = getBaseStats(request)
 #     folding_player = 'one' if this_game.player_one.uid == uid else 'two'
@@ -211,6 +270,7 @@ async def ready_to_play(endpoint, connectionId, body):
 #         await connected[client].send(json.dumps(response))
 #     time.sleep(1)
 #     await send_winner_response(uid, gid, clients, this_game)
+
 
 # async def send_winner_response(uid, gid, clients, this_game):
 #     this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
@@ -241,38 +301,6 @@ async def ready_to_play(endpoint, connectionId, body):
 #         this_game.current_hand = None
 #     await new_hand(response, uid, gid, clients, this_game) ## need to turn into a client req ?
 
-# async def new_hand(response, uid, gid, clients, this_game):
-#     if this_game.player_one.bankroll > this_game.current_blind and this_game.player_two.bankroll > this_game.current_blind:
-#         this_game.new_hand()
-#         response.update({
-#             'method': 'new-hand',
-#             'number-of-hands': this_game.number_of_hands,
-#             'stage': 'preflop',
-#             'action': this_game.current_hand.dealer,
-#             'pot': this_game.current_hand.pot,
-#             'winner': this_game.current_hand.winner,
-#             'winning-hand': this_game.current_hand.winning_hand,
-#             'community': this_game.current_hand.community,
-#             'players': this_game.print_player_response()
-#         })
-#         put_game(gid, this_game)
-#         for client in clients:
-#             if str(client) == response['players'][0]['uid']:
-#                 response['players'][0]['hand'] = this_game.current_hand.one_cards
-#                 response['players'][1]['hand'] = []
-#             else:
-#                 response['players'][0]['hand'] = []
-#                 response['players'][1]['hand'] = this_game.current_hand.two_cards
-#             await connected[client].send(json.dumps(response))
-#     else:
-#         response.update({
-#             'method': 'player-bust',
-#             'stage': 'end'
-#         })
-#         this_game.new_round()
-#         put_game(gid, this_game)
-#         for client in clients:
-#             await connected[client].send(json.dumps(response))
 
 # async def back_to_lobby(request):
 #     uid = request['uid']

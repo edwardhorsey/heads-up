@@ -21,10 +21,10 @@ const App = () => {
   const setUsername = (username: string) => {
     const request = {
       username,
-      'action': 'onGameAction',
-      'method': 'setUsername',
+      action: 'onGameAction',
+      method: 'setUsername',
     };
-    console.log(request);
+
     socket.send(JSON.stringify(request));
   }
 

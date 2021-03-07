@@ -61,7 +61,7 @@ async def main(event, context):
             Data=json.dumps(response),
             ConnectionId=connectionId
         )
-
+response
     return {}
 
 def handle(event, context):
