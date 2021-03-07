@@ -2,7 +2,6 @@ import React from 'react'
 import { useTransition, animated } from 'react-spring'
 import styles from "./RoundWinner.module.scss";
 
-
 interface IProps {
   text: string
 }
@@ -29,4 +28,3 @@ const RoundWinner: React.FC<IProps> = ({text}) => {
 }
 
 export default RoundWinner;
- 

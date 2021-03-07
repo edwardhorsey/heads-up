@@ -43,7 +43,8 @@ const UserMoves: React.FC = () => {
 
   const allIn = () => {
     const request = {
-      method: 'all-in',
+      action: 'onGameAction',
+      method: 'allIn',
       uid: uid,
       gid: gid,
     }
@@ -52,6 +53,7 @@ const UserMoves: React.FC = () => {
 
   const call = () => {
     const request = {
+      action: 'onGameAction',
       method: 'call',
       uid: uid,
       gid: gid,
@@ -62,6 +64,7 @@ const UserMoves: React.FC = () => {
 
   const fold = () => {
     const request = {
+      action: 'onGameAction',
       method: 'fold',
       uid: uid,
       gid: gid,
@@ -71,7 +74,8 @@ const UserMoves: React.FC = () => {
 
   const backToLobby = () => {
     const request = {
-      method: 'back-to-lobby',
+      action: 'onGameAction',
+      method: 'backToLobby',
       uid: uid,
       gid: gid,
     }

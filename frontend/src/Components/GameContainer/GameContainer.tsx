@@ -16,7 +16,8 @@ const GameContainer: React.FC = () => {
 
   const readyToPlayHand = () => {
     const request = {
-      method: 'ready-to-play',
+      action: 'onGameAction',
+      method: 'readyToPlay',
       uid: uid,
       gid: gid,
       ready: true
