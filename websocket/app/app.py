@@ -3,6 +3,7 @@ import boto3
 import os
 import asyncio
 import uuid
+import time
 
 dynamodb = boto3.resource('dynamodb')
 table_connections = dynamodb.Table(os.environ['POKER_CONNECTIONS_TABLE_NAME'])
@@ -161,7 +162,7 @@ async def ready_to_play(endpoint, connectionId, body):
 
 async def new_hand(endpoint, connectionId, body, this_game, response):
     uid = connectionId
-    gid = response['gid']
+    gid = body['gid']
 
     clients = [this_game.player_one.uid, this_game.player_two.uid]   
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
@@ -211,22 +212,67 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
             )
 
 
-# async def all_in(request):
-#     uid, gid, clients, this_game = getBaseStats(request)
-#     all_in_player = this_game.player_one if this_game.player_one.uid == uid else this_game.player_two
-#     this_game.current_hand.all_in(all_in_player)
-#     response = {
-#         'method': 'all-in',
-#         'uid': uid,
-#         'gid': gid,
-#         'action': 'one' if this_game.current_hand.dealer == 'two' else 'two',
-#         'players': this_game.print_player_response(),
-#         'pot': this_game.current_hand.pot
-#     }
-#     put_game(gid, this_game)
-#     for client in clients:
-#         await connected[client].send(json.dumps(response))
+async def all_in(endpoint, connectionId, body):
+    uid = connectionId
+    gid = body['gid']
+    this_game = get_game(gid)
 
+    clients = [this_game.player_one.uid, this_game.player_two.uid]   
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+    
+    all_in_player = this_game.player_one if this_game.player_one.uid == uid else this_game.player_two
+    this_game.current_hand.all_in(all_in_player)
+
+    response = {
+        'method': 'allIn',
+        'uid': uid,
+        'gid': gid,
+        'action': 'one' if this_game.current_hand.dealer == 'two' else 'two',
+        'players': this_game.print_player_response(),
+        'pot': this_game.current_hand.pot
+    }
+
+    put_game(gid, this_game)
+
+    for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps(response),
+            ConnectionId=client
+        )
+
+
+async def fold(endpoint, connectionId, body):
+    uid = connectionId
+    gid = body['gid']
+    this_game = get_game(gid)
+
+    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+
+    folding_player = 'one' if this_game.player_one.uid == uid else 'two'
+    this_game.current_hand.fold(folding_player, this_game.player_one, this_game.player_two)
+    response = {
+        'method': 'folded',
+        'uid': uid,
+        'gid': gid,
+        'players': this_game.print_player_response(),
+    }
+
+    if this_game.player_one.folded:
+        response['players'][0]['folded'] = True
+    elif this_game.player_two.folded:
+        response['players'][1]['folded'] = True
+
+    put_game(gid, this_game)
+
+    for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps(response),
+            ConnectionId=client
+        )
+
+    time.sleep(2)
+    await send_winner_response(endpoint, connectionId, body, this_game)
 
 # async def call(request):
 #     uid, gid, clients, this_game = getBaseStats(request)
@@ -250,55 +296,50 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
 #     await send_winner_response(uid, gid, clients, this_game)
 
 
-# async def fold(request):
-#     uid, gid, clients, this_game = getBaseStats(request)
-#     folding_player = 'one' if this_game.player_one.uid == uid else 'two'
-#     this_game.current_hand.fold(folding_player, this_game.player_one, this_game.player_two)
-#     response = {
-#         'method': 'folded',
-#         'uid': uid,
-#         'gid': gid,
-#         'players': this_game.print_player_response(),
-#     }
-#     if this_game.player_one.folded:
-#         response['players'][0]['folded'] = True
-#     elif this_game.player_two.folded:
-#         response['players'][1]['folded'] = True
-#     put_game(gid, this_game)
-#     for client in clients:
-#         await connected[client].send(json.dumps(response))
-#     time.sleep(1)
-#     await send_winner_response(uid, gid, clients, this_game)
 
 
-# async def send_winner_response(uid, gid, clients, this_game):
-#     this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
-#     response = {
-#         'method': 'winner',
-#         'uid': uid,
-#         'gid': gid,
-#         'winner': this_game.current_hand.winner,
-#         'winning-hand': this_game.current_hand.winning_hand,
-#         'pot': this_game.current_hand.pot,
-#         'players': this_game.print_player_response(),
-#     }
-#     put_game(gid, this_game)
-#     for client in clients:
-#         await connected[client].send(json.dumps(response))
-#     response['players'] = [ {
-#             'uid': this_game.player_one.uid,
-#             'name': this_game.player_one.name,
-#             'ready': this_game.player_one_ready
-#         }, {
-#             'uid': this_game.player_two.uid,
-#             'name': this_game.player_two.name,
-#             'ready': this_game.player_two_ready
-#         }
-#     ]
-#     if this_game.current_hand:
-#         this_game.put_previous_hand()
-#         this_game.current_hand = None
-#     await new_hand(response, uid, gid, clients, this_game) ## need to turn into a client req ?
+
+async def send_winner_response(endpoint, connectionId, body, this_game):
+    uid = connectionId
+    gid = body['gid']
+    this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
+
+    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+
+    response = {
+        'method': 'winner',
+        'uid': uid,
+        'gid': gid,
+        'winner': this_game.current_hand.winner,
+        'winning-hand': this_game.current_hand.winning_hand,
+        'pot': this_game.current_hand.pot,
+        'players': this_game.print_player_response(),
+    }
+
+    put_game(gid, this_game)
+
+    for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps(response),
+            ConnectionId=client
+        )
+
+    response['players'] = [{
+        'uid': this_game.player_one.uid,
+        'name': this_game.player_one.name,
+        'ready': this_game.player_one_ready
+    }, {
+        'uid': this_game.player_two.uid,
+        'name': this_game.player_two.name,
+        'ready': this_game.player_two_ready
+    }]
+
+    if this_game.current_hand:
+        # this_game.put_previous_hand()
+        this_game.current_hand = None
+
+    await new_hand(endpoint, connectionId, body, this_game, response) ## need to turn into a client req ?
 
 
 # async def back_to_lobby(request):
