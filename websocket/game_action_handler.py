@@ -8,10 +8,15 @@ dynamodb = boto3.client('dynamodb')
 from app.app import set_username
 from app.app import create_game
 from app.app import join_game
+from app.app import ready_to_play
+from app.app import all_in
+from app.app import fold
+from app.app import call
+from app.app import back_to_lobby
 
 # Dev or Live environment
 def get_endpoint(event):
-    if event["requestContext"]["domainName"] == 'localhost':
+    if event["requestContext"]["domainName"] == 'localhost': ### this can be a dev / prod env variable
         return 'http://localhost:3001/'
     else:
         return "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"]
@@ -34,6 +39,16 @@ async def main(event, context):
         await create_game(endpoint, connectionId, body)
     elif body['method'] == 'joinGame':
         await join_game(endpoint, connectionId, body)
+    elif body['method'] == 'readyToPlay':
+        await ready_to_play(endpoint, connectionId, body)
+    elif body['method'] == 'allIn':
+        await all_in(endpoint, connectionId, body)
+    elif body['method'] == 'call':
+        await call(endpoint, connectionId, body)
+    elif body['method'] == 'fold':
+        await fold(endpoint, connectionId, body)
+    elif body['method'] == 'backToLobby':
+        await back_to_lobby(endpoint, connectionId, body)
     else:
         response = {
             'method': body['method'],

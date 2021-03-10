@@ -37,7 +37,7 @@ export interface Icontext {
   uid: string,
   displayName: string,
   opponentName: string,
-  gid: number,
+  gid: string,
   falseGID: boolean
   readyToStart: boolean,
   action: number | null,
@@ -61,7 +61,7 @@ export const initialState: Icontext = {
   uid: '',
   displayName: '',
   opponentName: '',
-  gid: 0,
+  gid: '',
   falseGID: false,
   readyToStart: false,
   action: null,

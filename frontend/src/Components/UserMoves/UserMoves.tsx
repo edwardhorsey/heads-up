@@ -43,38 +43,46 @@ const UserMoves: React.FC = () => {
 
   const allIn = () => {
     const request = {
-      method: 'all-in',
-      uid: uid,
-      gid: gid,
+      action: 'onGameAction',
+      method: 'allIn',
+      uid,
+      gid,
     }
+
     socket.send(JSON.stringify(request));
   }
 
   const call = () => {
     const request = {
+      action: 'onGameAction',
       method: 'call',
-      uid: uid,
-      gid: gid,
+      uid,
+      gid,
       'amount-to-call': opponent['bet-size']
     }
+
     socket.send(JSON.stringify(request));
   }
 
   const fold = () => {
     const request = {
+      action: 'onGameAction',
       method: 'fold',
-      uid: uid,
-      gid: gid,
+      uid,
+      gid,
     }
+
     socket.send(JSON.stringify(request));
   }
 
   const backToLobby = () => {
     const request = {
-      method: 'back-to-lobby',
-      uid: uid,
-      gid: gid,
+      action: 'onGameAction',
+      method: 'backToLobby',
+      uid,
+      gid,
     }
+
     socket.send(JSON.stringify(request));
     }
 
