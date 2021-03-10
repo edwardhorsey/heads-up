@@ -1,41 +1,25 @@
 import simplejson as json 
-import boto3
-import os
 import asyncio
 import uuid
 import time
+import os
+import boto3
 
-dynamodb = boto3.resource('dynamodb')
-table_connections = dynamodb.Table(os.environ['POKER_CONNECTIONS_TABLE_NAME'])
-table_games = dynamodb.Table(os.environ['POKER_GAMES_TABLE_NAME'])
-table_past_games = dynamodb.Table(os.environ['POKER_PAST_GAMES_TABLE_NAME'])
+from .utils import put_display_name
+from .utils import get_display_name
+from .utils import generate_game_id
+from .utils import re_map_game
+from .utils import get_game
+from .utils import put_game
 
 from .poker.game import Game
 from .poker.player import Player
 
-# Utils
-
-def get_display_name(connectionId):
-    user = table_connections.get_item(Key={'connectionId': connectionId})
-    return user['Item']['name'] if user else False
-
-def generate_game_id():
-    return uuid.uuid4().hex[:10]
-
-def re_map_game(game):
-    return Game.re_map(game)
-
-def get_game(gid):
-    game = table_games.get_item(Key={'gameId': gid})
-    return re_map_game(game['Item']['game']) if game else False
-
-def put_game(gid, game):
-    return table_games.put_item(Item={'gameId': gid, 'game': game.self_dict()})
-
-
 # Game functions
+
+# Set username
 async def set_username(endpoint, connectionId, body):
-    status = table_connections.put_item(Item={'connectionId': connectionId, 'name': body['username']})
+    status = put_display_name(connectionId, body['username'])
 
     response = {
         'method': 'setUsername',
@@ -49,6 +33,7 @@ async def set_username(endpoint, connectionId, body):
         ConnectionId = connectionId
     )
 
+# Create game
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
     uid = connectionId
@@ -74,6 +59,7 @@ async def create_game(endpoint, connectionId, body):
         ConnectionId = connectionId
     )
 
+# Join game
 async def join_game(endpoint, connectionId, body):
     uid = connectionId
     gid = body['gid']
@@ -115,13 +101,7 @@ async def join_game(endpoint, connectionId, body):
             ConnectionId = client
         )
 
-
-def getBaseStats(request):
-    gid = int(request['gid'])
-    this_game = get_game(gid)
-    return request['uid'], gid, (this_game.player_one.uid, this_game.player_two.uid), this_game
-
-
+# Ready to play
 async def ready_to_play(endpoint, connectionId, body):
     # uid, gid, clients, this_game = getBaseStats(request)
     uid = connectionId
@@ -157,6 +137,7 @@ async def ready_to_play(endpoint, connectionId, body):
                 ConnectionId = client
             )
 
+# New hand
 async def new_hand(endpoint, connectionId, body, this_game, response):
     uid = connectionId
     gid = body['gid']
@@ -208,7 +189,7 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
                 ConnectionId = client
             )
 
-
+# All in
 async def all_in(endpoint, connectionId, body):
     uid = connectionId
     gid = body['gid']
@@ -237,7 +218,7 @@ async def all_in(endpoint, connectionId, body):
             ConnectionId = client
         )
 
-
+# Fold
 async def fold(endpoint, connectionId, body):
     uid = connectionId
     gid = body['gid']
@@ -271,6 +252,7 @@ async def fold(endpoint, connectionId, body):
     time.sleep(2)
     await send_winner_response(endpoint, connectionId, body, this_game)
 
+# Call
 async def call(endpoint, connectionId, body):
     uid = connectionId
     gid = body['gid']
@@ -312,6 +294,7 @@ async def call(endpoint, connectionId, body):
 
     await send_winner_response(endpoint, connectionId, body, this_game)
 
+# Send winner response
 async def send_winner_response(endpoint, connectionId, body, this_game):
     uid = connectionId
     gid = body['gid']
@@ -354,7 +337,7 @@ async def send_winner_response(endpoint, connectionId, body, this_game):
 
     await new_hand(endpoint, connectionId, body, this_game, response) ## need to turn into a client req ?
 
-
+# Back to lobby
 async def back_to_lobby(endpoint, connectionId, body):
     uid = connectionId
     gid = body['gid']
