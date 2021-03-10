@@ -39,7 +39,7 @@ const GameContainer: React.FC = () => {
       </div>
       {stage === 'initial' && <h3>Welcome {yourself.name} and {opponent.name}</h3>}
       {yourHand.length === 0 && <GameNav yourself={yourself} opponent={opponent} /> }
-      {(!yourself.ready && ['initial', 'back-to-lobby', ].includes(stage)) && <Button logic={readyToPlayHand} text="Play round" />}
+      {(!yourself.ready && ['initial', 'backToLobby', ].includes(stage)) && <Button logic={readyToPlayHand} text="Play round" />}
       {yourHand.length > 0 && <GameHand yourself={yourself} opponent={opponent} />}
     </section>
   );

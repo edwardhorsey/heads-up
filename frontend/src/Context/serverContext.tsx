@@ -132,6 +132,8 @@ export const ServerProvider = (props: iProps) => {
     }
 
     if (response.method === "backToLobby") {
+      console.log(response.players[cState.whichPlayer].hand);
+
       setCState({...cState,
         players: cState.players.map((player, index) => {
           return {...player, ...response.players[index]}

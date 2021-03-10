@@ -33,9 +33,6 @@ def put_game(gid, game):
     return table_games.put_item(Item={'gameId': gid, 'game': game.self_dict()})
 
 
-
-
-
 # Game functions
 async def set_username(endpoint, connectionId, body):
     status = table_connections.put_item(Item={'connectionId': connectionId, 'name': body['username']})
@@ -48,8 +45,8 @@ async def set_username(endpoint, connectionId, body):
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
     apigatewaymanagementapi.post_to_connection(
-        Data=json.dumps(response),
-        ConnectionId=connectionId
+        Data = json.dumps(response),
+        ConnectionId = connectionId
     )
 
 async def create_game(endpoint, connectionId, body):
@@ -73,8 +70,8 @@ async def create_game(endpoint, connectionId, body):
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
     apigatewaymanagementapi.post_to_connection(
-        Data=json.dumps(response),
-        ConnectionId=connectionId
+        Data = json.dumps(response),
+        ConnectionId = connectionId
     )
 
 async def join_game(endpoint, connectionId, body):
@@ -114,8 +111,8 @@ async def join_game(endpoint, connectionId, body):
 
     for client in clients:
         apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps(response),
-            ConnectionId=client
+            Data = json.dumps(response),
+            ConnectionId = client
         )
 
 
@@ -156,8 +153,8 @@ async def ready_to_play(endpoint, connectionId, body):
 
         for client in clients:
             apigatewaymanagementapi.post_to_connection(
-                Data=json.dumps(response),
-                ConnectionId=client
+                Data = json.dumps(response),
+                ConnectionId = client
             )
 
 async def new_hand(endpoint, connectionId, body, this_game, response):
@@ -193,8 +190,8 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
                 response['players'][1]['hand'] = this_game.current_hand.two_cards
             
             apigatewaymanagementapi.post_to_connection(
-                Data=json.dumps(response),
-                ConnectionId=client
+                Data = json.dumps(response),
+                ConnectionId = client
             )
     else:
         response.update({
@@ -207,8 +204,8 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
 
         for client in clients:
             apigatewaymanagementapi.post_to_connection(
-                Data=json.dumps(response),
-                ConnectionId=client
+                Data = json.dumps(response),
+                ConnectionId = client
             )
 
 
@@ -236,8 +233,8 @@ async def all_in(endpoint, connectionId, body):
 
     for client in clients:
         apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps(response),
-            ConnectionId=client
+            Data = json.dumps(response),
+            ConnectionId = client
         )
 
 
@@ -267,8 +264,8 @@ async def fold(endpoint, connectionId, body):
 
     for client in clients:
         apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps(response),
-            ConnectionId=client
+            Data = json.dumps(response),
+            ConnectionId = client
         )
 
     time.sleep(2)
@@ -304,8 +301,8 @@ async def call(endpoint, connectionId, body):
 
     for client in clients:
         apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps(response),
-            ConnectionId=client
+            Data = json.dumps(response),
+            ConnectionId = client
         )
 
     time.sleep(2)
@@ -337,8 +334,8 @@ async def send_winner_response(endpoint, connectionId, body, this_game):
 
     for client in clients:
         apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps(response),
-            ConnectionId=client
+            Data = json.dumps(response),
+            ConnectionId = client
         )
 
     response['players'] = [{
@@ -361,19 +358,20 @@ async def send_winner_response(endpoint, connectionId, body, this_game):
 async def back_to_lobby(endpoint, connectionId, body):
     uid = connectionId
     gid = body['gid']
-    this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
+    this_game = get_game(gid)
 
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
-    this_game.player_one = Player(this_game.player_one.uid, this_game.player_one.name, 1000)
-    this_game.player_two = Player(this_game.player_two.uid, this_game.player_two.name, 1000)
+    if this_game.player_one.uid == uid:
+        this_game.player_one = Player(this_game.player_one.uid, this_game.player_one.name, 1000)
+    else:
+        this_game.player_two = Player(this_game.player_two.uid, this_game.player_two.name, 1000)
 
     response = {
-        'method': 'back-to-lobby',
+        'method': 'backToLobby',
         'uid': uid,
         'gid': gid,
-        'stage': 'back-to-lobby',
+        'stage': 'backToLobby',
         'number-of-rounds': this_game.number_of_rounds,
         'players': this_game.print_player_response()
     }
@@ -383,8 +381,7 @@ async def back_to_lobby(endpoint, connectionId, body):
 
     put_game(gid, this_game)
 
-    for client in clients:
-        apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps(response),
-            ConnectionId=client
-        )
+    apigatewaymanagementapi.post_to_connection(
+        Data = json.dumps(response),
+        ConnectionId = uid
+    )
