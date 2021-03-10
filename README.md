@@ -1,7 +1,5 @@
 # heads-up-poker
 
-Heads up all in or fold poker 
-
 ### run tests: 
 
 `??`
