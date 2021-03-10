@@ -1,9 +1,6 @@
 # heads-up-poker
 
-## 🚧 Work In Progress 🚧
-
-A multiplayer game of All In Or Fold poker.
-It is a chance for me to experiment with websockets.
+Heads up all in or fold poker 
 
 ### run tests: 
 
