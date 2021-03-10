@@ -11,8 +11,8 @@ from app.app import join_game
 from app.app import ready_to_play
 from app.app import all_in
 from app.app import fold
-# from app.app import call
-# from app.app import back_to_lobby
+from app.app import call
+from app.app import back_to_lobby
 
 # Dev or Live environment
 def get_endpoint(event):
