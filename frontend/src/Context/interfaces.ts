@@ -1,9 +1,22 @@
 
 import { Dispatch, SetStateAction, ReactChild } from 'react';
-
-export interface iProps {
-  children: ReactChild
+export interface Iauth {
+  authToken: string,
 }
+
+export const initialAuthState: Iauth = {
+  authToken: '',
+}
+
+export type AuthContextType = {
+  authState: Iauth;
+  setAuthState: Dispatch<SetStateAction<Iauth>>;
+}
+
+export const initialAuthContext = {
+  authState: initialAuthState,
+  setAuthState: ()=>{},
+};
 
 export interface Iplayer {
   uid: string,
@@ -76,5 +89,5 @@ export const initialState: Icontext = {
   pot: 0,
   noOfHands: 0,
   noOfRounds: 0,
-  setCState: ()=>{}
+  setCState: ()=>{},
 }

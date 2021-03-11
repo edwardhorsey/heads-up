@@ -34,7 +34,7 @@ const App = () => {
   
   return (
       <div className={styles.App}>
-        {!inHand ? <h1>Heads Up Poker</h1> : '' }
+      <h1>Heads Up Poker</h1>
         {showLobby()}
         <ConnectedStatus />
       </div>

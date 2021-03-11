@@ -1,15 +1,15 @@
-import React, { createContext, useState } from 'react';
+import React, { ReactChild, createContext, useState } from 'react';
 import socket from '../Socket/socket';
-import { Icontext, initialState, iProps } from './interfaces';
+import { Icontext, initialState } from './interfaces';
+
+interface Iprops {
+  children: ReactChild
+}
 
 export const ServerContext = createContext<Icontext>(initialState)
 
-export const ServerProvider = (props: iProps) => {
+export const ServerProvider = (props: Iprops) => {
   const [cState, setCState] = useState(initialState)
-
-  // setTimeout(()=>{
-  //   setCState({ ...cState, uid: 'helloWorld' });
-  // }, 3000);
 
   socket.onopen = () => {
     console.log("connected to server");
