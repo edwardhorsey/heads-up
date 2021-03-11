@@ -1,15 +1,15 @@
 import React, { ReactChild, createContext, useState } from 'react';
 import socket from '../Socket/socket';
-import { Icontext, initialState } from './interfaces';
+import { initialServerState, IServerContext, initialServerContext } from './interfaces';
 
 interface Iprops {
   children: ReactChild
 }
 
-export const ServerContext = createContext<Icontext>(initialState)
+export const ServerContext = createContext<IServerContext>(initialServerContext)
 
 export const ServerProvider = (props: Iprops) => {
-  const [cState, setCState] = useState(initialState)
+  const [cState, setCState] = useState(initialServerState)
 
   socket.onopen = () => {
     console.log("connected to server");
@@ -146,5 +146,5 @@ export const ServerProvider = (props: Iprops) => {
       })
     }
   }
-  return <ServerContext.Provider value={{...cState, setCState}}>{props.children}</ServerContext.Provider>
+  return <ServerContext.Provider value={{ cState, setCState}}>{props.children}</ServerContext.Provider>
 };

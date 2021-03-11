@@ -1,11 +1,11 @@
 import React, { ReactChild, createContext, useState } from 'react';
-import { initialAuthState, AuthContextType, initialAuthContext } from './interfaces';
+import { initialAuthState, IAuthContext, initialAuthContext } from './interfaces';
 
 interface Iprops {
   children: ReactChild
 }
 
-export const AuthContext = createContext<AuthContextType>(initialAuthContext);
+export const AuthContext = createContext<IAuthContext>(initialAuthContext);
 
 export const AuthProvider = (props: Iprops) => {
   const [authState, setAuthState] = useState(initialAuthState)
