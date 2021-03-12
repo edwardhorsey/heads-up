@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./Login.module.scss";
 import Button from "../Button";
 import { useFormik, FormikErrors } from 'formik';
-import { AuthContext } from "../../Context/authContext";
 import socket from '../../Socket/socket';
 
 
@@ -17,13 +16,7 @@ const setUsername = (username: string) => {
 }
 
 const Login: React.FC = () => {
-  const auth = useContext(AuthContext);
-  const { login } = auth;
-
-  const setName = (name: string): void => {
-    setUsername(name);
-    login();
-  };
+  const setName = (name: string): void => setUsername(name);
 
   interface Ivalues {
     name: string;

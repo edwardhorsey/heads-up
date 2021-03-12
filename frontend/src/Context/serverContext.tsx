@@ -1,4 +1,5 @@
-import React, { ReactChild, createContext, useState } from 'react';
+import React, { ReactChild, createContext, useState, useContext } from 'react';
+import { AuthContext } from "./authContext";
 import socket from '../Socket/socket';
 import { initialServerState, IServerContext, initialServerContext } from './interfaces';
 
@@ -10,6 +11,8 @@ export const ServerContext = createContext<IServerContext>(initialServerContext)
 
 export const ServerProvider = (props: Iprops) => {
   const [serverState, setServerState] = useState(initialServerState)
+  const auth = useContext(AuthContext);
+  const { login } = auth;
 
   socket.onopen = () => {
     console.log("connected to server");
@@ -31,120 +34,135 @@ export const ServerProvider = (props: Iprops) => {
     console.log('new data arrived');
     console.table(response);
 
-    if (response.method === 'connected') setServerState({ ...serverState, uid: response.uid })
+    switch(response.method) {
+      case 'connected':
+        setServerState({ ...serverState, uid: response.uid })
+        break;
 
-    if (response.method === 'createGame') setServerState({ ...serverState, gid: response.gid })
-
-    if (response.method === 'incorrectGid') setServerState({ ...serverState, falseGID: true });
-
-    if (response.method === 'joinGame') {
-      setServerState({ ...serverState,
-        gid: response.gid,
-        falseGID: false,
-        players: response.players,
-        readyToStart: response.players.length === 2 ? true : false,
-        whichPlayer: serverState.uid === response.players[0].uid ? 0 : 1
-      })
-    }
-
-    if (response.method === 'onePlayerReady') {
-      setServerState({...serverState,
-        players: serverState.players.map((player, index) => {
-          return {...player, ready: response.players[index].ready}
-        })
-      })
-    }
-
-    if (response.method === 'newHand') {
-      const newHand = () => {
-        setServerState({...serverState,
+      case 'setUsername':
+        setServerState({ ...serverState, displayName: response.username })
+        login();
+        break;
+  
+      case 'createGame':
+        setServerState({ ...serverState, gid: response.gid })
+        break;
+  
+      case 'incorrectGid':
+        setServerState({ ...serverState, falseGID: true });
+        break;
+  
+      case 'joinGame':
+        setServerState({ ...serverState,
+          gid: response.gid,
+          falseGID: false,
           players: response.players,
+          readyToStart: response.players.length === 2 ? true : false,
+          whichPlayer: serverState.uid === response.players[0].uid ? 0 : 1
+        })
+        break;
+  
+      case 'onePlayerReady':
+        setServerState({...serverState,
+          players: serverState.players.map((player, index) => {
+            return {...player, ready: response.players[index].ready}
+          })
+        })
+        break;
+  
+      case 'newHand':
+        const newHand = () => {
+          setServerState({...serverState,
+            players: response.players,
+            action: response.action === 'two' ? 1: 0,
+            stage: response.stage,
+            yourHand: response.players[serverState.whichPlayer].hand,
+            oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
+            community: response['community-cards'],
+            pot: response.pot,
+            noOfHands: response['number-of-hands'],
+            winner: response.winner,
+            winningHand: response['winning-hand']
+          })
+        }
+  
+        serverState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 3000)
+        break;
+  
+      case 'allIn':
+        setServerState({...serverState,
+          players: serverState.players.map((player, index) => (
+            {...player, ...response.players[index]}
+          )),
+          stage: 'to-call',
           action: response.action === 'two' ? 1: 0,
-          stage: response.stage,
+          pot: response.pot
+        });
+        break;
+  
+      case 'showdown':
+        setServerState({...serverState,
+          players: serverState.players.map((player, index) => (
+            {...player, ...response.players[index]}
+          )),
           yourHand: response.players[serverState.whichPlayer].hand,
           oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
           community: response['community-cards'],
-          pot: response.pot,
-          noOfHands: response['number-of-hands'],
-          winner: response.winner,
-          winningHand: response['winning-hand']
-        })
-      }
-
-      serverState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 3000)
-    }
-
-    if (response.method === "allIn") {
-      setServerState({...serverState,
-        players: serverState.players.map((player, index) => {
-          return {...player, ...response.players[index]}
-        }),
-        stage: 'to-call',
-        action: response.action === 'two' ? 1: 0,
-        pot: response.pot
-      })
-    }
-
-    if (response.method === "showdown") {
-      setServerState({...serverState,
-        players: serverState.players.map((player, index) => {
-          return {...player, ...response.players[index]}
-        }),
-        yourHand: response.players[serverState.whichPlayer].hand,
-        oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
-        community: response['community-cards'],
-        stage: 'showdown',
-        action: null,
-        pot: response.pot
-      })
-    }
-
-    if (response.method === "folded") {
-      setServerState({...serverState,
-        players: serverState.players.map((player, index) => {
-          return {...player, ...response.players[index]}
-        }),
-        stage: 'folded',
-        action: null,
-      })
-    }
-
-    if (response.method === "winner") {
-      setServerState({...serverState,
-        players: serverState.players.map((player, index) => {
-          return {...player, ...response.players[index]}
-        }),
-        pot: response.pot,
-        winner: response.winner,
-        action: null,
-        winningHand: response['winning-hand'],
-        stage: 'winner'
-      })
-    }
-
-    if (response.method === "playerBust") {
-      setTimeout(()=>{
-        setServerState({...serverState,
+          stage: 'showdown',
           action: null,
-          stage: 'end'
+          pot: response.pot
+        });
+        break;
+  
+      case 'folded':
+        setServerState({...serverState,
+          players: serverState.players.map((player, index) => (
+            {...player, ...response.players[index]}
+          )),
+          stage: 'folded',
+          action: null,
+        });
+        break;
+  
+      case 'winner':
+        setServerState({...serverState,
+          players: serverState.players.map((player, index) => (
+            {...player, ...response.players[index]}
+          )),
+          pot: response.pot,
+          winner: response.winner,
+          action: null,
+          winningHand: response['winning-hand'],
+          stage: 'winner'
         })
-      }, 2000)
-    }
+        break;
+  
+      case 'playerBust':
+        setTimeout(()=>{
+          setServerState({...serverState,
+            action: null,
+            stage: 'end'
+          })
+        }, 2000)
+        break;
+  
+      case 'backToLobby':  
+        setServerState({...serverState,
+          players: serverState.players.map((player, index) => (
+            {...player, ...response.players[index]}
+          )),
+          yourHand: response.players[serverState.whichPlayer].hand,
+          oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
+          noOfRounds: response['number-of-rounds'],
+          stage: response['stage'],
+          inHand: false
+        });
+        break;
 
-    if (response.method === "backToLobby") {
-      console.log(response.players[serverState.whichPlayer].hand);
-
-      setServerState({...serverState,
-        players: serverState.players.map((player, index) => {
-          return {...player, ...response.players[index]}
-        }),
-        yourHand: response.players[serverState.whichPlayer].hand,
-        oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
-        noOfRounds: response['number-of-rounds'],
-        stage: response['stage'],
-        inHand: false
-      })
+      default:
+        console.log(`Method - ${response.method} - not matched`);
     }
   }
+  
   return <ServerContext.Provider value={{ serverState, setServerState}}>{props.children}</ServerContext.Provider>
 };

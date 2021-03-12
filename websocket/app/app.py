@@ -23,6 +23,7 @@ async def set_username(endpoint, connectionId, body):
 
     response = {
         'method': 'setUsername',
+        'username': body['username'],
         'success': status,
     }
 
