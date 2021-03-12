@@ -67,7 +67,6 @@ async def join_game(endpoint, connectionId, body):
     # if not check_item_exists(gid):
         # return await incorrect_gid(uid, gid)
     this_game = get_game(gid)
-    print(this_game)
 
     display_name = get_display_name(uid)
     player_two = Player(uid, display_name, 1000)

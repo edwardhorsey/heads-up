@@ -13,8 +13,6 @@ from app.app import call
 from app.app import back_to_lobby
 
 async def main(event, context):
-    print(event)
-
     # Player who sent request
     connectionId = event['requestContext']['connectionId']
     endpoint = os.environ['API_ENDPOINT'] if os.environ['API_ENDPOINT'] else ("https://"
