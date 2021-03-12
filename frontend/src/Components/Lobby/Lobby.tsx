@@ -10,7 +10,6 @@ const Lobby: React.FC = () => {
   const { gid, displayName } = serverState;
   return (
     <section className={styles.Lobby}>
-      <h2>Lobby</h2>
       <h3>Welcome, {displayName}</h3>
       {gid ? <WaitingRoom /> : <CreateOrJoin />}
     </section>
