@@ -6,7 +6,8 @@ interface IProps {}
 
 const ConnectedStatus: React.FC<IProps> = () => {
   const context = useContext(ServerContext);
-  const { status } = context;
+  const { status } = context.serverState;
+
   const circleStyle = `${styles.circle} ${styles[status]}`;
   return (
     <section className={styles.ConnectedStatus}>

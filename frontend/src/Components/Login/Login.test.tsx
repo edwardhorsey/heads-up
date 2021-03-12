@@ -1,14 +1,14 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import SetName from './SetName';
+import Login from './Login';
 
-describe("SetName tests", () => {
+describe("Login tests", () => {
   let component: any;
   let mockFn;
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<SetName setName={mockFn} />);
+    component = shallow(<Login />);
   })
   
   it("should render", () => {

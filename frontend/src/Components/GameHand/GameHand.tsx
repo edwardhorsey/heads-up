@@ -20,7 +20,8 @@ interface IProps {
 
 const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
   const context = useContext(ServerContext);
-  const { whichPlayer, yourHand, oppHand, winner, winningHand, pot, community, stage, noOfHands, action } = context;
+  const { serverState } = context;
+  const { whichPlayer, yourHand, oppHand, winner, winningHand, pot, community, stage, noOfHands, action } = serverState;
 
   const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
 
@@ -58,17 +59,17 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
           <PlayersCards cards={opponentsCards()} />
           <div className={styles.OppAndTimer}>
             {((action !== null) && (whichPlayer !== action)) && <Timer num={15} logic={()=>{}} />}
-            <PlayerStats player={opponent} who="opp" />
+            <PlayerStats player={opponent} who="opp" stage={stage} yourHand={yourHand} />
           </div>
         </div>
         <PlayerChips which={'Opponent'} stage={stage} player={opponent} />
         {stage === 'end' && <RoundWinner text={playerBust()}/>}
         {winner && <WinnerAnnounce text={announceWinner()} />}
         {community && <CommunityCards cards={readCards(community)} />}
-        <Pot amount={pot} />
+        <Pot amount={pot} stage={stage} />
         <PlayerChips which={'Your'} stage={stage} player={yourself} />
         <div className={playerNavStyles()}>
-          <PlayerStats player={yourself} who="you" />
+          <PlayerStats player={yourself} who="you" stage={stage} yourHand={yourHand} />
           <PlayersCards cards={yourself.folded ? cardBacks : readCards(yourHand)} />
           <UserMoves />
         </div>

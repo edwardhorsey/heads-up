@@ -4,14 +4,6 @@ import os
 
 dynamodb = boto3.client('dynamodb')
 
-# Dev or Live environment
-def get_endpoint(event):
-    if event["requestContext"]["domainName"] == 'localhost': ### this can be a dev / prod env variable
-        return 'http://localhost:3001/'
-    else:
-        return "https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"]
-
-
 def handle(event, context):
     connectionId = event['requestContext']['connectionId']
 
@@ -23,8 +15,13 @@ def handle(event, context):
         'uid': connectionId
     }
 
+    endpoint = os.environ['API_ENDPOINT'] if os.environ['API_ENDPOINT'] else ("https://"
+        + event["requestContext"]["domainName"]
+        + "/"
+        + event["requestContext"]["stage"])
+
     # Emit response back to user
-    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = get_endpoint(event))
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
     apigatewaymanagementapi.post_to_connection(
         Data=json.dumps(response),
         ConnectionId=connectionId

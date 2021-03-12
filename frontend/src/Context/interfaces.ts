@@ -1,9 +1,34 @@
 
-import { Dispatch, SetStateAction, ReactChild } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
-export interface iProps {
-  children: ReactChild
+/*
+Auth context
+*/
+export interface AuthState {
+  authToken: string;
 }
+
+export const initialAuthState: AuthState = {
+  authToken: '',
+}
+
+export interface IAuthContext {
+  authState: AuthState;
+  setAuthState: Dispatch<SetStateAction<AuthState>>;
+  login: () => void;
+  logout: () => void;
+}
+
+export const initialAuthContext = {
+  authState: initialAuthState,
+  setAuthState: () => {},
+  login: () => {},
+  logout: () => {},
+};
+
+/*
+Player
+*/
 
 export interface Iplayer {
   uid: string,
@@ -31,31 +56,34 @@ export const initialPlayer: Iplayer = {
   profit: 0
 }
 
-export interface Icontext {
-  status: string,
-  inHand: boolean,
-  uid: string,
-  displayName: string,
-  opponentName: string,
-  gid: string,
+/*
+Server context
+ */
+
+export interface ServerState {
+  status: string;
+  inHand: boolean;
+  uid: string;
+  displayName: string;
+  opponentName: string;
+  gid: string;
   falseGID: boolean
-  readyToStart: boolean,
-  action: number | null,
-  stage: string,
-  players: Array<Iplayer>,
-  whichPlayer: number,
-  oppHand: string[],
-  yourHand: string[],
-  community: string[],
-  winningHand: [string, number[], string[]],
-  winner: string,
-  pot: number,
-  noOfHands: number,
-  noOfRounds: number,
-  setCState: Dispatch<SetStateAction<Icontext>>
+  readyToStart: boolean;
+  action: number | null;
+  stage: string;
+  players: Array<Iplayer>;
+  whichPlayer: number;
+  oppHand: string[];
+  yourHand: string[];
+  community: string[];
+  winningHand: [string, number[], string[]];
+  winner: string;
+  pot: number;
+  noOfHands: number;
+  noOfRounds: number;
 }
 
-export const initialState: Icontext = {
+export const initialServerState: ServerState = {
   status: 'disconnected',
   inHand: false,
   uid: '',
@@ -76,5 +104,15 @@ export const initialState: Icontext = {
   pot: 0,
   noOfHands: 0,
   noOfRounds: 0,
-  setCState: ()=>{}
+};
+
+
+export interface IServerContext {
+  serverState: ServerState;
+  setServerState: Dispatch<SetStateAction<ServerState>>;
+}
+
+export const initialServerContext: IServerContext = {
+  serverState: initialServerState,
+  setServerState: () => {},
 }

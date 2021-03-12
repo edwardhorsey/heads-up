@@ -23,6 +23,7 @@ async def set_username(endpoint, connectionId, body):
 
     response = {
         'method': 'setUsername',
+        'username': body['username'],
         'success': status,
     }
 
@@ -66,7 +67,6 @@ async def join_game(endpoint, connectionId, body):
     # if not check_item_exists(gid):
         # return await incorrect_gid(uid, gid)
     this_game = get_game(gid)
-    print(this_game)
 
     display_name = get_display_name(uid)
     player_two = Player(uid, display_name, 1000)
@@ -103,7 +103,6 @@ async def join_game(endpoint, connectionId, body):
 
 # Ready to play
 async def ready_to_play(endpoint, connectionId, body):
-    # uid, gid, clients, this_game = getBaseStats(request)
     uid = connectionId
     gid = body['gid']
     this_game = get_game(gid)

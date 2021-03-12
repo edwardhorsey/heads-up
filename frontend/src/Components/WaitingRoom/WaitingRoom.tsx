@@ -6,11 +6,11 @@ import Button from "../Button";
 const WaitingRoom: React.FC = () => {
   
   const context = useContext(ServerContext)
-  const { displayName, gid, setCState } = context
+  const { serverState, setServerState } = context;
+  const { displayName, gid } = serverState;
   return (
     <section className={styles.WaitingRoom}>
-      <Button logic={()=>{setCState({...context, gid: ''})}} text={'Back'} />
-      <h3>Waiting room</h3>
+      <Button logic={()=>{setServerState({...serverState, gid: ''})}} text={'Back'} />
       <p>{displayName}</p>
       <p>Game ID: {gid}</p>
       <p>Waiting for second player...</p>

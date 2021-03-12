@@ -4,7 +4,6 @@ import ChipsGen from "../ChipsGen";
 import {useSpring, animated} from 'react-spring'
 import styles from "./PlayerChips.module.scss";
 
-
 interface IProps {
   which: string,
   player: Iplayer,
@@ -12,7 +11,6 @@ interface IProps {
 }
 
 const PlayerChips: React.FC<IProps> = ({which, player, stage}) => {
-
   const aniProps = useSpring({ opacity: 1, from: {opacity: 0} })
 
   return (
