@@ -4,12 +4,11 @@ import ChipsGen from "../ChipsGen";
 import { ServerContext } from "../../Context/serverContext";
 
 interface IProps {
-  amount: number
+  amount: number;
+  stage: string;
 }
 
-const Pot: React.FC<IProps> = ({amount}) => {
-  const context = useContext(ServerContext);
-  const { stage } = context;
+const Pot: React.FC<IProps> = ({amount, stage}) => {
 
   return (
     <div className={styles.pot}>

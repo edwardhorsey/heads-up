@@ -21,8 +21,8 @@ const validate = (values: Ivalues) => {
 
 const CreateOrJoin: React.FC = () => {
   const context = useContext(ServerContext);
-
-  const { falseGID, uid, displayName } = context;
+  const { serverState } = context;
+  const { falseGID, uid, displayName } = serverState;
 
   const formik = useFormik({
     initialValues: {
@@ -55,7 +55,7 @@ const CreateOrJoin: React.FC = () => {
     socket.send(JSON.stringify(request));
   }
 
-  if (formik.errors.gid === "Required" && falseGID) context.setCState({...context, falseGID: false });
+  if (formik.errors.gid === "Required" && falseGID) context.setServerState({...context.serverState, falseGID: false });
 
   return (
     <section className={styles.CreateOrJoin}>

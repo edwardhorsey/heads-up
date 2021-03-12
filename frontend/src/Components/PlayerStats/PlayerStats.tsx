@@ -4,15 +4,13 @@ import { ServerContext } from '../../Context/serverContext';
 import { Iplayer } from '../../Context/interfaces';
 
 interface IProps {
-  player: Iplayer,
-  who?: string
+  player: Iplayer;
+  who?: string;
+  stage: string;
+  yourHand: string[];
 }
 
-const PlayerStats: React.FC<IProps> = ({player, who}) => {
-
-  const context = useContext(ServerContext);
-  const { stage, yourHand } = context;
-
+const PlayerStats: React.FC<IProps> = ({player, who, stage, yourHand}) => {
   const roundProfit = () => stage === 'winner' ? <p className={player.profit >= 0 ? styles.profit : styles.loss}>{player.profit}</p> : ''
   const playerBackground = () => yourHand.length > 0 ? `${styles.playerName} ${styles.background}` : styles.playerName
 

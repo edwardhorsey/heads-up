@@ -9,7 +9,8 @@ import Timer from "../Timer";
 const UserMoves: React.FC = () => {
 
   const context = useContext(ServerContext);
-  const { uid, gid, players, whichPlayer, action, stage } = context;
+  const { serverState } = context;
+  const { uid, gid, players, whichPlayer, action, stage } = serverState;
 
   const opponent: Iplayer = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
 
