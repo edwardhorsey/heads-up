@@ -15,13 +15,9 @@ const PlayersCards: React.FC<IProps> = ({cards}) => {
     trail: 50,
   });
 
-  const output = transitions.map(({ item, props, key }) =>
-  <animated.div key={key} style={props}>{item}</animated.div>
-  );
-
   return (
     <article className={styles.PlayersCards}>
-      {output}
+      {transitions.map(({ item, props, key }) => <animated.div key={key} style={props}>{item}</animated.div>)}
     </article>
   );
 }

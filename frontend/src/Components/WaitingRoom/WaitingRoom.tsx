@@ -11,7 +11,6 @@ const WaitingRoom: React.FC = () => {
   return (
     <section className={styles.WaitingRoom}>
       <Button logic={()=>{setServerState({...serverState, gid: ''})}} text={'Back'} />
-      <h3>Waiting room</h3>
       <p>{displayName}</p>
       <p>Game ID: {gid}</p>
       <p>Waiting for second player...</p>
