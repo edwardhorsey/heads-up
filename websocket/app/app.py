@@ -104,7 +104,6 @@ async def join_game(endpoint, connectionId, body):
 
 # Ready to play
 async def ready_to_play(endpoint, connectionId, body):
-    # uid, gid, clients, this_game = getBaseStats(request)
     uid = connectionId
     gid = body['gid']
     this_game = get_game(gid)

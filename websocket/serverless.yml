@@ -19,6 +19,7 @@ provider:
   timeout: 29
 
 plugins:
+  - serverless-dotenv-plugin
   - serverless-pseudo-parameters
   - serverless-offline
 package:
