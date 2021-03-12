@@ -15,11 +15,15 @@ export const initialAuthState: AuthState = {
 export interface IAuthContext {
   authState: AuthState;
   setAuthState: Dispatch<SetStateAction<AuthState>>;
+  login: () => void;
+  logout: () => void;
 }
 
 export const initialAuthContext = {
   authState: initialAuthState,
-  setAuthState: ()=>{},
+  setAuthState: () => {},
+  login: () => {},
+  logout: () => {},
 };
 
 /*
@@ -110,5 +114,5 @@ export interface IServerContext {
 
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
-  setServerState: ()=>{},
+  setServerState: () => {},
 }

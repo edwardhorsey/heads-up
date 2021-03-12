@@ -6,19 +6,32 @@ import { ServerContext } from './Context/serverContext';
 import GameContainer from './Components/GameContainer';
 import ConnectedStatus from './Components/ConnectedStatus';
 import socket from './Socket/socket';
+import { AuthContext } from "./Context/authContext";
+import Login from './Components/Login';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
+import Button from './Components/Button';
 
 const App = () => {
   const [ displayName, setDisplayName ] = useState('');
   
-  const context = useContext(ServerContext);
-  const { setServerState, serverState } = context;
-  const { inHand, readyToStart } = serverState;
+  const server = useContext(ServerContext);
+  const { setServerState, serverState } = server;
+  const { readyToStart } = serverState;
+
+  const auth = useContext(AuthContext);
+  const { authState } = auth;
 
   const setName = (name: string): void => {
-    setDisplayName(name);
-    setUsername(name);
-    setServerState({...serverState, displayName: name});
-  };
+      setDisplayName(name);
+      setUsername(name);
+      setServerState({...serverState, displayName: name});
+    };
 
   const setUsername = (username: string) => {
     const request = {
@@ -36,8 +49,18 @@ const App = () => {
   
   return (
       <div className={styles.App}>
-      <h1>Heads Up Poker</h1>
-        {showLobby()}
+        <h1>Heads Up Poker</h1>
+          {authState.authToken ? (
+            <Switch>
+              <Route path="/">
+                {showLobby()}
+                <Link to="/home">home</Link>
+              </Route>
+              <Route path="/home">{showLobby()}</Route>
+            </Switch>
+          ) : (
+            <Route exact path="/"><Login /></Route>
+          )}
         <ConnectedStatus />
       </div>
   );

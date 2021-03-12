@@ -10,5 +10,8 @@ export const AuthContext = createContext<IAuthContext>(initialAuthContext);
 export const AuthProvider = (props: Iprops) => {
   const [authState, setAuthState] = useState(initialAuthState)
 
-  return <AuthContext.Provider value={{ authState, setAuthState }}>{props.children}</AuthContext.Provider>
+  const login = () => setAuthState({ authToken: 'logged-in' });
+  const logout = () => setAuthState({ authToken: '' });
+
+  return <AuthContext.Provider value={{ authState, setAuthState, login, logout }}>{props.children}</AuthContext.Provider>
 };
