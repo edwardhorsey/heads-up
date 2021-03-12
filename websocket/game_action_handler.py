@@ -17,7 +17,10 @@ async def main(event, context):
 
     # Player who sent request
     connectionId = event['requestContext']['connectionId']
-    endpoint = get_endpoint(event)
+    endpoint = os.environ['API_ENDPOINT'] if os.environ['API_ENDPOINT'] else ("https://"
+        + event["requestContext"]["domainName"]
+        + "/"
+        + event["requestContext"]["stage"])
 
     # Request body containing ACTION
     body = json.loads(event['body'])
@@ -46,11 +49,6 @@ async def main(event, context):
         }
 
         # Emit response back to user
-        endpoint = os.environ['API_ENDPOINT'] if os.environ['API_ENDPOINT'] else ("https://"
-            + event["requestContext"]["domainName"]
-            + "/"
-            + event["requestContext"]["stage"])
-
         apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
         apigatewaymanagementapi.post_to_connection(
             Data=json.dumps(response),
