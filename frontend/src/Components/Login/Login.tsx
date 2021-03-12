@@ -9,6 +9,7 @@ const Login: React.FC = () => {
 
   return (
     <section className={styles.Login}>
+      <h1>Welcome to Poker</h1>
       <Button logic={login} text="Login" />
     </section>
   );

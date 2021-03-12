@@ -25,7 +25,7 @@ const App = () => {
   const { readyToStart } = serverState;
 
   const auth = useContext(AuthContext);
-  const { authState } = auth;
+  const { authState, logout } = auth;
 
   const setName = (name: string): void => {
       setDisplayName(name);
@@ -43,24 +43,28 @@ const App = () => {
     socket.send(JSON.stringify(request));
   }
 
-  const showLobby = () => !displayName ? <SetName setName={setName} /> : beginGame();
-
   const beginGame = () => readyToStart ? <GameContainer /> : <Lobby />;
   
   return (
       <div className={styles.App}>
-        <h1>Heads Up Poker</h1>
+        <Route path="/">
           {authState.authToken ? (
             <Switch>
-              <Route path="/">
-                {showLobby()}
-                <Link to="/home">home</Link>
+              <Route exact path="/">
+                <h1>Heads Up Poker</h1>
+                <Button logic={logout} text="Logout" />
+                <Link to="/display-name">Set display name</Link>
+                {beginGame()}
               </Route>
-              <Route path="/home">{showLobby()}</Route>
+              <Route exact path="/display-name">
+                <Link to="/">Home</Link>
+                <SetName setName={setName} />
+              </Route>
             </Switch>
           ) : (
-            <Route exact path="/"><Login /></Route>
+            <Login />
           )}
+        </Route>
         <ConnectedStatus />
       </div>
   );
