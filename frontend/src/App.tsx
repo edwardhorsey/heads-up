@@ -11,11 +11,13 @@ const App = () => {
   const [ displayName, setDisplayName ] = useState('');
   
   const context = useContext(ServerContext);
-  const { setCState, inHand, readyToStart } = context;
+  const { setServerState, serverState } = context;
+  const { inHand, readyToStart } = serverState;
+
   const setName = (name: string): void => {
     setDisplayName(name);
     setUsername(name);
-    setCState({...context, displayName: name})
+    setServerState({...serverState, displayName: name});
   };
 
   const setUsername = (username: string) => {

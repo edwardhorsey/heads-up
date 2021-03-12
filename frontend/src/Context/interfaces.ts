@@ -104,11 +104,11 @@ export const initialServerState: ServerState = {
 
 
 export interface IServerContext {
-  cState: ServerState;
-  setCState: Dispatch<SetStateAction<ServerState>>;
+  serverState: ServerState;
+  setServerState: Dispatch<SetStateAction<ServerState>>;
 }
 
 export const initialServerContext: IServerContext = {
-  cState: initialServerState,
-  setCState: ()=>{},
+  serverState: initialServerState,
+  setServerState: ()=>{},
 }
