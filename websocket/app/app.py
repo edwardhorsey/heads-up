@@ -22,11 +22,6 @@ async def set_username(endpoint, connectionId, body):
     status = put_display_name(connectionId, body['username'])
 
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'setUsername',
         'username': body['username'],
         'success': status,
@@ -52,11 +47,6 @@ async def create_game(endpoint, connectionId, body):
     status = put_game(gid, this_game)
 
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'createGame',
         'success': status,
         'gid': gid,
@@ -86,11 +76,6 @@ async def join_game(endpoint, connectionId, body):
 
     clients = [this_game.player_one.uid, this_game.player_two.uid]
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'joinGame',
         'gid': gid,
         'uid': uid,
@@ -129,11 +114,6 @@ async def ready_to_play(endpoint, connectionId, body):
         this_game.player_two_ready = True
 
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'uid': uid,
         'gid': gid,
         'number-of-rounds': this_game.number_of_rounds,
@@ -221,11 +201,6 @@ async def all_in(endpoint, connectionId, body):
     this_game.current_hand.all_in(all_in_player)
 
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'allIn',
         'uid': uid,
         'gid': gid,
@@ -254,11 +229,6 @@ async def fold(endpoint, connectionId, body):
     folding_player = 'one' if this_game.player_one.uid == uid else 'two'
     this_game.current_hand.fold(folding_player, this_game.player_one, this_game.player_two)
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'folded',
         'uid': uid,
         'gid': gid,
@@ -302,11 +272,6 @@ async def call(endpoint, connectionId, body):
     this_game.reset_players_bet_sizes()
 
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'showdown',
         'uid': uid,
         'gid': gid,
@@ -338,11 +303,6 @@ async def send_winner_response(endpoint, connectionId, body, this_game):
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'winner',
         'uid': uid,
         'gid': gid,
@@ -390,11 +350,6 @@ async def back_to_lobby(endpoint, connectionId, body):
         this_game.player_two = Player(this_game.player_two.uid, this_game.player_two.name, 1000)
 
     response = {
-        statusCode: 200,
-        headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-        },
         'method': 'backToLobby',
         'uid': uid,
         'gid': gid,
