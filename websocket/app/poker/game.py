@@ -71,8 +71,21 @@ class Game():
         self.player_one.bet_size = Decimal(str(0))
         self.player_two.bet_size = Decimal(str(0))
 
+    def get_player_uids(self):
+        player_one_uid = self.player_one.uid if self.player_one else ''
+        player_two_uid = self.player_two.uid if self.player_two else ''
+        return list(filter(None, [player_one_uid, player_two_uid]))
+
+    def remove_player(self, uid):
+        if self.player_one and self.player_one.uid == uid:
+            self.player_one = None
+        elif self.player_two and self.player_two.uid == uid:
+            self.player_two = None
+        else:
+            raise ValueError('Player not in game.')
+
     def print_player_response(self):
-        return [{
+        player_one = {
             'uid': self.player_one.uid, 
             'name': self.player_one.name,
             'bankroll': self.player_one.bankroll,
@@ -82,7 +95,9 @@ class Game():
             'folded': self.player_one.folded,
             'rounds-won': self.one_rounds_won,
             'profit': self.current_hand.one_hand_profit if self.current_hand else None,
-        }, {
+        } if self.player_one else []
+
+        player_two = {
             'uid': self.player_two.uid,
             'name': self.player_two.name,
             'bankroll': self.player_two.bankroll,
@@ -92,12 +107,14 @@ class Game():
             'folded': self.player_two.folded,
             'rounds-won': self.two_rounds_won,
             'profit': self.current_hand.two_hand_profit if self.current_hand else None,
-        }]
+        } if self.player_two else []
+
+        return [player_one, player_two]
 
     def self_dict(self):
         return {
             'gid': self.gid,
-            'player_one': self.player_one.self_dict(),
+            'player_one': self.player_one.self_dict() if self.player_one else False,
             'player_two': self.player_two.self_dict() if self.player_two else False,
             'player_one_ready': self.player_one_ready,
             'player_two_ready': self.player_two_ready,
