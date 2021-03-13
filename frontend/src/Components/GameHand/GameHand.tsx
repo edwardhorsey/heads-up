@@ -55,7 +55,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
   return (
     <article className={styles.Hand}>
         <div className={opponentNavStyles()}>
-          {noOfHands ? <p>{`#${noOfHands}`}</p> : ''}
+          {noOfHands && <p>{`#${noOfHands}`}</p>}
           <PlayersCards cards={opponentsCards()} />
           <div className={styles.OppAndTimer}>
             {((action !== null) && (whichPlayer !== action)) && <Timer num={15} logic={()=>{}} />}

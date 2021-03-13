@@ -27,15 +27,9 @@ const GameContainer: React.FC = () => {
     socket.send(JSON.stringify(request));
   }
 
-  // Move into the servercontext?
-  // if (yourHand.length > 0 && !inHand) {
-  //   console.log('is this bad?');
-  //   setCState({...context, inHand: true})
-  // }
-
   return (
     <section className={styles.GameContainer}>
-      <Button logic={() => leaveGame(gid)} text={'Back'} />
+      <Button logic={() => leaveGame} text={'Back'} />
       <div className={styles.gameStats}>
         <h3>GameID: {gid}</h3>
         <p>Total rounds: {noOfRounds}</p>

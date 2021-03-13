@@ -43,15 +43,15 @@ export const ServerProvider = (props: Iprops) => {
         setServerState({ ...serverState, displayName: response.username })
         login();
         break;
-  
+
       case 'createGame':
         setServerState({ ...serverState, gid: response.gid })
         break;
-  
+
       case 'incorrectGid':
         setServerState({ ...serverState, falseGID: true });
         break;
-  
+
       case 'joinGame':
         setServerState({ ...serverState,
           gid: response.gid,
@@ -62,19 +62,6 @@ export const ServerProvider = (props: Iprops) => {
         })
         break;
 
-        case 'leaveGame':
-          if (response.leaving === serverState.uid) {
-            setServerState({ ...initialServerState, displayName: serverState.displayName })
-          } else {
-            console.log(response.players);
-            setServerState({...serverState,
-              players: serverState.players.map((player, index) => (
-                {...player, ...response.players[index]}
-              )),
-            });
-          }
-          // else only update the player who has left
-  
       case 'onePlayerReady':
         setServerState({...serverState,
           players: serverState.players.map((player, index) => {
@@ -82,7 +69,7 @@ export const ServerProvider = (props: Iprops) => {
           })
         })
         break;
-  
+
       case 'newHand':
         const newHand = () => {
           setServerState({...serverState,
@@ -98,10 +85,10 @@ export const ServerProvider = (props: Iprops) => {
             winningHand: response['winning-hand']
           })
         }
-  
+
         serverState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 3000)
         break;
-  
+
       case 'allIn':
         setServerState({...serverState,
           players: serverState.players.map((player, index) => (
@@ -112,7 +99,7 @@ export const ServerProvider = (props: Iprops) => {
           pot: response.pot
         });
         break;
-  
+
       case 'showdown':
         setServerState({...serverState,
           players: serverState.players.map((player, index) => (
@@ -126,7 +113,7 @@ export const ServerProvider = (props: Iprops) => {
           pot: response.pot
         });
         break;
-  
+
       case 'folded':
         setServerState({...serverState,
           players: serverState.players.map((player, index) => (
@@ -136,7 +123,7 @@ export const ServerProvider = (props: Iprops) => {
           action: null,
         });
         break;
-  
+
       case 'winner':
         setServerState({...serverState,
           players: serverState.players.map((player, index) => (
@@ -149,7 +136,7 @@ export const ServerProvider = (props: Iprops) => {
           stage: 'winner'
         })
         break;
-  
+
       case 'playerBust':
         setTimeout(()=>{
           setServerState({...serverState,
@@ -158,7 +145,7 @@ export const ServerProvider = (props: Iprops) => {
           })
         }, 2000)
         break;
-  
+
       case 'backToLobby':  
         setServerState({...serverState,
           players: serverState.players.map((player, index) => (
