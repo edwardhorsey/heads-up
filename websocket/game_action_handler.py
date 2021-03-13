@@ -42,6 +42,11 @@ async def main(event, context):
         await back_to_lobby(endpoint, connectionId, body)
     else:
         response = {
+            statusCode: 200,
+            headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': true,
+            },
             'method': body['method'],
             'message': 'Method not recognised',
         }
