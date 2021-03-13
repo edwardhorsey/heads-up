@@ -15,7 +15,9 @@ def handle(event, context):
         'uid': connectionId
     }
 
-    endpoint = os.environ['API_ENDPOINT'] if os.environ['API_ENDPOINT'] else ("https://"
+    print(os.environ.has_key('API_ENDPOINT'))
+
+    endpoint = os.environ['API_ENDPOINT'] if os.environ.has_key('API_ENDPOINT') else ("https://"
         + event["requestContext"]["domainName"]
         + "/"
         + event["requestContext"]["stage"])
