@@ -110,9 +110,11 @@ export const initialServerState: ServerState = {
 export interface IServerContext {
   serverState: ServerState;
   setServerState: Dispatch<SetStateAction<ServerState>>;
+  resetServerState: () => void;
 }
 
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
   setServerState: () => {},
+  resetServerState: () => {},
 }

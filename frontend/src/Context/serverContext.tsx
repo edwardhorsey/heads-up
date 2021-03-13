@@ -14,6 +14,11 @@ export const ServerProvider = (props: Iprops) => {
   const auth = useContext(AuthContext);
   const { login } = auth;
 
+  const resetServerState = () => setServerState({
+    ...initialServerState,
+    status: socket.readyState === 1 ? "connected" : "disconnected",
+  });
+
   socket.onopen = () => {
     console.log("connected to server");
     setServerState({ ...serverState, status: "connected" });
@@ -164,5 +169,5 @@ export const ServerProvider = (props: Iprops) => {
     }
   }
   
-  return <ServerContext.Provider value={{ serverState, setServerState}}>{props.children}</ServerContext.Provider>
+  return <ServerContext.Provider value={{ serverState, setServerState, resetServerState }}>{props.children}</ServerContext.Provider>
 };

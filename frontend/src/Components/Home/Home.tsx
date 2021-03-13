@@ -8,14 +8,19 @@ import Button from "../Button";
 
 const Home: React.FC = () => {
   const server = useContext(ServerContext);
-  const { readyToStart } = server.serverState;
+  const { serverState, resetServerState } = server;
+  const { readyToStart } = serverState;
   const auth = useContext(AuthContext);
   const { logout } = auth;
+  const logoutHome = () => {
+    resetServerState();
+    logout();
+  };
 
   return (
     <section className={styles.Home}>
       <h1>Heads Up Poker</h1>
-      <Button logic={logout} text="Logout" />
+      <Button logic={logoutHome} text="Logout" />
       {readyToStart ? <GameContainer /> : <Lobby />} {/* redirect or buttons to access game? */}
     </section>
   );
