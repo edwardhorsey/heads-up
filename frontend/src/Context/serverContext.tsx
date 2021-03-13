@@ -61,6 +61,19 @@ export const ServerProvider = (props: Iprops) => {
           whichPlayer: serverState.uid === response.players[0].uid ? 0 : 1
         })
         break;
+
+        case 'leaveGame':
+          if (response.leaving === serverState.uid) {
+            setServerState({ ...initialServerState, displayName: serverState.displayName })
+          } else {
+            console.log(response.players);
+            setServerState({...serverState,
+              players: serverState.players.map((player, index) => (
+                {...player, ...response.players[index]}
+              )),
+            });
+          }
+          // else only update the player who has left
   
       case 'onePlayerReady':
         setServerState({...serverState,

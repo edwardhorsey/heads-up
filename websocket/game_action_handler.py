@@ -6,6 +6,7 @@ import asyncio
 from app.app import set_username
 from app.app import create_game
 from app.app import join_game
+from app.app import leave_game
 from app.app import ready_to_play
 from app.app import all_in
 from app.app import fold
@@ -30,6 +31,8 @@ async def main(event, context):
         await create_game(endpoint, connectionId, body)
     elif body['method'] == 'joinGame':
         await join_game(endpoint, connectionId, body)
+    elif body['method'] == 'leaveGame':
+        await leave_game(endpoint, connectionId, body)
     elif body['method'] == 'readyToPlay':
         await ready_to_play(endpoint, connectionId, body)
     elif body['method'] == 'allIn':

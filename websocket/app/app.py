@@ -101,6 +101,32 @@ async def join_game(endpoint, connectionId, body):
             ConnectionId = client
         )
 
+async def leave_game(endpoint, connectionId, body):
+    uid = connectionId
+    gid = body['gid']
+    this_game = get_game(gid)
+    clients = this_game.get_player_uids()
+    print(clients)
+    this_game.remove_player(uid)
+
+    status = put_game(gid, this_game)
+
+    response = {
+        'method': 'leaveGame',
+        'gid': gid,
+        'leaving': uid,
+        'status': status,
+        'players': this_game.print_player_response()
+    }
+
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+
+    for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data = json.dumps(response),
+            ConnectionId = connectionId
+        )
+
 # Ready to play
 async def ready_to_play(endpoint, connectionId, body):
     uid = connectionId

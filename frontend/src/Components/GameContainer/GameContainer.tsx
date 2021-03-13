@@ -6,6 +6,7 @@ import socket from "../../Socket/socket";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";
 import Button from "../Button";
+import { leaveGame } from '../../Socket/requests';
 
 const GameContainer: React.FC = () => {
   const context = useContext(ServerContext);
@@ -34,11 +35,11 @@ const GameContainer: React.FC = () => {
 
   return (
     <section className={styles.GameContainer}>
+      <Button logic={() => leaveGame(gid)} text={'Back'} />
       <div className={styles.gameStats}>
         <h3>GameID: {gid}</h3>
         <p>Total rounds: {noOfRounds}</p>
       </div>
-      {stage === 'initial' && <h3>Welcome {yourself.name} and {opponent.name}</h3>}
       {yourHand.length === 0 && <GameNav yourself={yourself} opponent={opponent} stage={stage} yourHand={yourHand} /> }
       {(!yourself.ready && ['initial', 'backToLobby', ].includes(stage)) && <Button logic={readyToPlayHand} text="Play round" />}
       {yourHand.length > 0 && <GameHand yourself={yourself} opponent={opponent} />}
