@@ -57,3 +57,5 @@ async def main(event, context):
 
 def handle(event, context):
     asyncio.run(main(event, context))
+
+    return {}
