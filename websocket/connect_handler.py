@@ -15,9 +15,7 @@ def handle(event, context):
         'uid': connectionId
     }
 
-    print(os.environ.has_key('API_ENDPOINT'))
-
-    endpoint = os.environ['API_ENDPOINT'] if os.environ.has_key('API_ENDPOINT') else ("https://"
+    endpoint = 'http://localhost:3001/' if 'IS_OFFLINE' in os.environ else ("https://"
         + event["requestContext"]["domainName"]
         + "/"
         + event["requestContext"]["stage"])

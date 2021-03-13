@@ -15,7 +15,7 @@ from app.app import back_to_lobby
 async def main(event, context):
     # Player who sent request
     connectionId = event['requestContext']['connectionId']
-    endpoint = os.environ['API_ENDPOINT'] if os.environ.has_key('API_ENDPOINT') else ("https://"
+    endpoint = 'http://localhost:3001/' if 'IS_OFFLINE' in os.environ else ("https://"
         + event["requestContext"]["domainName"]
         + "/"
         + event["requestContext"]["stage"])
