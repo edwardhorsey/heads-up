@@ -45,7 +45,7 @@ export const ServerProvider = (props: Iprops) => {
         break;
 
       case 'setUsername':
-        setServerState({ ...serverState, displayName: response.username })
+        setServerState({ ...serverState, displayName: response.username, uid: response.uid })
         login();
         break;
 
