@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { ServerContext } from '../../Context/serverContext';
 import { Iplayer } from '../../Context/interfaces';
-import socket from "../../Socket/socket";
+import { allIn, call, fold, backToLobby } from '../../Socket/requests';
 import styles from "./UserMoves.module.scss";
 import Button from "../Button";
 import Timer from "../Timer";
@@ -18,17 +18,17 @@ const UserMoves: React.FC = () => {
     if (action === whichPlayer && stage === "preflop" ) {
       return (
       <>
-        <Timer num={15} logic={fold} />
-        <div className={'allIn'}><Button logic={() => allIn()} text={'All in'}/></div>
-        <div className={'fold'}><Button logic={() => fold()} text={'Fold'}/></div>
+        <Timer num={15} logic={() => fold(gid, uid)} />
+        <div className={'allIn'}><Button logic={() => allIn(gid, uid)} text={'All in'}/></div>
+        <div className={'fold'}><Button logic={() => fold(gid, uid)} text={'Fold'}/></div>
       </>
       )
     } else if (action === whichPlayer && stage === "to-call") {
       return (
         <>
-          <Timer num={15} logic={fold} />
-          <div className={'call'}><Button logic={() => call()} text={`Call ${opponent['bet-size']}`}/></div>
-          <div className={'fold'}><Button logic={() => fold()} text={'Fold'}/></div>
+          <Timer num={15} logic={() => fold(gid, uid)} />
+          <div className={'call'}><Button logic={() => call(gid, uid, opponent['bet-size'])} text={`Call ${opponent['bet-size']}`}/></div>
+          <div className={'fold'}><Button logic={() => fold(gid, uid)} text={'Fold'}/></div>
         </>
         )
     } else if (stage === "showdown" || stage === "folded") {
@@ -36,56 +36,13 @@ const UserMoves: React.FC = () => {
     } else if (stage === "winner") {
       return '';
     } else if (stage === "end") {
-      return <div className={'backToLobby'}><Button logic={() => backToLobby()} text={'Back to lobby'}/></div>;
+      return <div className={'backToLobby'}><Button logic={() => backToLobby(gid, uid)} text={'Back to lobby'}/></div>;
     } else {
       return false;
     }
   }
 
-  const allIn = () => {
-    const request = {
-      action: 'onGameAction',
-      method: 'allIn',
-      uid,
-      gid,
-    }
 
-    socket.send(JSON.stringify(request));
-  }
-
-  const call = () => {
-    const request = {
-      action: 'onGameAction',
-      method: 'call',
-      uid,
-      gid,
-      'amount-to-call': opponent['bet-size']
-    }
-
-    socket.send(JSON.stringify(request));
-  }
-
-  const fold = () => {
-    const request = {
-      action: 'onGameAction',
-      method: 'fold',
-      uid,
-      gid,
-    }
-
-    socket.send(JSON.stringify(request));
-  }
-
-  const backToLobby = () => {
-    const request = {
-      action: 'onGameAction',
-      method: 'backToLobby',
-      uid,
-      gid,
-    }
-
-    socket.send(JSON.stringify(request));
-    }
 
   return (
     <article className={styles.UserMoves}>

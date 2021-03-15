@@ -2,18 +2,8 @@ import React from "react";
 import styles from "./Login.module.scss";
 import Button from "../Button";
 import { useFormik, FormikErrors } from 'formik';
-import socket from '../../Socket/socket';
+import { setUsername } from '../../Socket/requests';
 
-
-const setUsername = (username: string) => {
-  const request = {
-    username,
-    action: 'onGameAction',
-    method: 'setUsername',
-  };
-
-  socket.send(JSON.stringify(request));
-}
 
 const Login: React.FC = () => {
   const setName = (name: string): void => setUsername(name);

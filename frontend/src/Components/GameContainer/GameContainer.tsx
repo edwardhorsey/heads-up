@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import styles from "./GameContainer.module.scss";
 import { ServerContext } from '../../Context/serverContext';
 import { Iplayer } from '../../Context/interfaces';
-import socket from "../../Socket/socket";
+import { readyToPlayHand } from "../../Socket/requests";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";
 import Button from "../Button";
@@ -15,18 +15,6 @@ const GameContainer: React.FC = () => {
   const yourself: Iplayer = players[whichPlayer]; // yourself is user
   const opponent: Iplayer = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
 
-  const readyToPlayHand = () => {
-    const request = {
-      action: 'onGameAction',
-      method: 'readyToPlay',
-      uid,
-      gid,
-      ready: true
-    }
-
-    socket.send(JSON.stringify(request));
-  }
-
   return (
     <section className={styles.GameContainer}>
       <Button logic={() => leaveGame} text={'Back'} />
@@ -35,7 +23,7 @@ const GameContainer: React.FC = () => {
         <p>Total rounds: {noOfRounds}</p>
       </div>
       {yourHand.length === 0 && <GameNav yourself={yourself} opponent={opponent} stage={stage} yourHand={yourHand} /> }
-      {(!yourself.ready && ['initial', 'backToLobby', ].includes(stage)) && <Button logic={readyToPlayHand} text="Play round" />}
+      {(!yourself.ready && ['initial', 'backToLobby', ].includes(stage)) && <Button logic={() => readyToPlayHand(gid, uid)} text="Play round" />}
       {yourHand.length > 0 && <GameHand yourself={yourself} opponent={opponent} />}
     </section>
   );

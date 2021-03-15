@@ -4,7 +4,7 @@ import styles from "./Timer.module.scss";
 
 interface IProps {
   num: number,
-  logic: (() => void),
+  logic: () => void
 }
 
 const Timer: React.FC<IProps> = ({num, logic}) => {
