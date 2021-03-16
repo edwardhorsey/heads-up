@@ -60,6 +60,27 @@ export const initialPlayer: Iplayer = {
 Server context
  */
 
+export type ActionType = 'socketOnOpen'
+| 'socketOnClose'
+| 'socketOnError'
+| 'connected'
+| 'setUsername'
+| 'createGame'
+| 'incorrectGid'
+| 'joinGame'
+| 'onePlayerReady'
+| 'newHand'
+| 'allIn'
+| 'showdown'
+| 'folded'
+| 'winner'
+| 'playerBust'
+| 'backToLobby'
+
+export interface Action {
+  type: ActionType;
+  response: any;
+}
 export interface ServerState {
   status: string;
   inHand: boolean;
@@ -67,7 +88,7 @@ export interface ServerState {
   displayName: string;
   opponentName: string;
   gid: string;
-  falseGID: boolean
+  falseGID: boolean;
   readyToStart: boolean;
   action: number | null;
   stage: string;
@@ -109,12 +130,12 @@ export const initialServerState: ServerState = {
 
 export interface IServerContext {
   serverState: ServerState;
-  setServerState: Dispatch<SetStateAction<ServerState>>;
+  dispatchServerState: Dispatch<SetStateAction<ServerState>>;
   resetServerState: () => void;
 }
 
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
-  setServerState: () => {},
+  dispatchServerState: () => {},
   resetServerState: () => {},
 }
