@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { ServerContext } from '../../Context/serverContext';
+import React from "react";
+import { useServer } from "../../Context/serverContext";
 import { Iplayer } from '../../Context/interfaces';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
@@ -19,8 +19,7 @@ interface IProps {
 }
 
 const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
-  const context = useContext(ServerContext);
-  const { serverState } = context;
+  const { serverState } = useServer();
   const { whichPlayer, yourHand, oppHand, winner, winningHand, pot, community, stage, noOfHands, action } = serverState;
 
   const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);

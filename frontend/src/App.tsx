@@ -1,24 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styles from './App.module.scss';
-
 import ConnectedStatus from './Components/ConnectedStatus';
-import { AuthContext } from "./Context/authContext";
+import { useAuth } from "./Context/authContext";
 import Login from './Components/Login';
+import Home from './Components/Home';
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link,
-  Redirect,
+  // Link,
+  // Redirect,
 } from "react-router-dom";
-import Button from './Components/Button';
-import Home from './Components/Home';
 
 const App = () => {  
-
-
-  const auth = useContext(AuthContext);
-  const { authState } = auth;
+  const { authState } = useAuth();
   
   return (
       <div className={styles.App}>

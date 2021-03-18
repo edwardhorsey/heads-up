@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./CreateOrJoin.module.scss";
-import { ServerContext } from '../../Context/serverContext';
-import socket from "../../Socket/socket";
+import { useServer } from '../../Context/serverContext';
+import { createGame, joinGame } from "../../Socket/requests";
 import { useFormik, FormikErrors } from 'formik';
 import Button from "../Button";
 
@@ -20,47 +20,21 @@ const validate = (values: Ivalues) => {
 };
 
 const CreateOrJoin: React.FC = () => {
-  const context = useContext(ServerContext);
-  const { serverState } = context;
-  const { falseGID, uid, displayName } = serverState;
+  const { serverState, serverDispatch } = useServer();
+  const { falseGID, uid } = serverState;
 
   const formik = useFormik({
-    initialValues: {
-      gid: '',
-    },
+    initialValues: { gid: '' },
     validate,
-    onSubmit: values => {
-      joinGame(values.gid);
-    }
+    onSubmit: values => joinGame(values.gid, uid),
   });
 
-  const createGame = () => {
-    const request = {
-      action: 'onGameAction',
-      method: 'createGame',
-      uid,
-    };
-
-    socket.send(JSON.stringify(request));
-  }
-
-  const joinGame = (gid: string) => {
-    const request = {
-      action: 'onGameAction',
-      method: 'joinGame',
-      uid,
-      gid,
-    };
-
-    socket.send(JSON.stringify(request));
-  }
-
-  if (formik.errors.gid === "Required" && falseGID) context.setServerState({...context.serverState, falseGID: false });
+  if (formik.errors.gid === "Required" && falseGID) serverDispatch({ type: 'validGid' });
 
   return (
     <section className={styles.CreateOrJoin}>
       <h3>Create or Join a game</h3>
-      <Button logic={createGame} text="Create game" />
+      <Button logic={() => createGame(uid)} text="Create game" />
       <form>
         <input name="gid" placeholder="Game ID" onChange={formik.handleChange}/>
         <Button logic={formik.handleSubmit} text="Join a game" />

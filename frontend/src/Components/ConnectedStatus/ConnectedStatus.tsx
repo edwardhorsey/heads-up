@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./ConnectedStatus.module.scss";
-import { ServerContext } from "../../Context/serverContext";
+import { useServer } from "../../Context/serverContext";
 
 interface IProps {}
 
 const ConnectedStatus: React.FC<IProps> = () => {
-  const context = useContext(ServerContext);
-  const { status } = context.serverState;
+  const { serverState } = useServer()
+  const { status } = serverState;
 
   const circleStyle = `${styles.circle} ${styles[status]}`;
   return (

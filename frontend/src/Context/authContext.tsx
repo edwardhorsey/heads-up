@@ -1,4 +1,4 @@
-import React, { ReactChild, createContext, useState } from 'react';
+import React, { ReactChild, createContext, useState, useContext } from 'react';
 import { initialAuthState, IAuthContext, initialAuthContext } from './interfaces';
 
 interface Iprops {
@@ -15,3 +15,5 @@ export const AuthProvider = (props: Iprops) => {
 
   return <AuthContext.Provider value={{ authState, setAuthState, login, logout }}>{props.children}</AuthContext.Provider>
 };
+
+export const useAuth = () => useContext(AuthContext);
