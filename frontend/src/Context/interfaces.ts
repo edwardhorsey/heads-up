@@ -79,7 +79,7 @@ export type ActionType = 'socketOnOpen'
 
 export interface Action {
   type: ActionType;
-  response: any;
+  payload?: any;
 }
 export interface ServerState {
   status: string;
@@ -103,6 +103,8 @@ export interface ServerState {
   noOfHands: number;
   noOfRounds: number;
 }
+
+export type ServerDispatch = (action: Action) => void;
 
 export const initialServerState: ServerState = {
   status: 'disconnected',
@@ -130,12 +132,10 @@ export const initialServerState: ServerState = {
 
 export interface IServerContext {
   serverState: ServerState;
-  dispatchServerState: Dispatch<SetStateAction<ServerState>>;
-  resetServerState: () => void;
+  serverDispatch: ServerDispatch;
+  // resetServerState: () => void;
 }
-
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
-  dispatchServerState: () => {},
-  resetServerState: () => {},
+  serverDispatch: () => {},
 }
