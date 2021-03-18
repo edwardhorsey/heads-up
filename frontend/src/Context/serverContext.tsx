@@ -169,15 +169,15 @@ export const ServerProvider = (props: ServerProviderProps) => {
     switch (method) {
       case 'setUsername':
         login();
-        serverDispatch({ type: method });
+        serverDispatch({ type: method, payload: response });
 
       case 'newHand':
         serverState.noOfHands < 1
-          ? serverDispatch({ type: method })
-          : setTimeout(() => serverDispatch({ type: method }), 3000);
+          ? serverDispatch({ type: method, payload: response })
+          : setTimeout(() => serverDispatch({ type: method, payload: response }), 3000);
 
       case 'backToLobby':
-        setTimeout(() => serverDispatch({ type: method }), 2000);
+        setTimeout(() => serverDispatch({ type: method, payload: response }), 2000);
 
       default:
         serverDispatch({ type: method, payload: response });
