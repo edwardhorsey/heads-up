@@ -8,12 +8,12 @@ import Button from "../Button";
 
 const Home: React.FC = () => {
   const server = useContext(ServerContext);
-  const { serverState, resetServerState } = server;
+  const { serverState, serverDispatch } = server;
   const { readyToStart } = serverState;
   const auth = useContext(AuthContext);
   const { logout } = auth;
   const logoutHome = () => {
-    resetServerState();
+    serverDispatch({ type: 'resetServer' });
     logout();
   };
 

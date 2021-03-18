@@ -21,20 +21,16 @@ const validate = (values: Ivalues) => {
 
 const CreateOrJoin: React.FC = () => {
   const context = useContext(ServerContext);
-  const { serverState } = context;
-  const { falseGID, uid, displayName } = serverState;
+  const { serverState, serverDispatch } = context;
+  const { falseGID, uid } = serverState;
 
   const formik = useFormik({
-    initialValues: {
-      gid: '',
-    },
+    initialValues: { gid: '' },
     validate,
-    onSubmit: values => {
-      joinGame(values.gid, uid);
-    }
+    onSubmit: values => joinGame(values.gid, uid),
   });
 
-  if (formik.errors.gid === "Required" && falseGID) context.setServerState({...context.serverState, falseGID: false });
+  if (formik.errors.gid === "Required" && falseGID) serverDispatch({ type: 'validGid' });
 
   return (
     <section className={styles.CreateOrJoin}>

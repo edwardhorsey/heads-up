@@ -2,6 +2,7 @@ import React, { ReactChild, ReactNode, createContext, useReducer, useContext } f
 import { AuthContext } from "./authContext";
 import socket from '../Socket/socket';
 import { ServerState, Action, initialServerState, IServerContext, initialServerContext } from './interfaces';
+import { setUsername } from '../Socket/requests';
 
 interface Iprops {
   children: ReactNode;
@@ -9,6 +10,7 @@ interface Iprops {
 
 const serverReducer = (serverState: ServerState, action: Action):  ServerState => {
   const { type, payload: response } = action;
+  console.log(action);
 
   switch(type) {
     case 'socketOnOpen':
@@ -20,17 +22,26 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
     case 'socketOnError':
       return { ...serverState, status: "error" };
 
+    case 'resetServer':
+      return { ...initialServerState };
+
     case 'connected':
-      return ({ ...serverState, uid: response.uid });
+      return { ...serverState, uid: response.uid };
 
     case 'setUsername':
-      return ({ ...serverState, displayName: response.username, uid: response.uid });
+      return { ...serverState, displayName: response.username };
 
     case 'createGame':
-      return ({ ...serverState, gid: response.gid });
+      return { ...serverState, gid: response.gid };
+
+    case 'removeGid':
+      return { ...serverState, gid: '' };
 
     case 'incorrectGid':
-      return ({ ...serverState, falseGID: true });
+      return { ...serverState, falseGID: true };
+
+    case 'validGid':
+      return {...serverState, falseGID: false };
 
     case 'joinGame':
       return ({ ...serverState,
@@ -42,15 +53,14 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
       });
 
     case 'onePlayerReady':
-      return ({...serverState,
-        players: serverState.players.map((player, index) => {
-          return {...player, ready: response.players[index].ready}
-        })
-      });
+      return {...serverState,
+        players: serverState.players.map((player, index) => (
+          {...player, ready: response.players[index].ready}
+        ))
+      };
 
     case 'newHand':
-      const newHand = () => {
-        return ({...serverState,
+      return {...serverState,
           players: response.players,
           action: response.action === 'two' ? 1: 0,
           stage: response.stage,
@@ -61,24 +71,20 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
           noOfHands: response['number-of-hands'],
           winner: response.winner,
           winningHand: response['winning-hand']
-        });
-      };
-
-      return newHand();
-      // return serverState.noOfHands < 1 ? newHand() : setTimeout(()=>{newHand()}, 3000);
+        };
 
     case 'allIn':
-      return ({...serverState,
+      return {...serverState,
         players: serverState.players.map((player, index) => (
           {...player, ...response.players[index]}
         )),
         stage: 'to-call',
         action: response.action === 'two' ? 1: 0,
         pot: response.pot
-      });
+      };
 
     case 'showdown':
-      return ({...serverState,
+      return {...serverState,
         players: serverState.players.map((player, index) => (
           {...player, ...response.players[index]}
         )),
@@ -88,19 +94,19 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
         stage: 'showdown',
         action: null,
         pot: response.pot
-      });
+      };
 
     case 'folded':
-      return ({...serverState,
+      return {...serverState,
         players: serverState.players.map((player, index) => (
           {...player, ...response.players[index]}
         )),
         stage: 'folded',
         action: null,
-      });
+      };
 
     case 'winner':
-      return ({...serverState,
+      return {...serverState,
         players: serverState.players.map((player, index) => (
           {...player, ...response.players[index]}
         )),
@@ -109,16 +115,16 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
         action: null,
         winningHand: response['winning-hand'],
         stage: 'winner'
-      })
+      };
 
     case 'playerBust':
-      return ({...serverState,
+      return {...serverState,
         action: null,
         stage: 'end'
-      });
+      };
 
     case 'backToLobby':  
-      return ({...serverState,
+      return {...serverState,
         players: serverState.players.map((player, index) => (
           {...player, ...response.players[index]}
         )),
@@ -127,7 +133,7 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
         noOfRounds: response['number-of-rounds'],
         stage: response['stage'],
         inHand: false
-      });
+      };
 
     default: {
       throw new Error(`Action - ${type} - not matched`);
@@ -141,11 +147,6 @@ export const ServerProvider = (props: Iprops) => {
   const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState)
   const auth = useContext(AuthContext);
   const { login } = auth;
-
-  // const resetServerState = () => serverDispatch({
-  //   ...initialServerState,
-  //   status: socket.readyState === 1 ? "connected" : "disconnected",
-  // });
 
   socket.onopen = () => {
     console.log("connected to server");
@@ -166,13 +167,24 @@ export const ServerProvider = (props: Iprops) => {
     const response = JSON.parse(event.data);
     console.log('new data arrived');
     console.table(response);
-
     const { method } = response;
 
+    /* TEMP Special scenarios */
+    switch (method) {
+      case 'setUsername':
+        login();
+        serverDispatch({ type: method });
+
+      case 'newHand':
+        serverState.noOfHands < 1
+          ? serverDispatch({ type: method })
+          : setTimeout(() => serverDispatch({ type: method }), 3000);
+
+      default:
+        serverDispatch({ type: method, payload: response });
+    }
+
     // for back to lobby ? setTimeout(()=>{}, 2000);
-
-    serverDispatch({ type: method, payload: response });
-
   }
   
   return <ServerContext.Provider value={{ serverState, serverDispatch }}>{props.children}</ServerContext.Provider>
