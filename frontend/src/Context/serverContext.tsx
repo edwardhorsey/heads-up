@@ -5,7 +5,6 @@ import { ServerState, Action, initialServerState, IServerContext, initialServerC
 
 const serverReducer = (serverState: ServerState, action: Action):  ServerState => {
   const { type, payload: response } = action;
-  console.log(action);
 
   switch(type) {
     case 'socketOnOpen':
@@ -24,7 +23,7 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
       return { ...serverState, uid: response.uid };
 
     case 'setUsername':
-      return { ...serverState, displayName: response.username };
+      return { ...serverState, displayName: response.username, uid: response.uid };
 
     case 'createGame':
       return { ...serverState, gid: response.gid };
@@ -39,6 +38,8 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
       return {...serverState, falseGID: false };
 
     case 'joinGame':
+      const whichPlayer = serverState.uid === response.players[0].uid ? 0 : 1;
+      console.log(whichPlayer);
       return { ...serverState,
         gid: response.gid,
         falseGID: false,
@@ -161,8 +162,6 @@ export const ServerProvider = (props: ServerProviderProps) => {
 
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data);
-    console.log('new data arrived');
-    console.table(response);
     const { method } = response;
 
     /* TEMP Special scenarios */
@@ -170,14 +169,17 @@ export const ServerProvider = (props: ServerProviderProps) => {
       case 'setUsername':
         login();
         serverDispatch({ type: method, payload: response });
+        break;
 
       case 'newHand':
         serverState.noOfHands < 1
           ? serverDispatch({ type: method, payload: response })
           : setTimeout(() => serverDispatch({ type: method, payload: response }), 3000);
+        break;
 
       case 'backToLobby':
         setTimeout(() => serverDispatch({ type: method, payload: response }), 2000);
+        break;
 
       default:
         serverDispatch({ type: method, payload: response });

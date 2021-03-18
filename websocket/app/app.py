@@ -79,7 +79,6 @@ async def join_game(endpoint, connectionId, body):
     response = {
         'method': 'joinGame',
         'gid': gid,
-        'uid': uid,
         'number-of-rounds': this_game.number_of_rounds,
         'players': [ {
             'uid': this_game.player_one.uid,
