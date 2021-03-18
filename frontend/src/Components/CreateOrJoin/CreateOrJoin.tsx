@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./CreateOrJoin.module.scss";
-import { ServerContext } from '../../Context/serverContext';
+import { useServer } from '../../Context/serverContext';
 import { createGame, joinGame } from "../../Socket/requests";
 import { useFormik, FormikErrors } from 'formik';
 import Button from "../Button";
@@ -20,8 +20,7 @@ const validate = (values: Ivalues) => {
 };
 
 const CreateOrJoin: React.FC = () => {
-  const context = useContext(ServerContext);
-  const { serverState, serverDispatch } = context;
+  const { serverState, serverDispatch } = useServer();
   const { falseGID, uid } = serverState;
 
   const formik = useFormik({

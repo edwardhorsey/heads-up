@@ -1,17 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./Home.module.scss";
-import { ServerContext } from '../../Context/serverContext';
-import { AuthContext } from "../../Context/authContext";
+import { useServer } from '../../Context/serverContext';
+import { useAuth } from "../../Context/authContext";
 import Lobby from '../../Components/Lobby';
 import GameContainer from '../../Components/GameContainer';
 import Button from "../Button";
 
 const Home: React.FC = () => {
-  const server = useContext(ServerContext);
-  const { serverState, serverDispatch } = server;
+  const { serverState, serverDispatch } = useServer();
   const { readyToStart } = serverState;
-  const auth = useContext(AuthContext);
-  const { logout } = auth;
+  const { logout } = useAuth();
   const logoutHome = () => {
     serverDispatch({ type: 'resetServer' });
     logout();

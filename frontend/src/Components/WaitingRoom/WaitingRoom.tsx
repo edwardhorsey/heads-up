@@ -1,12 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./WaitingRoom.module.scss";
-import { ServerContext } from '../../Context/serverContext';
+import { useServer } from '../../Context/serverContext';
 import Button from "../Button";
 
 const WaitingRoom: React.FC = () => {
-  
-  const context = useContext(ServerContext)
-  const { serverState, serverDispatch } = context;
+  const { serverState, serverDispatch } = useServer();
   const { displayName, gid } = serverState;
   return (
     <section className={styles.WaitingRoom}>

@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { ServerContext } from '../../Context/serverContext';
+import React from "react";
+import { useServer } from '../../Context/serverContext';
 import { Iplayer } from '../../Context/interfaces';
 import { allIn, call, fold, backToLobby } from '../../Socket/requests';
 import styles from "./UserMoves.module.scss";
@@ -7,9 +7,7 @@ import Button from "../Button";
 import Timer from "../Timer";
 
 const UserMoves: React.FC = () => {
-
-  const context = useContext(ServerContext);
-  const { serverState } = context;
+  const { serverState } = useServer();
   const { uid, gid, players, whichPlayer, action, stage } = serverState;
 
   const opponent: Iplayer = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent

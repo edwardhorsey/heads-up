@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./Lobby.module.scss";
 import CreateOrJoin from "../CreateOrJoin";
-import { ServerContext } from '../../Context/serverContext';
+import { useServer } from '../../Context/serverContext';
 import WaitingRoom from "../WaitingRoom";
 
 const Lobby: React.FC = () => {
-  const context = useContext(ServerContext);
-  const { serverState } = context;
+  const { serverState } = useServer();
   const { gid, displayName } = serverState;
   return (
     <section className={styles.Lobby}>

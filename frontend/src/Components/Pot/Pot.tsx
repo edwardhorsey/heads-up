@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import styles from "./Pot.module.scss";
 import ChipsGen from "../ChipsGen";
-import { ServerContext } from "../../Context/serverContext";
 
 interface IProps {
   amount: number;

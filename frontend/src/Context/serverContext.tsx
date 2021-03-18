@@ -1,12 +1,7 @@
-import React, { ReactChild, ReactNode, createContext, useReducer, useContext } from 'react';
-import { AuthContext } from "./authContext";
+import React, { ReactNode, createContext, useReducer, useContext } from 'react';
+import { useAuth } from "./authContext";
 import socket from '../Socket/socket';
 import { ServerState, Action, initialServerState, IServerContext, initialServerContext } from './interfaces';
-import { setUsername } from '../Socket/requests';
-
-interface Iprops {
-  children: ReactNode;
-}
 
 const serverReducer = (serverState: ServerState, action: Action):  ServerState => {
   const { type, payload: response } = action;
@@ -44,13 +39,13 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
       return {...serverState, falseGID: false };
 
     case 'joinGame':
-      return ({ ...serverState,
+      return { ...serverState,
         gid: response.gid,
         falseGID: false,
         players: response.players,
         readyToStart: response.players.length === 2 ? true : false,
         whichPlayer: serverState.uid === response.players[0].uid ? 0 : 1
-      });
+      };
 
     case 'onePlayerReady':
       return {...serverState,
@@ -141,25 +136,26 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
   } 
 };
 
-export const ServerContext = createContext<IServerContext>(initialServerContext);
+interface ServerProviderProps {
+  children: ReactNode;
+}
 
-export const ServerProvider = (props: Iprops) => {
-  const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState)
-  const auth = useContext(AuthContext);
-  const { login } = auth;
+const ServerContext = createContext<IServerContext>(initialServerContext);
+
+export const ServerProvider = (props: ServerProviderProps) => {
+  const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
+  const { login } = useAuth();
 
   socket.onopen = () => {
-    console.log("connected to server");
     serverDispatch({ type: 'socketOnOpen' });
   };
 
   socket.onclose = () => {
-    console.log("disconnected from server");
     serverDispatch({ type: 'socketOnClose' })
   };
 
   socket.onerror = (event) => {
-    console.log("WebSocket error observed:", event);
+    console.error("WebSocket error observed:", event);
     serverDispatch({ type: 'socketOnError' })
   };
 
@@ -180,12 +176,15 @@ export const ServerProvider = (props: Iprops) => {
           ? serverDispatch({ type: method })
           : setTimeout(() => serverDispatch({ type: method }), 3000);
 
+      case 'backToLobby':
+        setTimeout(() => serverDispatch({ type: method }), 2000);
+
       default:
         serverDispatch({ type: method, payload: response });
     }
-
-    // for back to lobby ? setTimeout(()=>{}, 2000);
   }
   
   return <ServerContext.Provider value={{ serverState, serverDispatch }}>{props.children}</ServerContext.Provider>
 };
+
+export const useServer = () => useContext(ServerContext);
