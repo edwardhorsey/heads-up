@@ -1,13 +1,13 @@
 import React from "react";
 import styles from "./GameNav.module.scss";
-import { Iplayer } from '../../Context/interfaces';
+import { Iplayer, Hand } from '../../Context/interfaces';
 import PlayerStats from "../PlayerStats";
 
 interface IProps {
   yourself: Iplayer;
   opponent: Iplayer;
   stage: string;
-  yourHand: string[];
+  yourHand: Hand;
 }
 
 const GameNav: React.FC<IProps> = ({yourself, opponent, stage, yourHand}) => {

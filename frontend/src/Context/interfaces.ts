@@ -36,7 +36,7 @@ export interface Iplayer {
   bankroll: number,
   ready: boolean,
   'bet-size': number,
-  hand: string[][],
+  hand: Hand,
   folded: boolean,
   blind: number,
   'rounds-won': number,
@@ -78,7 +78,12 @@ export type ActionType = 'socketOnOpen'
 | 'folded'
 | 'winner'
 | 'playerBust'
-| 'backToLobby'
+| 'backToLobby';
+
+export type Stage = 'a' | 'b';
+
+export type Card = string[];
+export type Hand = Card[];
 
 export interface Action {
   type: ActionType;
@@ -97,10 +102,10 @@ export interface ServerState {
   stage: string;
   players: Array<Iplayer>;
   whichPlayer: number;
-  oppHand: string[];
-  yourHand: string[];
-  community: string[];
-  winningHand: [string, number[], string[]];
+  oppHand: Hand;
+  yourHand: Hand;
+  community: Hand;
+  winningHand: [string, number[], Hand];
   winner: string;
   pot: number;
   noOfHands: number;

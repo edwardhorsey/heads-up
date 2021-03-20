@@ -1,6 +1,6 @@
 import React from "react";
 import { useServer } from "../../Context/serverContext";
-import { Iplayer } from '../../Context/interfaces';
+import { Iplayer, Hand, Card } from '../../Context/interfaces';
 import styles from "./GameHand.module.scss";
 import PlayingCard from "../PlayingCard";
 import UserMoves from "../UserMoves";
@@ -22,9 +22,9 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
   const { serverState } = useServer();
   const { whichPlayer, yourHand, oppHand, winner, winningHand, pot, community, stage, noOfHands, action } = serverState;
 
-  const isAWinningCard = (card: string) => winningHand[2].join('').includes(card);
+  const isAWinningCard = (card: Card) => winningHand[2].join('').includes(card.join(''));
 
-  const readCards = (hand: string[]) => hand.map((card, index) => <PlayingCard
+  const readCards = (hand: Hand) => hand.map((card, index) => <PlayingCard
     key={index}
     winner={(['winner', 'end'].includes(stage) && winningHand[2].length > 0) ? isAWinningCard(card) : false}
     card={card}
