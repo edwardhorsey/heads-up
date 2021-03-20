@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./PlayerStats.module.scss";
-import { Iplayer, Hand } from '../../Context/interfaces';
+import { Iplayer, Hand } from '../../Interfaces/interfaces';
 
 interface IProps {
   player: Iplayer;

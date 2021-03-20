@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./GameNav.module.scss";
-import { Iplayer, Hand } from '../../Context/interfaces';
+import { Iplayer, Hand } from '../../Interfaces/interfaces';
 import PlayerStats from "../PlayerStats";
 
 interface IProps {

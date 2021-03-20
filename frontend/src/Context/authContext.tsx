@@ -1,5 +1,5 @@
 import React, { ReactChild, createContext, useState, useContext } from 'react';
-import { initialAuthState, IAuthContext, initialAuthContext } from './interfaces';
+import { initialAuthState, IAuthContext, initialAuthContext } from '../Interfaces/interfaces';
 
 interface Iprops {
   children: ReactChild

@@ -1,6 +1,6 @@
 import React from "react";
 import { useServer } from '../../Context/serverContext';
-import { Iplayer } from '../../Context/interfaces';
+import { Iplayer } from '../../Interfaces/interfaces';
 import { allIn, call, fold, backToLobby } from '../../Socket/requests';
 import styles from "./UserMoves.module.scss";
 import Button from "../Button";
