@@ -24,18 +24,20 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
 
   const isAWinningCard = (card: Card) => winningHand[2].join('').includes(card.join(''));
 
-  const readCards = (hand: Hand) => hand.map((card, index) => <PlayingCard
-    key={index}
-    winner={(['winner', 'end'].includes(stage) && winningHand[2].length > 0) ? isAWinningCard(card) : false}
-    card={card}
-    />);
+  const readCards = (hand: Hand) => hand.map((card, index) => (
+    <PlayingCard
+      key={index}
+      winner={(['winner', 'end'].includes(stage) && winningHand[2].length > 0) ? isAWinningCard(card) : false}
+      card={card}
+      />)
+  );
 
   const cardBacks = [<PlayingCard key={1} winner={false} card={['c', 'b']}/>, <PlayingCard key={2} winner={false} card={['c', 'b']}/>];
 
-  const playerNavStyles = () => (action !== null) && (whichPlayer === action) ? `${styles.playerNav} ${styles.focus}` : styles.playerNav;
-  const opponentNavStyles = () => (action !== null) && (whichPlayer !== action) ? `${styles.playerNav} ${styles.focus}` : styles.playerNav;
+  const playerNavStyles = (action !== null && whichPlayer === action) ? `${styles.playerNav} ${styles.focus}` : styles.playerNav;
+  const opponentNavStyles = (action !== null && whichPlayer !== action) ? `${styles.playerNav} ${styles.focus}` : styles.playerNav;
 
-  const opponentsCards = () => oppHand.length > 0 ? readCards(oppHand) : cardBacks;
+  const opponentsCards = oppHand.length > 0 ? readCards(oppHand) : cardBacks;
 
   const announceWinner = () => {
     if (winner === 'draw') {
@@ -44,18 +46,18 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
       const winningPlayer = whichPlayer === (winner === 'one' ? 0 : 1) ? yourself : opponent;
       return `${winningPlayer.name} wins the pot ${pot} with ${winningHand[0]}`;
     }
-  }
+  };
 
   const playerBust = () => {
     const bust = yourself.bankroll <= 0 ? [yourself, opponent] : [opponent, yourself];
     return `${bust[0].name} has bust, ${bust[1].name} wins the round!`;
-    }
+    };
 
   return (
     <article className={styles.Hand}>
-        <div className={opponentNavStyles()}>
+        <div className={opponentNavStyles}>
           {noOfHands && <p>{`#${noOfHands}`}</p>}
-          <PlayersCards cards={opponentsCards()} />
+          <PlayersCards cards={opponentsCards} />
           <div className={styles.OppAndTimer}>
             {((action !== null) && (whichPlayer !== action)) && <Timer num={15} logic={()=>{}} />}
             <PlayerStats player={opponent} who="opp" stage={stage} yourHand={yourHand} />
@@ -67,7 +69,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
         {community && <CommunityCards cards={readCards(community)} />}
         <Pot amount={pot} stage={stage} />
         <PlayerChips which={'Your'} stage={stage} player={yourself} />
-        <div className={playerNavStyles()}>
+        <div className={playerNavStyles}>
           <PlayerStats player={yourself} who="you" stage={stage} yourHand={yourHand} />
           <PlayersCards cards={yourself.folded ? cardBacks : readCards(yourHand)} />
           <UserMoves />
