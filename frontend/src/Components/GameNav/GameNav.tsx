@@ -1,12 +1,12 @@
 import React from "react";
 import styles from "./GameNav.module.scss";
-import { Iplayer, Hand } from '../../Interfaces/interfaces';
+import { Iplayer, Hand, Stage } from '../../Interfaces/interfaces';
 import PlayerStats from "../PlayerStats";
 
 interface IProps {
   yourself: Iplayer;
   opponent: Iplayer;
-  stage: string;
+  stage: Stage;
   yourHand: Hand;
 }
 

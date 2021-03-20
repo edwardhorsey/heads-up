@@ -8,7 +8,7 @@ describe("Leaderboard tests", () => {
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<Timer logic={()=>{console.log('test')}} text={'testing'} />);
+    component = shallow(<Timer logic={()=>{console.log('Timer.test')}} num={808} />);
   })
   
   it("should render", () => {

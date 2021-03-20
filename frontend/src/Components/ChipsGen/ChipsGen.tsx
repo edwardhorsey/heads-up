@@ -5,7 +5,7 @@ interface IProps {
   amount: number
 }
 
-interface IChipHash {
+interface ChipsTable {
   [key: number]: number
 }
 
@@ -13,9 +13,9 @@ let counter = 0;
 
 const ChipsGen: React.FC<IProps> = ({amount}) => {
 
-  const calculateChips = ():IChipHash => {
+  const calculateChips = ():ChipsTable => {
     let total = amount;
-    let obj: IChipHash = {
+    let obj: ChipsTable = {
       1000: 0,
       500: 0,
       100: 0,
@@ -39,11 +39,13 @@ const ChipsGen: React.FC<IProps> = ({amount}) => {
     <div className={styles.ChipsGen}>
         {[1000, 500, 100, 25, 5, 1].map((chip) => {
           let chipsStack = [];
+
           for (let i = 0; i < hash[chip]; i++) {
             const inlineStyle = { top: `-${10*i}px` }
-            chipsStack.push(<img key={counter++} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>);
+            chipsStack.push(<img key={'chip' + counter++} style={inlineStyle} alt={`${chip}`} className={styles.chip} src={`./assets/PokerChips/${chip}.png`}/>);
           }
-          return chipsStack.length > 0 ? <div className={styles.parent}>{chipsStack}</div> : '';
+
+          return chipsStack.length > 0 ?? <div key={'chipStack' + counter++}className={styles.parent}>{chipsStack}</div>;
         })
         }
       </div>

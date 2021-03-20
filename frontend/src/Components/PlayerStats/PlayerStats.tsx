@@ -1,11 +1,11 @@
 import React from "react";
 import styles from "./PlayerStats.module.scss";
-import { Iplayer, Hand } from '../../Interfaces/interfaces';
+import { Iplayer, Hand, Stage } from '../../Interfaces/interfaces';
 
 interface IProps {
   player: Iplayer;
   who?: string;
-  stage: string;
+  stage: Stage;
   yourHand:  Hand;
 }
 

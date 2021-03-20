@@ -1,5 +1,5 @@
 import React from "react";
-import { Iplayer } from '../../Interfaces/interfaces';
+import { Iplayer, Stage } from '../../Interfaces/interfaces';
 import ChipsGen from "../ChipsGen";
 import {useSpring, animated} from 'react-spring'
 import styles from "./PlayerChips.module.scss";
@@ -7,7 +7,7 @@ import styles from "./PlayerChips.module.scss";
 interface IProps {
   which: string,
   player: Iplayer,
-  stage: string
+  stage: Stage
 }
 
 const PlayerChips: React.FC<IProps> = ({which, player, stage}) => {

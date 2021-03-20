@@ -80,7 +80,18 @@ export type ActionType = 'socketOnOpen'
 | 'playerBust'
 | 'backToLobby';
 
-export type Stage = 'a' | 'b';
+export type Stage = 'initial'
+| 'preflop'
+| 'to-call'
+| 'folded'
+| 'winner'
+| 'showdown'
+| 'end'
+| 'backToLobby';
+
+export type SocketStatus = 'disconnected'
+| 'connected'
+| 'error';
 
 export type Card = string[];
 export type Hand = Card[];
@@ -90,7 +101,7 @@ export interface Action {
   payload?: any;
 }
 export interface ServerState {
-  status: string;
+  status: SocketStatus;
   inHand: boolean;
   uid: string;
   displayName: string;
@@ -99,7 +110,7 @@ export interface ServerState {
   falseGID: boolean;
   readyToStart: boolean;
   action: number | null;
-  stage: string;
+  stage: Stage;
   players: Array<Iplayer>;
   whichPlayer: number;
   oppHand: Hand;
