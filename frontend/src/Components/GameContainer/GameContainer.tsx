@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./GameContainer.module.scss";
 import { useServer } from '../../Context/serverContext';
-import { Iplayer } from '../../Context/interfaces';
+import { Iplayer } from '../../Interfaces/interfaces';
 import { readyToPlayHand } from "../../Socket/requests";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";

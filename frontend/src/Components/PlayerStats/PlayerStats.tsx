@@ -1,12 +1,12 @@
 import React from "react";
 import styles from "./PlayerStats.module.scss";
-import { Iplayer } from '../../Context/interfaces';
+import { Iplayer, Hand, Stage } from '../../Interfaces/interfaces';
 
 interface IProps {
   player: Iplayer;
   who?: string;
-  stage: string;
-  yourHand: string[];
+  stage: Stage;
+  yourHand:  Hand;
 }
 
 const PlayerStats: React.FC<IProps> = ({player, who, stage, yourHand}) => {

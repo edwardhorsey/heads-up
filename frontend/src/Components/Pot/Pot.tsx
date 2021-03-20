@@ -1,10 +1,11 @@
 import React from "react";
 import styles from "./Pot.module.scss";
 import ChipsGen from "../ChipsGen";
+import { Stage } from "../../Interfaces/interfaces";
 
 interface IProps {
   amount: number;
-  stage: string;
+  stage: Stage;
 }
 
 const Pot: React.FC<IProps> = ({amount, stage}) => {
