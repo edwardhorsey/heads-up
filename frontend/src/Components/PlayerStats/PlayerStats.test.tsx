@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import PlayerStats from './PlayerStats';
-import { Iplayer } from '../../Context/serverContext';
+import { Iplayer } from '../../Context/interfaces';
 
 describe("PlayerStats tests", () => {
   let component: any;
@@ -18,10 +18,11 @@ describe("PlayerStats tests", () => {
     'rounds-won': 3,
     profit: 0
   }
+  const yourHand = [['a','clubs'], ['k', 'clubs']];
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<PlayerStats player={testProp} who="you" />);
+    component = shallow(<PlayerStats player={testProp} who="you" stage="preflop" yourHand={yourHand} />);
   })
   
   it("should render", () => {
