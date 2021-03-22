@@ -166,6 +166,9 @@ export const ServerProvider = (props: ServerProviderProps) => {
 
     /* TEMP Special scenarios */
     switch (method) {
+      case 'login':
+        break;
+
       case 'setUsername':
         login();
         serverDispatch({ type: method, payload: response });

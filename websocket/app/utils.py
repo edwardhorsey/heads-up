@@ -1,3 +1,4 @@
+import os
 import uuid
 import requests
 
@@ -30,9 +31,8 @@ def get_game(gid):
     return re_map_game(game['Item']['game']) if game else False
 
 async def get_access_tokens(code):
-    url = os.environ['AWS_COGNITO_APP_URL'] ## '<ENTER APP CLIENT ID HERE>'
-    app_client_id = os.environ['AWS_COGNITO_APP_CLIENT_ID'] ## '<ENTER APP CLIENT ID HERE>'
-
+    url = os.environ['AWS_COGNITO_APP_URL']
+    app_client_id = os.environ['AWS_COGNITO_APP_CLIENT_ID']
     response = requests.post(url + '/oauth2/token',{
         'Content-Type':'application/x-www-form-urlencoded',
         'grant_type': 'authorization_code',
@@ -41,10 +41,10 @@ async def get_access_tokens(code):
         'redirect_uri': 'http://localhost:3000/'
     })
 
-    print(response.json())
     return response.json()
 
 async def get_user_sub(code):
     access_tokens = await get_access_tokens(code)
+    event = { 'token': access_tokens['id_token'] }
     decoded_user = await decode_token(event, None)
     return decoded_user

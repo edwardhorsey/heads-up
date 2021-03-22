@@ -22,13 +22,11 @@ from .poker.player import Player
 async def login(endpoint, connectionId, body):
     authorization_code = body['code']
     user_details = await get_user_sub(authorization_code)
-    print(user_details)
 
     response = {
         'method': 'login',
         'uid': connectionId,
         'user_details': user_details,
-        'success': status,
     }
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
