@@ -101,26 +101,26 @@ export interface Action {
   payload?: any;
 }
 export interface ServerState {
-  status: SocketStatus;
-  inHand: boolean;
-  uid: string;
-  displayName: string;
-  opponentName: string;
-  gid: string;
-  falseGID: boolean;
-  readyToStart: boolean;
-  action: number | null;
-  stage: Stage;
-  players: Array<Iplayer>;
-  whichPlayer: number;
-  oppHand: Hand;
-  yourHand: Hand;
-  community: Hand;
-  winningHand: [string, number[], Hand];
-  winner: string;
-  pot: number;
-  noOfHands: number;
-  noOfRounds: number;
+  status: SocketStatus; // websocket server
+  inHand: boolean; // player 
+  uid: string; // player 
+  displayName: string; // player 
+  opponentName: string; // game
+  gid: string; // game
+  falseGID: boolean; // app
+  readyToStart: boolean; // game
+  action: number | null; // game
+  stage: Stage; // app
+  players: Array<Iplayer>; // game
+  whichPlayer: number; // game
+  oppHand: Hand; // game
+  yourHand: Hand; // game
+  community: Hand; // game
+  winningHand: [string, number[], Hand]; // game
+  winner: string; // game
+  pot: number; // game
+  noOfHands: number; // game
+  noOfRounds: number; // game
 }
 
 export type ServerDispatch = (action: Action) => void;

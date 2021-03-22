@@ -1,4 +1,7 @@
 import uuid
+import requests
+
+from .cognito import lambda_handler as decode_token
 
 from .tables import table_connections
 from .tables import table_games
@@ -25,3 +28,23 @@ def put_game(gid, game):
 def get_game(gid):
     game = table_games.get_item(Key={'gameId': gid})
     return re_map_game(game['Item']['game']) if game else False
+
+async def get_access_tokens(code):
+    url = os.environ['AWS_COGNITO_APP_URL'] ## '<ENTER APP CLIENT ID HERE>'
+    app_client_id = os.environ['AWS_COGNITO_APP_CLIENT_ID'] ## '<ENTER APP CLIENT ID HERE>'
+
+    response = requests.post(url + '/oauth2/token',{
+        'Content-Type':'application/x-www-form-urlencoded',
+        'grant_type': 'authorization_code',
+        'client_id': app_client_id,
+        'code': code,
+        'redirect_uri': 'http://localhost:3000/'
+    })
+
+    print(response.json())
+    return response.json()
+
+async def get_user_sub(code):
+    access_tokens = await get_access_tokens(code)
+    decoded_user = await decode_token(event, None)
+    return decoded_user

@@ -8,6 +8,14 @@ export const setUsername = (username: string) => {
   }));
 };
 
+export const login = (code: string) => {
+  return socket.send(JSON.stringify({
+    code,
+    action: 'onGameAction',
+    method: 'login',
+  }));
+};
+
 export const createGame = (uid: string) => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',

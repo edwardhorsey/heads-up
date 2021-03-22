@@ -11,11 +11,32 @@ from .utils import generate_game_id
 from .utils import re_map_game
 from .utils import get_game
 from .utils import put_game
+from .utils import get_user_sub
 
 from .poker.game import Game
 from .poker.player import Player
 
 # Game functions
+
+# Login
+async def login(endpoint, connectionId, body):
+    authorization_code = body['code']
+    user_details = await get_user_sub(authorization_code)
+    print(user_details)
+
+    response = {
+        'method': 'login',
+        'uid': connectionId,
+        'user_details': user_details,
+        'success': status,
+    }
+
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+
+    apigatewaymanagementapi.post_to_connection(
+        Data = json.dumps(response),
+        ConnectionId = connectionId
+    )
 
 # Set username
 async def set_username(endpoint, connectionId, body):
