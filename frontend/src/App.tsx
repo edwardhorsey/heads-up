@@ -13,7 +13,7 @@ import {
 
 const App = () => {  
   const { authState } = useAuth();
-  
+
   return (
       <div className={styles.App}>
         <Route path="/">
