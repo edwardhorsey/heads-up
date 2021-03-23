@@ -6,16 +6,20 @@ Auth context
 */
 export interface AuthState {
   authToken: string;
+  displayName: string;
+  email: string;
 }
 
 export const initialAuthState: AuthState = {
   authToken: '',
+  displayName: '',
+  email: '',
 }
 
 export interface IAuthContext {
   authState: AuthState;
   setAuthState: Dispatch<SetStateAction<AuthState>>;
-  login: () => void;
+  login: (userDetails: AuthState) => void;
   logout: () => void;
 }
 

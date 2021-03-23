@@ -163,16 +163,19 @@ export const ServerProvider = (props: ServerProviderProps) => {
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data);
     const { method } = response;
+    console.log('Data arrived ! ', response);
 
     /* TEMP Special scenarios */
     switch (method) {
       case 'login':
+        response.userObject
+          ? login(response.userObject) 
+          : console.log(response.message);
         break;
 
-      case 'setUsername':
-        login();
-        serverDispatch({ type: method, payload: response });
-        break;
+      // case 'setUsername':
+      //   serverDispatch({ type: method, payload: response });
+      //   break;
 
       case 'newHand':
         serverState.noOfHands < 1

@@ -27,14 +27,30 @@ async def login(endpoint, connectionId, body):
         # attach user data from players table to connections table
         print(user_details)
 
-    response = {
-        'method': 'login',
-        'uid': connectionId,
-        'user_details': user_details,
-    }
+        # check if any connection id has same token
+        # # if true -> kick the connection
+        # save user details to connection id
+
+        response = {
+            'method': 'login',
+            'uid': connectionId,
+            'userObject': {
+                'authToken': user_details['sub'],
+                'displayName': user_details['cognito:username'],
+                'email': user_details['email'],
+            },
+            'message': 'Logged in',
+        }
+
+    else:
+        response = {
+            'method': 'login',
+            'uid': connectionId,
+            'userObject': False,
+            'message': 'Failed to log in'
+        }
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
-
     apigatewaymanagementapi.post_to_connection(
         Data = json.dumps(response),
         ConnectionId = connectionId
@@ -52,7 +68,6 @@ async def set_username(endpoint, connectionId, body):
     }
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
-
     apigatewaymanagementapi.post_to_connection(
         Data = json.dumps(response),
         ConnectionId = connectionId
@@ -78,7 +93,6 @@ async def create_game(endpoint, connectionId, body):
     }
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
-
     apigatewaymanagementapi.post_to_connection(
         Data = json.dumps(response),
         ConnectionId = connectionId
@@ -117,7 +131,6 @@ async def join_game(endpoint, connectionId, body):
     }
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
-
     for client in clients:
         apigatewaymanagementapi.post_to_connection(
             Data = json.dumps(response),
@@ -152,7 +165,6 @@ async def ready_to_play(endpoint, connectionId, body):
         put_game(gid, this_game)
 
         apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
-
         for client in clients:
             apigatewaymanagementapi.post_to_connection(
                 Data = json.dumps(response),
