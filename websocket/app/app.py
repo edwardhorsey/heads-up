@@ -11,7 +11,7 @@ from .utils import generate_game_id
 from .utils import re_map_game
 from .utils import get_game
 from .utils import put_game
-from .utils import get_user_sub
+from .utils import get_user_profile
 
 from .poker.game import Game
 from .poker.player import Player
@@ -21,7 +21,10 @@ from .poker.player import Player
 # Login
 async def login(endpoint, connectionId, body):
     authorization_code = body['code']
-    user_details = await get_user_sub(authorization_code)
+    user_details = await get_user_profile(authorization_code)
+
+    if user_details['success']:
+        # attach user data from players table to connections table
 
     response = {
         'method': 'login',

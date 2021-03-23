@@ -33,6 +33,7 @@ def get_game(gid):
 async def get_access_tokens(code):
     url = os.environ['AWS_COGNITO_APP_URL']
     app_client_id = os.environ['AWS_COGNITO_APP_CLIENT_ID']
+
     response = requests.post(url + '/oauth2/token',{
         'Content-Type':'application/x-www-form-urlencoded',
         'grant_type': 'authorization_code',
@@ -43,8 +44,19 @@ async def get_access_tokens(code):
 
     return response.json()
 
-async def get_user_sub(code):
-    access_tokens = await get_access_tokens(code)
-    event = { 'token': access_tokens['id_token'] }
-    decoded_user = await decode_token(event, None)
-    return decoded_user
+async def get_user_profile(code):
+    try:
+        access_tokens = await get_access_tokens(code)
+        print(access_tokens)
+        if 'error' in access_tokens:
+            raise Exception (access_tokens)
+        else:
+            if 'id_token' in access_tokens:
+                event = { 'token': access_tokens['id_token'] }
+                decoded_user = await decode_token(event, None)
+                return decoded_user
+    except Exception as e:
+        return {
+            'success': False,
+            'message': repr(e)
+        }
