@@ -8,7 +8,8 @@ export const setUsername = (username: string) => {
   }));
 };
 
-export const login = (code: string) => {
+export const sendCognitoCode = (code: string) => {
+  console.log(code);
   return socket.send(JSON.stringify({
     code,
     action: 'onGameAction',

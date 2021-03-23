@@ -1,16 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Login.module.scss";
+import { sendCognitoCode } from '../../Socket/requests';
+/*
 import Button from "../Button";
 import { useFormik, FormikErrors } from 'formik';
-import { login, setUsername } from '../../Socket/requests';
-
+*/
 
 const Login: React.FC = () => {
+  const [ loginCode, setLoginCode ] = useState<string | null>(null);
+  
+  useEffect(()=>{
+    if (!loginCode) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const authCode = urlParams.get('code');
+      setLoginCode(authCode);
+    } else {
+      sendCognitoCode(loginCode);
+    }
+  }, [loginCode]);
+
+
+  /*
   const setName = (name: string): void => setUsername(name);
 
   interface Ivalues {
     name: string;
   }
+
   interface IProps {
     setName: (name: string) => void
   }
@@ -26,13 +42,14 @@ const Login: React.FC = () => {
     validate,
     onSubmit: values => setName(values.name)
   });
+  */
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const authCode = urlParams.get('code');
+  const loginUrl = process.env.REACT_APP_COGNITO_LOGIN_URL;
   
   return (
     <section className={styles.Login}>
       <h1>Welcome to Poker</h1>
+      {/*}
       <form>
         <label htmlFor="name" hidden><h1>Display name</h1></label>
         <input name="name" placeholder="Your name" onChange={formik.handleChange} />
@@ -40,12 +57,8 @@ const Login: React.FC = () => {
         {formik.errors.name ?? <div className={styles.formErrors}>{formik.errors.name}</div>}
       </form>
       <input name="code" placeholder="Auth code from Cognito" id="auth-code" />
-      <Button logic={() => {
-        const authCodeInput = document.getElementById('auth-code') as HTMLInputElement;
-        const authCode = authCodeInput.value || 'nope';
-        console.log(authCode);
-        login(authCode);
-      }} text="Login" />
+      {*/}
+      <a href={loginUrl}>Login</a>
     </section>
   );
 };
