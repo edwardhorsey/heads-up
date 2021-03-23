@@ -34,29 +34,26 @@ async def get_access_tokens(code):
     url = os.environ['AWS_COGNITO_APP_URL']
     app_client_id = os.environ['AWS_COGNITO_APP_CLIENT_ID']
 
-    response = requests.post(url + '/oauth2/token',{
+    return requests.post(url + '/oauth2/token',{
         'Content-Type':'application/x-www-form-urlencoded',
         'grant_type': 'authorization_code',
         'client_id': app_client_id,
         'code': code,
-        'redirect_uri': 'http://localhost:3000/'
-    })
-
-    return response.json()
+        'redirect_uri': os.environ['AWS_COGNITO_APP_REDIRECT_URI']
+    }).json()
 
 async def get_user_profile(code):
     try:
         access_tokens = await get_access_tokens(code)
-        print(access_tokens)
         if 'error' in access_tokens:
-            raise Exception (access_tokens)
+            raise Exception ('Failed to fetch from AWS Cognito oauth endpoint: ', access_tokens)
         else:
             if 'id_token' in access_tokens:
                 event = { 'token': access_tokens['id_token'] }
                 decoded_user = await decode_token(event, None)
                 return decoded_user
-    except Exception as e:
-        return {
-            'success': False,
-            'message': repr(e)
-        }
+            else:
+                return False
+    except Exception as error:
+        print(error)
+        return False

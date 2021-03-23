@@ -23,8 +23,9 @@ async def login(endpoint, connectionId, body):
     authorization_code = body['code']
     user_details = await get_user_profile(authorization_code)
 
-    if user_details['success']:
+    if user_details:
         # attach user data from players table to connections table
+        print(user_details)
 
     response = {
         'method': 'login',
