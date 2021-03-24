@@ -7,6 +7,7 @@ import boto3
 
 from .utils import put_display_name
 from .utils import get_display_name
+from .utils import put_user_details
 from .utils import generate_game_id
 from .utils import re_map_game
 from .utils import get_game
@@ -25,6 +26,7 @@ async def login(endpoint, connectionId, body):
 
     if user_details:
         # attach user data from players table to connections table
+        put_user_details(connectionId, user_details)
         print(user_details)
 
         # check if any connection id has same token

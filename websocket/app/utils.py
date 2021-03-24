@@ -17,6 +17,9 @@ def get_display_name(connectionId):
     user = table_connections.get_item(Key={'connectionId': connectionId})
     return user['Item']['name'] if user else False
 
+def put_user_details(connectionId, userDetails):
+    return table_connections.put_item(Item={'connectionId': connectionId, 'token': userDetails['sub'], 'userDetails': userDetails})
+
 def generate_game_id():
     return uuid.uuid4().hex[:10]
 

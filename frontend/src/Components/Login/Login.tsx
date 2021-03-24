@@ -13,12 +13,14 @@ const Login: React.FC = () => {
   useEffect(()=>{
     setTimeout(() => {
         if (!loginCode) {
-        console.log('running');
+        console.log('!loginCode');
         const urlParams = new URLSearchParams(window.location.search);
         const authCode = urlParams.get('code');
-        setLoginCode(authCode);
+        if (authCode) {
+          setLoginCode(authCode);
+          sendCognitoCode(authCode);
+        }
       } else {
-        sendCognitoCode(loginCode);
       }
     }, 1000);
   }, []);
