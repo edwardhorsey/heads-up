@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Login.module.scss";
 import { sendCognitoCode } from '../../Socket/requests';
+
 /*
 import Button from "../Button";
 import { useFormik, FormikErrors } from 'formik';
@@ -10,15 +11,17 @@ const Login: React.FC = () => {
   const [ loginCode, setLoginCode ] = useState<string | null>(null);
   
   useEffect(()=>{
-    if (!loginCode) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const authCode = urlParams.get('code');
-      setLoginCode(authCode);
-    } else {
-      sendCognitoCode(loginCode);
-    }
-  }, [loginCode]);
-
+    setTimeout(() => {
+        if (!loginCode) {
+        console.log('running');
+        const urlParams = new URLSearchParams(window.location.search);
+        const authCode = urlParams.get('code');
+        setLoginCode(authCode);
+      } else {
+        sendCognitoCode(loginCode);
+      }
+    }, 1000);
+  }, []);
 
   /*
   const setName = (name: string): void => setUsername(name);
