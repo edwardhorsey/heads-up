@@ -18,7 +18,15 @@ def get_display_name(connectionId):
     return user['Item']['name'] if user else False
 
 def put_user_details(connectionId, userDetails):
-    return table_connections.put_item(Item={'connectionId': connectionId, 'token': userDetails['sub'], 'userDetails': userDetails})
+    return table_connections.put_item(Item={'connectionId': connectionId, 'userToken': userDetails['sub'], 'userDetails': userDetails})
+
+def check_is_user_token_exists(userToken):
+    result = table_connections.query(
+        IndexName="userTokenIndex",
+        KeyConditionExpression=Key('userToken').eq('049ef12a-ef5a-4dff-816b-7d901e2a7168'),
+    )
+    return result['Items'] if result else False
+)
 
 def generate_game_id():
     return uuid.uuid4().hex[:10]
