@@ -9,7 +9,8 @@ import Button from "../Button";
 const Home: React.FC = () => {
   const { serverState, serverDispatch } = useServer();
   const { readyToStart } = serverState;
-  const { logout } = useAuth();
+  const { logout, authState } = useAuth();
+  const { displayName } = authState;
   const logoutHome = () => {
     serverDispatch({ type: 'resetServer' });
     logout();
@@ -19,7 +20,7 @@ const Home: React.FC = () => {
     <section className={styles.Home}>
       <h1>Heads Up Poker</h1>
       <Button logic={logoutHome} text="Logout" />
-      {readyToStart ? <GameContainer /> : <Lobby />} {/* redirect or buttons to access game? */}
+      {readyToStart ? <GameContainer /> : <Lobby displayName={displayName}/>} {/* redirect or buttons to access game? */}
     </section>
   );
 };

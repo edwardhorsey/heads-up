@@ -5,9 +5,9 @@ app: poker
 custom:
   currentStage: ${opt:stage, self:provider.stage}
   lambdaRunTime: python3.8
-  pokerConnections: pokerConnections1-${self:custom.currentStage}
-  pokerGames: pokerGames1-${self:custom.currentStage}
-  pokerPastGames: pokerPastGames1-${self:custom.currentStage}
+  pokerConnections: pokerConnections-${self:custom.currentStage}
+  pokerGames: pokerGames-${self:custom.currentStage}
+  pokerPastGames: pokerPastGames-${self:custom.currentStage}
 
 provider:
   name: aws
@@ -77,9 +77,18 @@ resources:
         AttributeDefinitions:
           - AttributeName: connectionId
             AttributeType: S
+          - AttributeName: userToken
+            AttributeType: S
         KeySchema:
           - AttributeName: connectionId
             KeyType: HASH
+        GlobalSecondaryIndexes:
+        - IndexName: userTokenIndex
+          KeySchema:
+          - AttributeName: userToken
+            KeyType: HASH
+          Projection:
+            ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true

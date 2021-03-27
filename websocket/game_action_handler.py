@@ -3,6 +3,7 @@ import boto3
 import os
 import asyncio
 
+from app.app import login
 from app.app import set_username
 from app.app import create_game
 from app.app import join_game
@@ -26,6 +27,8 @@ async def main(event, context):
     # Routes
     if body['method'] == 'setUsername':
         await set_username(endpoint, connectionId, body)
+    elif body['method'] == 'login':
+        await login(endpoint, connectionId, body)
     elif body['method'] == 'createGame':
         await create_game(endpoint, connectionId, body)
     elif body['method'] == 'joinGame':

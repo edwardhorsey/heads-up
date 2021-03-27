@@ -22,9 +22,6 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
     case 'connected':
       return { ...serverState, uid: response.uid };
 
-    case 'setUsername':
-      return { ...serverState, displayName: response.username, uid: response.uid };
-
     case 'createGame':
       return { ...serverState, gid: response.gid };
 
@@ -38,14 +35,26 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
       return {...serverState, falseGID: false };
 
     case 'joinGame':
-      const whichPlayer = serverState.uid === response.players[0].uid ? 0 : 1;
-      console.log(whichPlayer);
+      let whichPlayer: number|null = null;
+
+      if (serverState.uid === response.players[0].uid) {
+        whichPlayer = 0;
+      } else if (serverState.uid === response.players[1].uid) {
+        whichPlayer = 1;
+      } else {
+        throw new Error(
+          `Action joinGame: client uid ${serverState.uid} does not match
+          that inside Game (gid: ${response.gid}) - player uids: 
+          ${response.players[0].uid} ${response.players[1].uid}`
+        );
+      }
+
       return { ...serverState,
         gid: response.gid,
         falseGID: false,
         players: response.players,
         readyToStart: response.players.length === 2 ? true : false,
-        whichPlayer: serverState.uid === response.players[0].uid ? 0 : 1
+        whichPlayer: whichPlayer,
       };
 
     case 'onePlayerReady':
@@ -145,9 +154,10 @@ const ServerContext = createContext<IServerContext>(initialServerContext);
 
 export const ServerProvider = (props: ServerProviderProps) => {
   const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
-  const { login } = useAuth();
+  const { login, forceLogout } = useAuth();
+  console.log(serverState.uid);
 
-  socket.onopen = () => {
+  socket.onopen = (bit) => {
     serverDispatch({ type: 'socketOnOpen' });
   };
 
@@ -163,12 +173,19 @@ export const ServerProvider = (props: ServerProviderProps) => {
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data);
     const { method } = response;
+    console.log('Data arrived ! ', response);
 
     /* TEMP Special scenarios */
     switch (method) {
-      case 'setUsername':
-        login();
-        serverDispatch({ type: method, payload: response });
+      case 'login':
+        serverDispatch({ type: 'connected', payload: response })
+        response.userObject
+          ? login(response.userObject) 
+          : console.error(response.message);
+        break;
+
+      case 'forceLogout':
+        forceLogout(response.message);
         break;
 
       case 'newHand':
