@@ -38,7 +38,19 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
       return {...serverState, falseGID: false };
 
     case 'joinGame':
-      const whichPlayer = serverState.uid === response.players[0].uid ? 0 : 1;
+      let whichPlayer: number|null = null;
+      if (serverState.uid === response.players[0].uid) {
+        whichPlayer = 0;
+      } else if (serverState.uid === response.players[1].uid) {
+        whichPlayer = 1;
+      } else {
+        throw new Error(
+          `Action joinGame: client uid ${serverState.uid} does not match
+          that inside Game (gid: ${response.gid}) - player uids: 
+          ${response.players[0].uid} ${response.players[1].uid}`
+        );
+      }
+
       console.log(whichPlayer);
       return { ...serverState,
         gid: response.gid,
@@ -146,8 +158,10 @@ const ServerContext = createContext<IServerContext>(initialServerContext);
 export const ServerProvider = (props: ServerProviderProps) => {
   const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
   const { login } = useAuth();
+  console.log(serverState.uid);
 
-  socket.onopen = () => {
+  socket.onopen = (bit) => {
+    console.log(bit);
     serverDispatch({ type: 'socketOnOpen' });
   };
 
@@ -168,6 +182,7 @@ export const ServerProvider = (props: ServerProviderProps) => {
     /* TEMP Special scenarios */
     switch (method) {
       case 'login':
+        serverDispatch({ type: 'connected', payload: response })
         response.userObject
           ? login(response.userObject) 
           : console.log(response.message);
