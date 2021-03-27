@@ -8,6 +8,8 @@ import boto3
 from .utils import put_display_name
 from .utils import get_display_name
 from .utils import put_user_details
+from .utils import check_if_user_token_exists
+from .utils import remove_user_details
 from .utils import generate_game_id
 from .utils import re_map_game
 from .utils import get_game
@@ -21,17 +23,32 @@ from .poker.player import Player
 
 # Login
 async def login(endpoint, connectionId, body):
+    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
     authorization_code = body['code']
     user_details = await get_user_profile(authorization_code)
 
     if user_details:
-        # attach user data from players table to connections table
-        put_user_details(connectionId, user_details)
-        print(user_details)
-
         # check if any connection id has same token
-        # # if true -> kick the connection
+        players_already_using_token = check_if_user_token_exists(user_details['sub'])
+        if len(players_already_using_token):
+            players = [player['connectionId'] for player in players_already_using_token]
+            remove_user_details(players)
+            logout_response = {
+                'method': 'forceLogout',
+                'uid': connectionId,
+                'message': 'Session invalidated: a more recent websocket connection has logged in using your account'
+            }
+            for client in players:
+                try:
+                    apigatewaymanagementapi.post_to_connection(
+                        Data = json.dumps(logout_response),
+                        ConnectionId = client
+                    )
+                except Exception as error:
+                    print('Error posting to kicked player\'s connectionId: ', error)
+
         # save user details to connection id
+        put_user_details(connectionId, user_details)
 
         response = {
             'method': 'login',
@@ -52,7 +69,6 @@ async def login(endpoint, connectionId, body):
             'message': 'Failed to log in'
         }
 
-    apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
     apigatewaymanagementapi.post_to_connection(
         Data = json.dumps(response),
         ConnectionId = connectionId

@@ -1,32 +1,48 @@
 import os
 import uuid
 import requests
-
-from .cognito import lambda_handler as decode_token
+from boto3.dynamodb.conditions import Key
 
 from .tables import table_connections
 from .tables import table_games
 from .tables import table_past_games
 
+from .cognito_lambda import lambda_handler as decode_token
 from .poker.game import Game
 
-def put_display_name(connectionId, name):
-    return table_connections.put_item(Item={'connectionId': connectionId, 'name': name})
+def put_display_name(connectionId, displayName):
+    return table_connections.put_item(Item={'connectionId': connectionId, 'displayName': displayName})
 
 def get_display_name(connectionId):
     user = table_connections.get_item(Key={'connectionId': connectionId})
-    return user['Item']['name'] if user else False
+    return user['Item']['displayName'] if user else False
 
 def put_user_details(connectionId, userDetails):
-    return table_connections.put_item(Item={'connectionId': connectionId, 'userToken': userDetails['sub'], 'userDetails': userDetails})
+    return table_connections.put_item(
+        Item={
+            'connectionId': connectionId,
+            'displayName': userDetails['cognito:username'],
+            'userToken': userDetails['sub'],
+            'userDetails': userDetails,
+        }
+    )
 
-def check_is_user_token_exists(userToken):
+def remove_user_details(connectionIds):
+    print(connectionIds)
+    for connectionId in connectionIds:
+        table_connections.update_item(
+            Key = {'connectionId': connectionId},
+            UpdateExpression="REMOVE displayName, userToken, userDetails",
+        )
+
+def check_if_user_token_exists(userToken):
+    print('hi ed')
+    print(userToken)
     result = table_connections.query(
         IndexName="userTokenIndex",
-        KeyConditionExpression=Key('userToken').eq('049ef12a-ef5a-4dff-816b-7d901e2a7168'),
+        KeyConditionExpression=Key('userToken').eq(userToken),
     )
     return result['Items'] if result else False
-)
 
 def generate_game_id():
     return uuid.uuid4().hex[:10]
