@@ -22,9 +22,6 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
     case 'connected':
       return { ...serverState, uid: response.uid };
 
-    case 'setUsername':
-      return { ...serverState, displayName: response.username, uid: response.uid };
-
     case 'createGame':
       return { ...serverState, gid: response.gid };
 
@@ -39,6 +36,7 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
 
     case 'joinGame':
       let whichPlayer: number|null = null;
+
       if (serverState.uid === response.players[0].uid) {
         whichPlayer = 0;
       } else if (serverState.uid === response.players[1].uid) {
@@ -51,13 +49,12 @@ const serverReducer = (serverState: ServerState, action: Action):  ServerState =
         );
       }
 
-      console.log(whichPlayer);
       return { ...serverState,
         gid: response.gid,
         falseGID: false,
         players: response.players,
         readyToStart: response.players.length === 2 ? true : false,
-        whichPlayer: serverState.uid === response.players[0].uid ? 0 : 1
+        whichPlayer: whichPlayer,
       };
 
     case 'onePlayerReady':
@@ -157,11 +154,10 @@ const ServerContext = createContext<IServerContext>(initialServerContext);
 
 export const ServerProvider = (props: ServerProviderProps) => {
   const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
-  const { login } = useAuth();
+  const { login, forceLogout } = useAuth();
   console.log(serverState.uid);
 
   socket.onopen = (bit) => {
-    console.log(bit);
     serverDispatch({ type: 'socketOnOpen' });
   };
 
@@ -185,12 +181,12 @@ export const ServerProvider = (props: ServerProviderProps) => {
         serverDispatch({ type: 'connected', payload: response })
         response.userObject
           ? login(response.userObject) 
-          : console.log(response.message);
+          : console.error(response.message);
         break;
 
-      // case 'setUsername':
-      //   serverDispatch({ type: method, payload: response });
-      //   break;
+      case 'forceLogout':
+        forceLogout(response.message);
+        break;
 
       case 'newHand':
         serverState.noOfHands < 1

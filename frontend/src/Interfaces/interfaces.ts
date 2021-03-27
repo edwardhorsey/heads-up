@@ -21,6 +21,7 @@ export interface IAuthContext {
   setAuthState: Dispatch<SetStateAction<AuthState>>;
   login: (userDetails: AuthState) => void;
   logout: () => void;
+  forceLogout: (message: string) => void;
 }
 
 export const initialAuthContext = {
@@ -28,6 +29,7 @@ export const initialAuthContext = {
   setAuthState: () => {},
   login: () => {},
   logout: () => {},
+  forceLogout: () => {},
 };
 
 /*
@@ -70,6 +72,7 @@ export type ActionType = 'socketOnOpen'
 | 'resetServer'
 | 'connected'
 | 'login'
+| 'forceLogout'
 | 'setUsername'
 | 'createGame'
 | 'removeGid'

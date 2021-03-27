@@ -83,12 +83,13 @@ export const backToLobby = (gid: string, uid: string) => {
 
 
 export const leaveGame = (gid: string) => {
-  /* const request = {
+  /*
+  const request = {
     action: 'onGameAction',
     method: 'leaveGame',
     gid,
   }
 
-  socket.send(JSON.stringify(request)); */
-  return console.log('leaveGame');
+  return socket.send(JSON.stringify(request));
+  */
 };

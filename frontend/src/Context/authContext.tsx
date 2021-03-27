@@ -16,8 +16,12 @@ export const AuthProvider = (props: Iprops) => {
     email: userObject.email,
   });
   const logout = () => setAuthState(initialAuthState);
+  const forceLogout = (message: string) => {
+    console.error(message);
+    setAuthState(initialAuthState);
+  }
 
-  return <AuthContext.Provider value={{ authState, setAuthState, login, logout }}>{props.children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ authState, setAuthState, login, logout, forceLogout }}>{props.children}</AuthContext.Provider>
 };
 
 export const useAuth = () => useContext(AuthContext);
