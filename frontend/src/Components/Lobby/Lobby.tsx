@@ -4,9 +4,13 @@ import CreateOrJoin from "../CreateOrJoin";
 import { useServer } from '../../Context/serverContext';
 import WaitingRoom from "../WaitingRoom";
 
-const Lobby: React.FC = () => {
+interface LobbyProps {
+  displayName: string;
+}
+
+const Lobby: React.FC<LobbyProps> = ({displayName}) => {
   const { serverState } = useServer();
-  const { gid, displayName } = serverState;
+  const { gid } = serverState;
   return (
     <section className={styles.Lobby}>
       <h3>Welcome, {displayName}</h3>

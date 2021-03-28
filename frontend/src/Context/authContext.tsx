@@ -20,10 +20,18 @@ export const AuthContext = createContext<IAuthContext>(initialAuthContext);
 export const AuthProvider = (props: AuthProviderProps) => {
   const [authState, setAuthState] = useState(initialAuthState)
 
-  const login = () => setAuthState({ authToken: 'logged-in' });
-  const logout = () => setAuthState({ authToken: '' });
+  const login = (userObject: AuthState) => setAuthState({ 
+    authToken: userObject.authToken,
+    displayName: userObject.displayName,
+    email: userObject.email,
+  });
+  const logout = () => setAuthState(initialAuthState);
+  const forceLogout = (message: string) => {
+    console.error(message);
+    setAuthState(initialAuthState);
+  }
 
-  return <AuthContext.Provider value={{ authState, setAuthState, login, logout }}>{props.children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ authState, setAuthState, login, logout, forceLogout }}>{props.children}</AuthContext.Provider>
 };
 
 export const useAuth = () => useContext(AuthContext);
