@@ -23,7 +23,7 @@ const Login: React.FC = () => {
       } else {
       }
     }, 1000);
-  }, []);
+  }, [loginCode]);
 
   /*
   const setName = (name: string): void => setUsername(name);
@@ -54,15 +54,6 @@ const Login: React.FC = () => {
   return (
     <section className={styles.Login}>
       <h1>Welcome to Poker</h1>
-      {/*}
-      <form>
-        <label htmlFor="name" hidden><h1>Display name</h1></label>
-        <input name="name" placeholder="Your name" onChange={formik.handleChange} />
-        <Button logic={formik.handleSubmit} text="Login" />
-        {formik.errors.name ?? <div className={styles.formErrors}>{formik.errors.name}</div>}
-      </form>
-      <input name="code" placeholder="Auth code from Cognito" id="auth-code" />
-      {*/}
       <a href={loginUrl}>Login</a>
     </section>
   );

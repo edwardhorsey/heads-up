@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 import { AuthReducerAction, initialAuthState, IAuthContext, initialAuthContext, AuthProviderProps, AuthState } from '../Interfaces/interfaces';
 
 const authReducer = (authState: AuthState, action: AuthReducerAction): AuthState => {
@@ -8,7 +8,7 @@ const authReducer = (authState: AuthState, action: AuthReducerAction): AuthState
     case 'login':
       const { userObject } = response;
 
-      return { 
+      return { ...authState,
         authToken: userObject.authToken,
         displayName: userObject.displayName,
         email: userObject.email,

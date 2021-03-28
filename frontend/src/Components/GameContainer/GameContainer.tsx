@@ -10,7 +10,7 @@ import { leaveGame } from '../../Socket/requests';
 
 const GameContainer: React.FC = () => {
   const { serverState } = useServer();
-  const { uid, gid, players, whichPlayer, yourHand, noOfRounds, stage, inHand } = serverState;
+  const { uid, gid, players, whichPlayer, yourHand, noOfRounds, stage, /* inHand */ } = serverState;
   const yourself: Iplayer = players[whichPlayer]; // yourself is user
   const opponent: Iplayer = players[whichPlayer === 0 ? 1: 0]; // opponent is opponent
 
