@@ -1,5 +1,5 @@
 
-import { Dispatch, ReactNode, SetStateAction } from 'react';
+import { ReactNode } from 'react';
 
 /*
 Auth context
@@ -18,18 +18,12 @@ export const initialAuthState: AuthState = {
 
 export interface IAuthContext {
   authState: AuthState;
-  setAuthState: Dispatch<SetStateAction<AuthState>>;
-  login: (userDetails: AuthState) => void;
-  logout: () => void;
-  forceLogout: (message: string) => void;
+  authDispatch: AuthDispatch;
 }
 
 export const initialAuthContext = {
   authState: initialAuthState,
-  setAuthState: () => {},
-  login: () => {},
-  logout: () => {},
-  forceLogout: () => {},
+  authDispatch: () => {},
 };
 
 export interface AuthProviderProps {
@@ -43,10 +37,11 @@ export interface AuthReducerAction {
   payload?: any;
 }
 
+export type AuthDispatch = (action: AuthReducerAction) => void;
+
 /*
 Player
 */
-
 export interface Iplayer {
   uid: string,
   name: string,
@@ -113,6 +108,7 @@ export type SocketStatus = 'disconnected'
 | 'error';
 
 export type Card = string[];
+
 export type Hand = Card[];
 
 export interface ServerReducerAction {
@@ -168,11 +164,15 @@ export const initialServerState: ServerState = {
   noOfRounds: 0,
 };
 
+export interface ServerProviderProps {
+  children: ReactNode;
+}
 
 export interface IServerContext {
   serverState: ServerState;
   serverDispatch: ServerDispatch;
 }
+
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
   serverDispatch: () => {},

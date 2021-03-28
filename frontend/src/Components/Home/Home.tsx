@@ -9,11 +9,11 @@ import Button from "../Button";
 const Home: React.FC = () => {
   const { serverState, serverDispatch } = useServer();
   const { readyToStart } = serverState;
-  const { logout, authState } = useAuth();
+  const { authState, authDispatch } = useAuth();
   const { displayName } = authState;
   const logoutHome = () => {
     serverDispatch({ type: 'resetServer' });
-    logout();
+    authDispatch({ type: 'logout' });
   };
 
   return (

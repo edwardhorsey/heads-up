@@ -1,7 +1,7 @@
-import React, { ReactNode, createContext, useReducer, useContext } from 'react';
+import React, { createContext, useReducer, useContext } from 'react';
 import { useAuth } from "./authContext";
 import socket from '../Socket/socket';
-import { ServerState, ServerReducerAction, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
+import { ServerState, ServerProviderProps, ServerReducerAction, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
 
 const serverReducer = (serverState: ServerState, action: ServerReducerAction):  ServerState => {
   const { type, payload: response } = action;
@@ -146,18 +146,13 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
   } 
 };
 
-interface ServerProviderProps {
-  children: ReactNode;
-}
-
 const ServerContext = createContext<IServerContext>(initialServerContext);
 
 export const ServerProvider = (props: ServerProviderProps) => {
   const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
-  const { login, forceLogout } = useAuth();
-  console.log(serverState.uid);
+  const { authDispatch } = useAuth();
 
-  socket.onopen = (bit) => {
+  socket.onopen = () => {
     serverDispatch({ type: 'socketOnOpen' });
   };
 
@@ -173,19 +168,19 @@ export const ServerProvider = (props: ServerProviderProps) => {
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data);
     const { method } = response;
-    console.log('Data arrived ! ', response);
+    console.log('Data arrived! ', response);
 
     /* TEMP Special scenarios */
     switch (method) {
       case 'login':
-        serverDispatch({ type: 'connected', payload: response })
+        serverDispatch({ type: 'connected', payload: response });
         response.userObject
-          ? login(response.userObject) 
+          ? authDispatch({ type: method, payload: response })
           : console.error(response.message);
         break;
 
       case 'forceLogout':
-        forceLogout(response.message);
+        authDispatch({ type: method, payload: response });
         break;
 
       case 'newHand':
