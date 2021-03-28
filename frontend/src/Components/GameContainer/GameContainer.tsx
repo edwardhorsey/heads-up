@@ -6,7 +6,7 @@ import { readyToPlayHand } from "../../Socket/requests";
 import GameNav from "../GameNav";
 import GameHand from "../GameHand";
 import Button from "../Button";
-import { leaveGame } from '../../Socket/requests';
+/* import { leaveGame } from '../../Socket/requests'; */
 
 const GameContainer: React.FC = () => {
   const { serverState } = useServer();
@@ -16,7 +16,7 @@ const GameContainer: React.FC = () => {
 
   return (
     <section className={styles.GameContainer}>
-      <Button logic={() => leaveGame} text={'Back'} />
+      {/* <Button logic={() => leaveGame} text={'Back'} /> */}
       <div className={styles.gameStats}>
         <h3>GameID: {gid}</h3>
         <p>Total rounds: {noOfRounds}</p>

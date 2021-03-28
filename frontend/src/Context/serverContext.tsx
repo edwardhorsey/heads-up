@@ -189,10 +189,6 @@ export const ServerProvider = (props: ServerProviderProps) => {
           : setTimeout(() => serverDispatch({ type: method, payload: response }), 3000);
         break;
 
-      case 'backToLobby':
-        setTimeout(() => serverDispatch({ type: method, payload: response }), 2000);
-        break;
-
       default:
         serverDispatch({ type: method, payload: response });
     }

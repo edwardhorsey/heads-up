@@ -1,32 +1,40 @@
-// @import "../../variables.module.scss";
+@import "../../variables.module.scss";
 
 .ConnectedStatus {
-  // border: 2px solid $greygreenborder;
-  background-color: lightcyan;
-  padding: 0 15px;
   display: flex;
-  border-radius: 5px;
   justify-content: space-between;
-  // box-shadow: $regularboxshadow;
-  height: 45px;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  height: 40px;
+  width: 130px;
+  border: 2px solid $greengrey;
+  border-radius: 5px;
+  padding: 0 5px;
+
   p {
-    margin: auto 0;
+    margin: auto;
+    font-size: 13px;
   }
+
   .circle {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
-    border: 2px solid black;
+    border: 1px solid black;
     box-sizing: border-box;
     margin: auto 0;
   }
+
   .connected {
-    background-color: green;
+    background-color: $green;
   }
+
   .disconnected {
-    background-color: rgb(64, 71, 66);
+    background-color: $greengrey
   }
+
   .error {
-    background-color: maroon;
+    background-color: $maroon;
   }
 }
