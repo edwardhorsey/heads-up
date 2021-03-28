@@ -4,9 +4,7 @@ import socket from '../Socket/socket';
 import { ServerState, ServerProviderProps, ServerReducerAction, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
 
 const serverReducer = (serverState: ServerState, action: ServerReducerAction):  ServerState => {
-  const { type, payload: response } = action;
-
-  switch(type) {
+  switch(action.type) {
     case 'socketOnOpen':
       return { ...serverState, status: "connected" };
   
@@ -20,10 +18,10 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
       return { ...initialServerState };
 
     case 'connected':
-      return { ...serverState, uid: response.uid };
+      return { ...serverState, uid: action.payload.uid };
 
     case 'createGame':
-      return { ...serverState, gid: response.gid };
+      return { ...serverState, gid: action.payload.gid };
 
     case 'removeGid':
       return { ...serverState, gid: '' };
@@ -37,74 +35,74 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
     case 'joinGame':
       let whichPlayer: number|null = null;
 
-      if (serverState.uid === response.players[0].uid) {
+      if (serverState.uid === action.payload.players[0].uid) {
         whichPlayer = 0;
-      } else if (serverState.uid === response.players[1].uid) {
+      } else if (serverState.uid === action.payload.players[1].uid) {
         whichPlayer = 1;
       } else {
         throw new Error(
           `Action joinGame: client uid ${serverState.uid} does not match
-          that inside Game (gid: ${response.gid}) - player uids: 
-          ${response.players[0].uid} ${response.players[1].uid}`
+          that inside Game (gid: ${action.payload.gid}) - player uids: 
+          ${action.payload.players[0].uid} ${action.payload.players[1].uid}`
         );
       }
 
       return { ...serverState,
-        gid: response.gid,
+        gid: action.payload.gid,
         falseGID: false,
-        players: response.players,
-        readyToStart: response.players.length === 2 ? true : false,
+        players: action.payload.players,
+        readyToStart: action.payload.players.length === 2 ? true : false,
         whichPlayer: whichPlayer,
       };
 
     case 'onePlayerReady':
       return {...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ready: response.players[index].ready}
+          {...player, ready: action.payload.players[index].ready}
         ))
       };
 
     case 'newHand':
       return {...serverState,
-          players: response.players,
-          action: response.action === 'two' ? 1: 0,
-          stage: response.stage,
-          yourHand: response.players[serverState.whichPlayer].hand,
-          oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
-          community: response['community-cards'],
-          pot: response.pot,
-          noOfHands: response['number-of-hands'],
-          winner: response.winner,
-          winningHand: response['winning-hand']
+          players: action.payload.players,
+          action: action.payload.action === 'two' ? 1: 0,
+          stage: action.payload.stage,
+          yourHand: action.payload.players[serverState.whichPlayer].hand,
+          oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1: 0].hand,
+          community: action.payload['community-cards'],
+          pot: action.payload.pot,
+          noOfHands: action.payload['number-of-hands'],
+          winner: action.payload.winner,
+          winningHand: action.payload['winning-hand']
         };
 
     case 'allIn':
       return {...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...response.players[index]}
+          {...player, ...action.payload.players[index]}
         )),
         stage: 'to-call',
-        action: response.action === 'two' ? 1: 0,
-        pot: response.pot
+        action: action.payload.action === 'two' ? 1: 0,
+        pot: action.payload.pot
       };
 
     case 'showdown':
       return {...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...response.players[index]}
+          {...player, ...action.payload.players[index]}
         )),
-        yourHand: response.players[serverState.whichPlayer].hand,
-        oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
-        community: response['community-cards'],
+        yourHand: action.payload.players[serverState.whichPlayer].hand,
+        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1: 0].hand,
+        community: action.payload['community-cards'],
         stage: 'showdown',
         action: null,
-        pot: response.pot
+        pot: action.payload.pot
       };
 
     case 'folded':
       return {...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...response.players[index]}
+          {...player, ...action.payload.players[index]}
         )),
         stage: 'folded',
         action: null,
@@ -113,12 +111,12 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
     case 'winner':
       return {...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...response.players[index]}
+          {...player, ...action.payload.players[index]}
         )),
-        pot: response.pot,
-        winner: response.winner,
+        pot: action.payload.pot,
+        winner: action.payload.winner,
         action: null,
-        winningHand: response['winning-hand'],
+        winningHand: action.payload['winning-hand'],
         stage: 'winner'
       };
 
@@ -131,17 +129,17 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
     case 'backToLobby':  
       return {...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...response.players[index]}
+          {...player, ...action.payload.players[index]}
         )),
-        yourHand: response.players[serverState.whichPlayer].hand,
-        oppHand: response.players[serverState.whichPlayer === 0 ? 1: 0].hand,
-        noOfRounds: response['number-of-rounds'],
-        stage: response['stage'],
+        yourHand: action.payload.players[serverState.whichPlayer].hand,
+        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1: 0].hand,
+        noOfRounds: action.payload['number-of-rounds'],
+        stage: action.payload['stage'],
         inHand: false
       };
 
     default: {
-      throw new Error(`Action - ${type} - not matched`);
+      throw new Error(`Action - ${action.type} - not matched`);
     }
   } 
 };
@@ -178,7 +176,7 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
         break;
 
       case 'forceLogout':
-        authDispatch({ type: method, payload: response });
+        authDispatch({ type: method, message: response.message });
         break;
 
       case 'newHand':

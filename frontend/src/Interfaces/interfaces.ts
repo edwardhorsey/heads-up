@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 /*
 Auth context
 */
+
 export interface AuthState {
   authToken: string;
   displayName: string;
@@ -19,7 +20,7 @@ export const initialAuthState: AuthState = {
 export interface IAuthContext {
   authState: AuthState;
   authDispatch: AuthDispatch;
-  login: (response:any) => void;
+  login: (response: WebsocketResponse) => void;
 }
 
 export const initialAuthContext = {
@@ -32,12 +33,10 @@ export interface AuthProviderProps {
   children: ReactNode;
 }
 
-type AuthActionType = any;
-
-export interface AuthReducerAction {
-  type: AuthActionType;
-  payload?: any;
-}
+export type AuthReducerAction = 
+  | { type: 'login', userObject: AuthState }
+  | { type: 'logout' }
+  | { type: 'forceLogout', message: string; };
 
 export type AuthDispatch = (action: AuthReducerAction) => void;
 
@@ -71,30 +70,51 @@ export const initialPlayer: Iplayer = {
 }
 
 /*
+Websocket response
+*/
+
+export interface WebsocketResponse {
+  uid: string;
+  gid: string;
+  message: string;
+  userObject: AuthState;
+  players: Iplayer[];
+  action: string;
+  stage: Stage;
+  'community-cards': Card[];
+  pot: number;
+  'number-of-hands': number;
+  winner: string;
+  'winning-hand': WinningHand;
+  'number-of-rounds': number;
+}
+
+/*
 Server context
 */
 
-export type ServerActionType = 'socketOnOpen'
-| 'socketOnClose'
-| 'socketOnError'
-| 'resetServer'
-| 'connected'
-| 'login'
-| 'forceLogout'
-| 'setUsername'
-| 'createGame'
-| 'removeGid'
-| 'incorrectGid'
-| 'validGid'
-| 'joinGame'
-| 'onePlayerReady'
-| 'newHand'
-| 'allIn'
-| 'showdown'
-| 'folded'
-| 'winner'
-| 'playerBust'
-| 'backToLobby';
+export type ServerReducerAction = 
+ | { type: 'socketOnOpen' }
+ | { type: 'socketOnClose' }
+ | { type: 'socketOnError' }
+ | { type: 'resetServer' }
+ | { type: 'connected', payload: WebsocketResponse }
+ | { type: 'login', payload: WebsocketResponse }
+ | { type: 'forceLogout', payload: WebsocketResponse }
+ | { type: 'setUsername', payload: WebsocketResponse }
+ | { type: 'createGame', payload: WebsocketResponse }
+ | { type: 'removeGid' }
+ | { type: 'incorrectGid', payload: WebsocketResponse }
+ | { type: 'validGid' }
+ | { type: 'joinGame', payload: WebsocketResponse }
+ | { type: 'onePlayerReady', payload: WebsocketResponse }
+ | { type: 'newHand', payload: WebsocketResponse }
+ | { type: 'allIn', payload: WebsocketResponse }
+ | { type: 'showdown', payload: WebsocketResponse }
+ | { type: 'folded', payload: WebsocketResponse }
+ | { type: 'winner', payload: WebsocketResponse }
+ | { type: 'playerBust', payload: WebsocketResponse }
+ | { type: 'backToLobby', payload: WebsocketResponse };
 
 export type Stage = 'initial'
 | 'preflop'
@@ -113,10 +133,7 @@ export type Card = string[];
 
 export type Hand = Card[];
 
-export interface ServerReducerAction {
-  type: ServerActionType;
-  payload?: any;
-}
+export type WinningHand = [string, number[], Hand];
 
 export interface ServerState {
   status: SocketStatus; // websocket server
@@ -134,7 +151,7 @@ export interface ServerState {
   oppHand: Hand; // game
   yourHand: Hand; // game
   community: Hand; // game
-  winningHand: [string, number[], Hand]; // game
+  winningHand: WinningHand; // game
   winner: string; // game
   pot: number; // game
   noOfHands: number; // game

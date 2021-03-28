@@ -1,32 +1,26 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { useHistory } from 'react-router-dom';
-import { AuthReducerAction, initialAuthState, IAuthContext, initialAuthContext, AuthProviderProps, AuthState } from '../Interfaces/interfaces';
+import { AuthReducerAction, initialAuthState, IAuthContext, initialAuthContext, AuthProviderProps, AuthState, WebsocketResponse } from '../Interfaces/interfaces';
 
-const authReducer = (authState: AuthState, action: AuthReducerAction): AuthState => {
-  const { type, payload: response } = action;
-  
-  switch(type) {
+const authReducer = (authState: AuthState, action: AuthReducerAction): AuthState => {  
+  switch(action.type) {
     case 'login':
-      const { userObject } = response;
-
       return { ...authState,
-        authToken: userObject.authToken,
-        displayName: userObject.displayName,
-        email: userObject.email,
+        authToken: action.userObject.authToken,
+        displayName: action.userObject.displayName,
+        email: action.userObject.email,
       };
 
     case 'logout':
       return initialAuthState
 
     case 'forceLogout':
-      const { message } = response;
-      console.error(message);
-
+      console.error(action.message);
       return initialAuthState
 
-      default: {
-        throw new Error(`Action - ${type} - not matched`);
-      }
+    default: {
+      throw new Error(`Action - ${action} - not matched`);
+    }
   }
 
 };
@@ -37,9 +31,9 @@ export const AuthProvider = (props: AuthProviderProps): JSX.Element => {
   const [authState, authDispatch] = useReducer(authReducer, initialAuthState)
   const history = useHistory();
 
-  const login = (response: any) => {
+  const login = (response: WebsocketResponse) => {
     response.userObject
-      ? authDispatch({ type: 'login', payload: response })
+      ? authDispatch({ type: 'login', userObject: response.userObject })
       : console.error(response.message);
     history.push('/');
   };

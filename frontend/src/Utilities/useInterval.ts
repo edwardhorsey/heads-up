@@ -3,7 +3,8 @@ import React, { useEffect, useRef } from 'react';
 type IntervalFunction = () => ( unknown | void )
 
 function useInterval(callback: IntervalFunction, delay: number | null): void {
-  const savedCallback: React.MutableRefObject<any> = useRef();
+  const savedCallback: React.MutableRefObject<IntervalFunction | undefined> = useRef();
+  console.log(savedCallback);
 
   // Remember the latest callback.
   useEffect(() => {
@@ -13,7 +14,7 @@ function useInterval(callback: IntervalFunction, delay: number | null): void {
   // Set up the interval.
   useEffect(() => {
     function tick() {
-      savedCallback.current();
+      if (savedCallback.current) savedCallback.current();
     }
     if (delay !== null) {
       const id = setInterval(tick, delay);
