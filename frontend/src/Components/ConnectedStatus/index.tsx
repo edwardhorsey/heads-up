@@ -1,2 +1,3 @@
-import ConnectedStatus from "./ConnectedStatus";
+import ConnectedStatus from './ConnectedStatus';
+
 export default ConnectedStatus;

@@ -1,2 +1,3 @@
-import CreateOrJoin from "./CreateOrJoin";
+import CreateOrJoin from './CreateOrJoin';
+
 export default CreateOrJoin;

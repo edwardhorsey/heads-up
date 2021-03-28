@@ -1,9 +1,9 @@
-import React from "react";
-import styles from "./CreateOrJoin.module.scss";
-import { useServer } from '../../Context/serverContext';
-import { createGame, joinGame } from "../../Socket/requests";
+import React from 'react';
 import { useFormik, FormikErrors } from 'formik';
-import Button from "../Button";
+import styles from './CreateOrJoin.module.scss';
+import { useServer } from '../../Context/serverContext';
+import { createGame, joinGame } from '../../Socket/requests';
+import Button from '../Button';
 
 interface Ivalues {
   gid: string;
@@ -12,9 +12,9 @@ interface Ivalues {
 const validate = (values: Ivalues) => {
   const errors: FormikErrors<Ivalues> = { };
   if (!values.gid) {
-    errors.gid = "Required"
+    errors.gid = 'Required';
   } else if (values.gid.length !== 10 || !/^[0-9a-zA-Z]+$/.test(values.gid)) {
-    errors.gid = "Incorrect game code format"
+    errors.gid = 'Incorrect game code format';
   }
   return errors;
 };
@@ -26,20 +26,30 @@ const CreateOrJoin: React.FC = () => {
   const formik = useFormik({
     initialValues: { gid: '' },
     validate,
-    onSubmit: values => joinGame(values.gid, uid),
+    onSubmit: (values) => joinGame(values.gid, uid),
   });
 
-  if (formik.errors.gid === "Required" && falseGID) serverDispatch({ type: 'validGid' });
+  if (formik.errors.gid === 'Required' && falseGID) {
+    serverDispatch({ type: 'validGid' });
+  }
 
   return (
     <section className={styles.CreateOrJoin}>
       <h3>Create or Join a game</h3>
       <Button logic={() => createGame(uid)} text="Create game" />
       <form>
-        <input name="gid" placeholder="Game ID" onChange={formik.handleChange}/>
+        <input
+          name="gid"
+          placeholder="Game ID"
+          onChange={formik.handleChange}
+        />
         <Button logic={formik.handleSubmit} text="Join a game" />
-        {formik.errors.gid ? <div className={styles.formErrors}>{formik.errors.gid}</div> : ''}
-        {!formik.errors.gid && falseGID ? <div className={styles.formErrors}>Incorrect Game ID</div> : ''}
+        {formik.errors.gid
+          ? <div className={styles.formErrors}>{formik.errors.gid}</div>
+          : ''}
+        {!formik.errors.gid && falseGID
+          ? <div className={styles.formErrors}>Incorrect Game ID</div>
+          : ''}
       </form>
     </section>
   );

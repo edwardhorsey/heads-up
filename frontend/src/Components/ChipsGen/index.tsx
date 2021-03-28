@@ -1,2 +1,3 @@
-import ChipsGen from "./ChipsGen";
+import ChipsGen from './ChipsGen';
+
 export default ChipsGen;
