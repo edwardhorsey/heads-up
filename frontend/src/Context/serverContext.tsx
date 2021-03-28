@@ -1,9 +1,9 @@
 import React, { ReactNode, createContext, useReducer, useContext } from 'react';
 import { useAuth } from "./authContext";
 import socket from '../Socket/socket';
-import { ServerState, Action, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
+import { ServerState, ServerReducerAction, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
 
-const serverReducer = (serverState: ServerState, action: Action):  ServerState => {
+const serverReducer = (serverState: ServerState, action: ServerReducerAction):  ServerState => {
   const { type, payload: response } = action;
 
   switch(type) {

@@ -1,5 +1,5 @@
 
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, ReactNode, SetStateAction } from 'react';
 
 /*
 Auth context
@@ -25,6 +25,17 @@ export const initialAuthContext = {
   login: () => {},
   logout: () => {},
 };
+
+export interface AuthProviderProps {
+  children: ReactNode;
+}
+
+type AuthActionType = any;
+
+export interface AuthReducerAction {
+  type: AuthActionType;
+  payload?: any;
+}
 
 /*
 Player
@@ -58,9 +69,9 @@ export const initialPlayer: Iplayer = {
 
 /*
 Server context
- */
+*/
 
-export type ActionType = 'socketOnOpen'
+export type ServerActionType = 'socketOnOpen'
 | 'socketOnClose'
 | 'socketOnError'
 | 'resetServer'
@@ -96,10 +107,11 @@ export type SocketStatus = 'disconnected'
 export type Card = string[];
 export type Hand = Card[];
 
-export interface Action {
-  type: ActionType;
+export interface ServerReducerAction {
+  type: ServerActionType;
   payload?: any;
 }
+
 export interface ServerState {
   status: SocketStatus;
   inHand: boolean;
@@ -123,7 +135,7 @@ export interface ServerState {
   noOfRounds: number;
 }
 
-export type ServerDispatch = (action: Action) => void;
+export type ServerDispatch = (action: ServerReducerAction) => void;
 
 export const initialServerState: ServerState = {
   status: 'disconnected',
@@ -152,7 +164,6 @@ export const initialServerState: ServerState = {
 export interface IServerContext {
   serverState: ServerState;
   serverDispatch: ServerDispatch;
-  // resetServerState: () => void;
 }
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
