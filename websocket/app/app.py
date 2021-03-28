@@ -107,7 +107,6 @@ async def create_game(endpoint, connectionId, body):
         'method': 'createGame',
         'success': status,
         'gid': gid,
-        'uid': uid,
     }
 
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
@@ -168,7 +167,6 @@ async def ready_to_play(endpoint, connectionId, body):
         this_game.player_two_ready = True
 
     response = {
-        'uid': uid,
         'gid': gid,
         'number-of-rounds': this_game.number_of_rounds,
         'players': this_game.print_player_response()
@@ -229,7 +227,8 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
     else:
         response.update({
             'method': 'playerBust',
-            'stage': 'end'
+            'stage': 'end',
+            'players': this_game.print_player_response(),
         })
 
         this_game.new_round()
@@ -255,7 +254,6 @@ async def all_in(endpoint, connectionId, body):
 
     response = {
         'method': 'allIn',
-        'uid': uid,
         'gid': gid,
         'action': 'one' if this_game.current_hand.dealer == 'two' else 'two',
         'players': this_game.print_player_response(),
@@ -283,7 +281,6 @@ async def fold(endpoint, connectionId, body):
     this_game.current_hand.fold(folding_player, this_game.player_one, this_game.player_two)
     response = {
         'method': 'folded',
-        'uid': uid,
         'gid': gid,
         'players': this_game.print_player_response(),
     }
@@ -326,7 +323,6 @@ async def call(endpoint, connectionId, body):
 
     response = {
         'method': 'showdown',
-        'uid': uid,
         'gid': gid,
         'community-cards': this_game.current_hand.community,
         'players': this_game.print_player_response(),
@@ -357,7 +353,6 @@ async def send_winner_response(endpoint, connectionId, body, this_game):
 
     response = {
         'method': 'winner',
-        'uid': uid,
         'gid': gid,
         'winner': this_game.current_hand.winner,
         'winning-hand': this_game.current_hand.winning_hand,
@@ -398,9 +393,13 @@ async def back_to_lobby(endpoint, connectionId, body):
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
 
     if this_game.player_one.uid == uid:
-        this_game.player_one = Player(this_game.player_one.uid, this_game.player_one.name, 1000)
+        if this_game.player_one.bankroll == 0:
+            this_game.player_one = Player(this_game.player_one.uid, this_game.player_one.name, 500)
+    elif this_game.player_two.uid == uid:
+        if this_game.player_two.bankroll == 0:
+            this_game.player_two = Player(this_game.player_two.uid, this_game.player_two.name, 500)
     else:
-        this_game.player_two = Player(this_game.player_two.uid, this_game.player_two.name, 1000)
+        raise Exception ('Player uid not in game', uid)
 
     response = {
         'method': 'backToLobby',
