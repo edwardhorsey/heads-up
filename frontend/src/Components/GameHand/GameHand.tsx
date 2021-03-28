@@ -59,7 +59,7 @@ const GameHand: React.FC<IProps> = ({yourself, opponent}) => {
           {noOfHands && <p>{`#${noOfHands}`}</p>}
           <PlayersCards cards={opponentsCards} />
           <div className={styles.OppAndTimer}>
-            {((action !== null) && (whichPlayer !== action)) && <Timer num={15} logic={()=>{}} />}
+            {((action !== null) && (whichPlayer !== action)) && <Timer num={15} logic={() => { /* do nothing */ }} />}
             <PlayerStats player={opponent} who="opp" stage={stage} yourHand={yourHand} />
           </div>
         </div>

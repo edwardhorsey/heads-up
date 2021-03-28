@@ -2,7 +2,6 @@ import React, { createContext, useReducer, useContext } from 'react';
 import { useAuth } from "./authContext";
 import socket from '../Socket/socket';
 import { ServerState, ServerProviderProps, ServerReducerAction, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
-import { useHistory } from 'react-router-dom';
 
 const serverReducer = (serverState: ServerState, action: ServerReducerAction):  ServerState => {
   const { type, payload: response } = action;
@@ -149,7 +148,7 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
 
 const ServerContext = createContext<IServerContext>(initialServerContext);
 
-export const ServerProvider = (props: ServerProviderProps) => {
+export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
   const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
   const { authDispatch, login } = useAuth();
 
@@ -196,4 +195,4 @@ export const ServerProvider = (props: ServerProviderProps) => {
   return <ServerContext.Provider value={{ serverState, serverDispatch }}>{props.children}</ServerContext.Provider>
 };
 
-export const useServer = () => useContext(ServerContext);
+export const useServer = (): IServerContext => useContext(ServerContext);

@@ -12,7 +12,7 @@ import {
   // Redirect,
 } from "react-router-dom";
 
-const App = () => {  
+const App: React.FC = () => {
   const { authState } = useAuth();
 
   return (

@@ -33,9 +33,9 @@ const authReducer = (authState: AuthState, action: AuthReducerAction): AuthState
 
 export const AuthContext = createContext<IAuthContext>(initialAuthContext);
 
-export const AuthProvider = (props: AuthProviderProps) => {
+export const AuthProvider = (props: AuthProviderProps): JSX.Element => {
   const [authState, authDispatch] = useReducer(authReducer, initialAuthState)
-  let history = useHistory();
+  const history = useHistory();
 
   const login = (response: any) => {
     response.userObject
@@ -47,4 +47,4 @@ export const AuthProvider = (props: AuthProviderProps) => {
   return <AuthContext.Provider value={{ authState, authDispatch, login }}>{props.children}</AuthContext.Provider>
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = (): IAuthContext => useContext(AuthContext);

@@ -10,7 +10,7 @@ interface Ivalues {
 }
 
 const validate = (values: Ivalues) => {
-  let errors: FormikErrors<Ivalues> = { };
+  const errors: FormikErrors<Ivalues> = { };
   if (!values.gid) {
     errors.gid = "Required"
   } else if (values.gid.length !== 10 || !/^[0-9a-zA-Z]+$/.test(values.gid)) {

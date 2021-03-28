@@ -1,6 +1,6 @@
 import socket from './socket';
 
-export const setUsername = (username: string) => {
+export const setUsername = (username: string): void => {
   return socket.send(JSON.stringify({
     username,
     action: 'onGameAction',
@@ -8,7 +8,7 @@ export const setUsername = (username: string) => {
   }));
 };
 
-export const sendCognitoCode = (code: string) => {
+export const sendCognitoCode = (code: string): void => {
   console.log(code);
   return socket.send(JSON.stringify({
     code,
@@ -17,7 +17,7 @@ export const sendCognitoCode = (code: string) => {
   }));
 };
 
-export const createGame = (uid: string) => {
+export const createGame = (uid: string): void => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'createGame',
@@ -25,7 +25,7 @@ export const createGame = (uid: string) => {
   }));
 };
 
-export const joinGame = (gid: string, uid: string) => {
+export const joinGame = (gid: string, uid: string): void => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'joinGame',
@@ -34,7 +34,7 @@ export const joinGame = (gid: string, uid: string) => {
   }));
 };
 
-export const readyToPlayHand = (gid: string, uid: string) => {
+export const readyToPlayHand = (gid: string, uid: string): void => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'readyToPlay',
@@ -44,7 +44,7 @@ export const readyToPlayHand = (gid: string, uid: string) => {
   }));
 };
 
-export const allIn = (gid: string, uid: string) => {
+export const allIn = (gid: string, uid: string): void => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'allIn',
@@ -53,7 +53,7 @@ export const allIn = (gid: string, uid: string) => {
   }));
 };
 
-export const call = (gid: string, uid: string, betSize: number) => {
+export const call = (gid: string, uid: string, betSize: number): void => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'call',
@@ -63,7 +63,7 @@ export const call = (gid: string, uid: string, betSize: number) => {
   }));
 };
 
-export const fold = (gid: string, uid: string) => {
+export const fold = (gid: string, uid: string): void => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'fold',
@@ -72,7 +72,7 @@ export const fold = (gid: string, uid: string) => {
   }));
 };
 
-export const backToLobby = (gid: string, uid: string) => {
+export const backToLobby = (gid: string, uid: string): void => {
   return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'backToLobby',
@@ -82,8 +82,8 @@ export const backToLobby = (gid: string, uid: string) => {
 };
 
 
-export const leaveGame = (gid: string) => {
-  /*
+/*
+export const leaveGame = (gid: string): void => {
   const request = {
     action: 'onGameAction',
     method: 'leaveGame',
@@ -91,5 +91,5 @@ export const leaveGame = (gid: string) => {
   }
 
   return socket.send(JSON.stringify(request));
-  */
 };
+*/

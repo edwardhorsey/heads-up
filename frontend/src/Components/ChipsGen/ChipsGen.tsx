@@ -12,10 +12,9 @@ interface ChipsTable {
 let counter = 0;
 
 const ChipsGen: React.FC<IProps> = ({amount}) => {
-
   const calculateChips = ():ChipsTable => {
     let total = amount;
-    let obj: ChipsTable = {
+    const obj: ChipsTable = {
       1000: 0,
       500: 0,
       100: 0,
@@ -38,7 +37,7 @@ const ChipsGen: React.FC<IProps> = ({amount}) => {
   return (
     <div className={styles.ChipsGen}>
         {[1000, 500, 100, 25, 5, 1].map((chip) => {
-          let chipsStack = [];
+          const chipsStack = [];
 
           for (let i = 0; i < hash[chip]; i++) {
             const inlineStyle = { top: `-${10*i}px` }

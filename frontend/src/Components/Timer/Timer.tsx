@@ -9,7 +9,7 @@ interface IProps {
 
 const Timer: React.FC<IProps> = ({num, logic}) => {
 
-  let [count, setCount] = useState(num);
+  const [count, setCount] = useState(num);
 
   useInterval(() => {
     setCount(count - 1);

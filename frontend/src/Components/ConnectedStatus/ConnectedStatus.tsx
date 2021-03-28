@@ -2,9 +2,7 @@ import React from "react";
 import styles from "./ConnectedStatus.module.scss";
 import { useServer } from "../../Context/serverContext";
 
-interface IProps {}
-
-const ConnectedStatus: React.FC<IProps> = () => {
+const ConnectedStatus: React.FC = () => {
   const { serverState } = useServer()
   const { status } = serverState;
 

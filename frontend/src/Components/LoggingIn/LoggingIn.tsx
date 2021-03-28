@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 
 const LoggingIn: React.FC = () => {
   const [ loginCode, setLoginCode ] = useState<string | null>(null);
-  let history = useHistory();
+  const history = useHistory();
   
   useEffect(()=>{
     setTimeout(() => {
@@ -21,7 +21,7 @@ const LoggingIn: React.FC = () => {
         }
       }
     }, 1000);
-  }, [loginCode]);
+  }, [loginCode, history]);
   
   return (
     <section className={styles.LoggingIn}>

@@ -24,8 +24,8 @@ export interface IAuthContext {
 
 export const initialAuthContext = {
   authState: initialAuthState,
-  authDispatch: () => {},
-  login: () => {},
+  authDispatch: (): void => { /* do nothing */ },
+  login: (): void => { /* do nothing */ },
 };
 
 export interface AuthProviderProps {
@@ -177,5 +177,5 @@ export interface IServerContext {
 
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
-  serverDispatch: () => {},
+  serverDispatch: () => { /* do nothing */ },
 }
