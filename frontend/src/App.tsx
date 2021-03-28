@@ -3,6 +3,7 @@ import styles from './App.module.scss';
 import ConnectedStatus from './Components/ConnectedStatus';
 import { useAuth } from "./Context/authContext";
 import Login from './Components/Login';
+import LoggingIn from './Components/LoggingIn';
 import Home from './Components/Home';
 import {
   Switch,
@@ -22,12 +23,16 @@ const App = () => {
               <Route exact path="/">
                 <Home />
               </Route>
-              {/* <Route exact path="/display-name">
-                <Link to="/">Home</Link>
-              </Route> */}
             </Switch>
           ) : (
-            <Login />
+            <Switch>
+              <Route exact path="/">
+                <Login />
+              </Route>
+              <Route exact path="/logging-in">
+                <LoggingIn />
+              </Route>
+            </Switch>
           )}
         </Route>
         <ConnectedStatus />

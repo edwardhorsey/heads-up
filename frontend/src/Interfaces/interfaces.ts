@@ -19,11 +19,13 @@ export const initialAuthState: AuthState = {
 export interface IAuthContext {
   authState: AuthState;
   authDispatch: AuthDispatch;
+  login: (response:any) => void;
 }
 
 export const initialAuthContext = {
   authState: initialAuthState,
   authDispatch: () => {},
+  login: () => {},
 };
 
 export interface AuthProviderProps {

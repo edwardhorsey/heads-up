@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react';
+import { useHistory } from 'react-router-dom';
 import { AuthReducerAction, initialAuthState, IAuthContext, initialAuthContext, AuthProviderProps, AuthState } from '../Interfaces/interfaces';
 
 const authReducer = (authState: AuthState, action: AuthReducerAction): AuthState => {
@@ -34,8 +35,16 @@ export const AuthContext = createContext<IAuthContext>(initialAuthContext);
 
 export const AuthProvider = (props: AuthProviderProps) => {
   const [authState, authDispatch] = useReducer(authReducer, initialAuthState)
+  let history = useHistory();
 
-  return <AuthContext.Provider value={{ authState, authDispatch }}>{props.children}</AuthContext.Provider>
+  const login = (response: any) => {
+    response.userObject
+      ? authDispatch({ type: 'login', payload: response })
+      : console.error(response.message);
+    history.push('/');
+  };
+
+  return <AuthContext.Provider value={{ authState, authDispatch, login }}>{props.children}</AuthContext.Provider>
 };
 
 export const useAuth = () => useContext(AuthContext);

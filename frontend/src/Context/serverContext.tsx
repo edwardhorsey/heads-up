@@ -2,6 +2,7 @@ import React, { createContext, useReducer, useContext } from 'react';
 import { useAuth } from "./authContext";
 import socket from '../Socket/socket';
 import { ServerState, ServerProviderProps, ServerReducerAction, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
+import { useHistory } from 'react-router-dom';
 
 const serverReducer = (serverState: ServerState, action: ServerReducerAction):  ServerState => {
   const { type, payload: response } = action;
@@ -150,7 +151,7 @@ const ServerContext = createContext<IServerContext>(initialServerContext);
 
 export const ServerProvider = (props: ServerProviderProps) => {
   const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
-  const { authDispatch } = useAuth();
+  const { authDispatch, login } = useAuth();
 
   socket.onopen = () => {
     serverDispatch({ type: 'socketOnOpen' });
@@ -174,9 +175,7 @@ export const ServerProvider = (props: ServerProviderProps) => {
     switch (method) {
       case 'login':
         serverDispatch({ type: 'connected', payload: response });
-        response.userObject
-          ? authDispatch({ type: method, payload: response })
-          : console.error(response.message);
+        login(response);
         break;
 
       case 'forceLogout':
