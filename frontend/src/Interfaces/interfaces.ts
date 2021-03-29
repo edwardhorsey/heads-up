@@ -115,8 +115,6 @@ export const serverReducerActions: ServerReducerAction['type'][] = [
 ];
 
 export type GameReducerAction =
-| { type: 'login', payload: WebsocketResponse }
-| { type: 'forceLogout', payload: WebsocketResponse }
 | { type: 'setUsername', payload: WebsocketResponse }
 | { type: 'createGame', payload: WebsocketResponse }
 | { type: 'removeGid' }
@@ -133,8 +131,6 @@ export type GameReducerAction =
 | { type: 'backToLobby', payload: WebsocketResponse };
 
 export const gameReducerActions: GameReducerAction['type'][] = [
-  'login',
-  'forceLogout',
   'setUsername',
   'createGame',
   'removeGid',

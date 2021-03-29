@@ -224,47 +224,52 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
     console.log('Data arrived! ', response);
 
     /* TEMP Special scenarios */
-    switch (method) {
-      case 'login':
-        serverDispatch({ type: 'connected', payload: response });
-        login(response);
-        break;
+    if (serverReducerActions.includes(method)) {
+      serverDispatch({ type: method, payload: response });
+    } else if (gameReducerActions.includes(method)) {
+      switch (method) {
+        case 'joinGame':
+          gameDispatch({
+            type: method,
+            payload: {
+              ...response,
+              whichPlayer: calculateWhichPlayer(
+                serverState.uid,
+                response.players,
+                response.gid,
+              ),
+            },
+          });
+          break;
 
-      case 'forceLogout':
-        authDispatch({ type: method, message: response.message });
-        break;
+        case 'newHand':
+          if (gameState.noOfHands < 1 || gameState.stage === 'backToLobby') {
+            gameDispatch({ type: method, payload: response });
+          } else {
+            setTimeout(
+              () => gameDispatch({ type: method, payload: response }),
+              2000,
+            );
+          }
+          break;
 
-      case 'joinGame':
-        gameDispatch({
-          type: method,
-          payload: {
-            ...response,
-            whichPlayer: calculateWhichPlayer(
-              serverState.uid,
-              response.players,
-              response.gid,
-            ),
-          },
-        });
-        break;
-
-      case 'newHand':
-        if (gameState.noOfHands < 1) {
-          serverDispatch({ type: method, payload: response });
-        } else {
-          setTimeout(
-            () => serverDispatch({ type: method, payload: response }),
-            3000, // add exception for when stage is 'back to lobby'
-          );
-        }
-        break;
-
-      default:
-        if (method in serverReducerActions) {
-          serverDispatch({ type: method, payload: response });
-        } else if (method in gameReducerActions) {
+        default:
           gameDispatch({ type: method, payload: response });
-        }
+      }
+    } else if (authReducerActions.includes(method)) {
+      switch (method) {
+        case 'login':
+          serverDispatch({ type: 'connected', payload: response });
+          login(response);
+          break;
+
+        case 'forceLogout':
+          authDispatch({ type: method, message: response.message });
+          break;
+
+        default:
+          authDispatch({ type: method });
+      }
     }
   };
 
