@@ -1,2 +1,3 @@
-import Pot from "./Pot";
+import Pot from './Pot';
+
 export default Pot;

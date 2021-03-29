@@ -1,2 +1,3 @@
-import RoundWinner from "./RoundWinner";
+import RoundWinner from './RoundWinner';
+
 export default RoundWinner;

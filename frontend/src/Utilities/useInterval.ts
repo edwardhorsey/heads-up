@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-type IntervalFunction = () => ( unknown | void )
+type IntervalFunction = () => (unknown | void)
 
 function useInterval(callback: IntervalFunction, delay: number | null): void {
   const savedCallback: React.MutableRefObject<IntervalFunction | undefined> = useRef();

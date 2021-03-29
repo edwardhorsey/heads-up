@@ -3,10 +3,10 @@ import { shallow } from 'enzyme';
 import GameNav from './GameNav';
 import { Iplayer } from '../../Context/serverContext';
 
-describe("GameNav tests", () => {
+describe('GameNav tests', () => {
   let component: any;
   let mockFn;
-  let testProp: Iplayer = {
+  const testProp: Iplayer = {
     name: 'name',
     bankroll: 100,
     ready: true,
@@ -16,15 +16,15 @@ describe("GameNav tests", () => {
     hand: [],
     folded: false,
     'rounds-won': 5,
-    profit: 0
-  }
+    profit: 0,
+  };
 
   beforeEach(() => {
     mockFn = jest.fn();
     component = shallow(<GameNav yourself={testProp} opponent={testProp} />);
-  })
-  
-  it("should render", () => {
+  });
+
+  it('should render', () => {
     expect(component).toBeTruthy();
-  })
-})
+  });
+});

@@ -9,7 +9,7 @@ interface ChipsTable {
   [key: number]: number
 }
 
-let counter = 0;
+let chipsGenCounter = 0;
 
 const ChipsGen: React.FC<IProps> = ({ amount }) => {
   const calculateChips = ():ChipsTable => {
@@ -43,7 +43,7 @@ const ChipsGen: React.FC<IProps> = ({ amount }) => {
           const inlineStyle = { top: `-${10 * i}px` };
           chipsStack.push(
             <img
-              key={`chip ${counter += 1}`}
+              key={`chip ${chipsGenCounter += 1}`}
               style={inlineStyle}
               alt={`${chip}`}
               className={styles.chip}
@@ -53,7 +53,7 @@ const ChipsGen: React.FC<IProps> = ({ amount }) => {
         }
 
         return chipsStack.length > 0 ?? (
-          <div key={`chipStack ${counter}`} className={styles.parent}>
+          <div key={`chipStack ${chipsGenCounter}`} className={styles.parent}>
             {chipsStack}
           </div>
         );

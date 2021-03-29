@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import styles from "./LoggingIn.module.scss";
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import styles from './LoggingIn.module.scss';
 import { sendCognitoCode } from '../../Socket/requests';
-import { useHistory } from "react-router-dom";
 
 const LoggingIn: React.FC = () => {
-  const [ loginCode, setLoginCode ] = useState<string | null>(null);
+  const [loginCode, setLoginCode] = useState<string | null>(null);
   const history = useHistory();
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     setTimeout(() => {
       if (!loginCode) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -22,7 +22,7 @@ const LoggingIn: React.FC = () => {
       }
     }, 1000);
   }, [loginCode, history]);
-  
+
   return (
     <section className={styles.LoggingIn}>
       <p>Logging you in...</p>

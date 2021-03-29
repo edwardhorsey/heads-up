@@ -1,2 +1,3 @@
-import LoggingIn from "./LoggingIn";
+import LoggingIn from './LoggingIn';
+
 export default LoggingIn;

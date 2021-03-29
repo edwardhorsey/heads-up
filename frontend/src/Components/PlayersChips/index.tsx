@@ -1,2 +1,3 @@
-import PlayersChips from "./PlayersChips";
+import PlayersChips from './PlayersChips';
+
 export default PlayersChips;

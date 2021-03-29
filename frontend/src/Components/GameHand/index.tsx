@@ -1,2 +1,3 @@
-import GameHand from "./GameHand";
+import GameHand from './GameHand';
+
 export default GameHand;

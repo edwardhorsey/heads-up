@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import PlayersChips from './PlayersChips';
-import { Iplayer } from "../../Context/serverContext";
+import { Iplayer } from '../../Context/serverContext';
 
-describe("PlayersChips tests", () => {
+describe('PlayersChips tests', () => {
   let component: any;
   let mockFn;
 
@@ -17,15 +17,15 @@ describe("PlayersChips tests", () => {
     folded: false,
     blind: 100,
     'rounds-won': 15,
-    profit: 0
-  }
+    profit: 0,
+  };
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<PlayersChips which={'Your'} player={testPlayer} stage={'to-call'} />);
-  })
-  
-  it("should render", () => {
+    component = shallow(<PlayersChips which="Your" player={testPlayer} stage="to-call" />);
+  });
+
+  it('should render', () => {
     expect(component).toBeTruthy();
-  })
-})
+  });
+});

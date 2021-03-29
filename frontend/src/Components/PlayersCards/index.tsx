@@ -1,2 +1,3 @@
-import PlayersCards from "./PlayersCards";
+import PlayersCards from './PlayersCards';
+
 export default PlayersCards;

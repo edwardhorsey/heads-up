@@ -1,2 +1,3 @@
-import WaitingRoom from "./WaitingRoom";
+import WaitingRoom from './WaitingRoom';
+
 export default WaitingRoom;

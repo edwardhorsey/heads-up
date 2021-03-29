@@ -1,2 +1,3 @@
-import PlayerStats from "./PlayerStats";
+import PlayerStats from './PlayerStats';
+
 export default PlayerStats;

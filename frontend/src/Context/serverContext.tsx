@@ -1,18 +1,20 @@
 import React, { createContext, useReducer, useContext } from 'react';
-import { useAuth } from "./authContext";
+import { useAuth } from './authContext';
 import socket from '../Socket/socket';
-import { ServerState, ServerProviderProps, ServerReducerAction, initialServerState, IServerContext, initialServerContext } from '../Interfaces/interfaces';
+import {
+  ServerState, ServerProviderProps, ServerReducerAction, initialServerState, IServerContext, initialServerContext,
+} from '../Interfaces/interfaces';
 
-const serverReducer = (serverState: ServerState, action: ServerReducerAction):  ServerState => {
-  switch(action.type) {
+const serverReducer = (serverState: ServerState, action: ServerReducerAction): ServerState => {
+  switch (action.type) {
     case 'socketOnOpen':
-      return { ...serverState, status: "connected" };
-  
+      return { ...serverState, status: 'connected' };
+
     case 'socketOnClose':
-      return { ...serverState, status: "disconnected" };
-  
+      return { ...serverState, status: 'disconnected' };
+
     case 'socketOnError':
-      return { ...serverState, status: "error" };
+      return { ...serverState, status: 'error' };
 
     case 'resetServer':
       return { ...initialServerState };
@@ -30,7 +32,7 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
       return { ...serverState, falseGID: true };
 
     case 'validGid':
-      return {...serverState, falseGID: false };
+      return { ...serverState, falseGID: false };
 
     case 'joinGame':
       let whichPlayer: number|null = null;
@@ -43,105 +45,114 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction):  
         throw new Error(
           `Action joinGame: client uid ${serverState.uid} does not match
           that inside Game (gid: ${action.payload.gid}) - player uids: 
-          ${action.payload.players[0].uid} ${action.payload.players[1].uid}`
+          ${action.payload.players[0].uid} ${action.payload.players[1].uid}`,
         );
       }
 
-      return { ...serverState,
+      return {
+        ...serverState,
         gid: action.payload.gid,
         falseGID: false,
         players: action.payload.players,
-        readyToStart: action.payload.players.length === 2 ? true : false,
-        whichPlayer: whichPlayer,
+        readyToStart: action.payload.players.length === 2,
+        whichPlayer,
       };
 
     case 'onePlayerReady':
-      return {...serverState,
+      return {
+        ...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ready: action.payload.players[index].ready}
-        ))
+          { ...player, ready: action.payload.players[index].ready }
+        )),
       };
 
     case 'newHand':
-      return {...serverState,
-          players: action.payload.players,
-          action: action.payload.action === 'two' ? 1: 0,
-          stage: action.payload.stage,
-          yourHand: action.payload.players[serverState.whichPlayer].hand,
-          oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1: 0].hand,
-          community: action.payload['community-cards'],
-          pot: action.payload.pot,
-          noOfHands: action.payload['number-of-hands'],
-          winner: action.payload.winner,
-          winningHand: action.payload['winning-hand']
-        };
+      return {
+        ...serverState,
+        players: action.payload.players,
+        action: action.payload.action === 'two' ? 1 : 0,
+        stage: action.payload.stage,
+        yourHand: action.payload.players[serverState.whichPlayer].hand,
+        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand,
+        community: action.payload['community-cards'],
+        pot: action.payload.pot,
+        noOfHands: action.payload['number-of-hands'],
+        winner: action.payload.winner,
+        winningHand: action.payload['winning-hand'],
+      };
 
     case 'allIn':
-      return {...serverState,
+      return {
+        ...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...action.payload.players[index]}
+          { ...player, ...action.payload.players[index] }
         )),
         stage: 'to-call',
-        action: action.payload.action === 'two' ? 1: 0,
-        pot: action.payload.pot
+        action: action.payload.action === 'two' ? 1 : 0,
+        pot: action.payload.pot,
       };
 
     case 'showdown':
-      return {...serverState,
+      return {
+        ...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...action.payload.players[index]}
+          { ...player, ...action.payload.players[index] }
         )),
         yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1: 0].hand,
+        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand,
         community: action.payload['community-cards'],
         stage: 'showdown',
         action: null,
-        pot: action.payload.pot
+        pot: action.payload.pot,
       };
 
     case 'folded':
-      return {...serverState,
+      return {
+        ...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...action.payload.players[index]}
+          { ...player, ...action.payload.players[index] }
         )),
         stage: 'folded',
         action: null,
       };
 
     case 'winner':
-      return {...serverState,
+      return {
+        ...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...action.payload.players[index]}
+          { ...player, ...action.payload.players[index] }
         )),
         pot: action.payload.pot,
         winner: action.payload.winner,
         action: null,
         winningHand: action.payload['winning-hand'],
-        stage: 'winner'
+        stage: 'winner',
       };
 
     case 'playerBust':
-      return {...serverState,
+      return {
+        ...serverState,
         action: null,
-        stage: 'end'
+        stage: 'end',
       };
 
-    case 'backToLobby':  
-      return {...serverState,
+    case 'backToLobby':
+      return {
+        ...serverState,
         players: serverState.players.map((player, index) => (
-          {...player, ...action.payload.players[index]}
+          { ...player, ...action.payload.players[index] }
         )),
         yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1: 0].hand,
+        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand,
         noOfRounds: action.payload['number-of-rounds'],
-        stage: action.payload['stage'],
-        inHand: false
+        stage: action.payload.stage,
+        inHand: false,
       };
 
     default: {
       throw new Error(`Action - ${action.type} - not matched`);
     }
-  } 
+  }
 };
 
 const ServerContext = createContext<IServerContext>(initialServerContext);
@@ -155,12 +166,12 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
   };
 
   socket.onclose = () => {
-    serverDispatch({ type: 'socketOnClose' })
+    serverDispatch({ type: 'socketOnClose' });
   };
 
   socket.onerror = (event) => {
-    console.error("WebSocket error observed:", event);
-    serverDispatch({ type: 'socketOnError' })
+    console.error('WebSocket error observed:', event);
+    serverDispatch({ type: 'socketOnError' });
   };
 
   socket.onmessage = (event) => {
@@ -188,9 +199,9 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
       default:
         serverDispatch({ type: method, payload: response });
     }
-  }
-  
-  return <ServerContext.Provider value={{ serverState, serverDispatch }}>{props.children}</ServerContext.Provider>
+  };
+
+  return <ServerContext.Provider value={{ serverState, serverDispatch }}>{props.children}</ServerContext.Provider>;
 };
 
 export const useServer = (): IServerContext => useContext(ServerContext);

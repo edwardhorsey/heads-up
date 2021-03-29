@@ -2,16 +2,16 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import App from './App';
 
-describe("App tests", () => {
+describe('App tests', () => {
   let component: any;
   let mockFn;
 
   beforeEach(() => {
     mockFn = jest.fn();
     component = shallow(<App />);
-  })
-  
-  it("should render", () => {
+  });
+
+  it('should render', () => {
     expect(component).toBeTruthy();
-  })
-})
+  });
+});

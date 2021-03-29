@@ -1,2 +1,3 @@
-import WinnerAnnounce from "./WinnerAnnounce";
+import WinnerAnnounce from './WinnerAnnounce';
+
 export default WinnerAnnounce;

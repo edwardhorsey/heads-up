@@ -1,28 +1,40 @@
-import React from "react";
-import styles from "./PlayerStats.module.scss";
+import React from 'react';
+import styles from './PlayerStats.module.scss';
 import { Iplayer, Hand, Stage } from '../../Interfaces/interfaces';
 
 interface IProps {
   player: Iplayer;
-  who?: string;
+  who?: 'opp' | 'you';
   stage: Stage;
-  yourHand:  Hand;
+  yourHand: Hand;
 }
 
-const PlayerStats: React.FC<IProps> = ({player, who, stage, yourHand}) => {
-  const roundProfit = () => stage === 'winner' ? <p className={player.profit >= 0 ? styles.profit : styles.loss}>{player.profit}</p> : '';
-  const playerBackground = yourHand.length > 0 ? `${styles.playerName} ${styles.background}` : styles.playerName;
+const PlayerStats: React.FC<IProps> = ({
+  player, who, stage, yourHand,
+}) => {
+  const roundProfit = () => (
+    <p className={player.profit >= 0 ? styles.profit : styles.loss}>
+      {player.profit}
+    </p>
+  );
+
+  const playerBackground = yourHand.length > 0
+    ? `${styles.playerName} ${styles.background}`
+    : styles.playerName;
 
   return (
     <div className={styles.playerStats}>
-      {who === "you" ? roundProfit() : ''}
+      {who === 'you' && stage === 'winner' && roundProfit()}
       <div className={playerBackground}>
         <p className={styles.name}>{player.name}</p>
-        <p>Bankroll: {player.bankroll}</p>
+        <p>
+          Bankroll:
+          {player.bankroll}
+        </p>
       </div>
-      {who === "opp" ? roundProfit() : ''}
+      {who === 'opp' && stage === 'winner' && roundProfit()}
     </div>
-  )
-}
+  );
+};
 
 export default PlayerStats;

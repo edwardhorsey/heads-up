@@ -1,4 +1,3 @@
-
 import { ReactNode } from 'react';
 
 /*
@@ -15,7 +14,7 @@ export const initialAuthState: AuthState = {
   authToken: '',
   displayName: '',
   email: '',
-}
+};
 
 export interface IAuthContext {
   authState: AuthState;
@@ -33,7 +32,7 @@ export interface AuthProviderProps {
   children: ReactNode;
 }
 
-export type AuthReducerAction = 
+export type AuthReducerAction =
   | { type: 'login', userObject: AuthState }
   | { type: 'logout' }
   | { type: 'forceLogout', message: string; };
@@ -66,8 +65,8 @@ export const initialPlayer: Iplayer = {
   folded: false,
   blind: 0,
   'rounds-won': 0,
-  profit: 0
-}
+  profit: 0,
+};
 
 /*
 Websocket response
@@ -93,7 +92,7 @@ export interface WebsocketResponse {
 Server context
 */
 
-export type ServerReducerAction = 
+export type ServerReducerAction =
  | { type: 'socketOnOpen' }
  | { type: 'socketOnClose' }
  | { type: 'socketOnError' }
@@ -137,9 +136,9 @@ export type WinningHand = [string, number[], Hand];
 
 export interface ServerState {
   status: SocketStatus; // websocket server
-  inHand: boolean; // player 
-  uid: string; // player 
-  displayName: string; // player 
+  inHand: boolean; // player
+  uid: string; // player
+  displayName: string; // player
   opponentName: string; // game
   gid: string; // game
   falseGID: boolean; // app
@@ -195,4 +194,4 @@ export interface IServerContext {
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
   serverDispatch: () => { /* do nothing */ },
-}
+};

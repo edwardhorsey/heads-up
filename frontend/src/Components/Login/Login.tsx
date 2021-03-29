@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "./Login.module.scss";
+import React from 'react';
+import styles from './Login.module.scss';
 
 const Login: React.FC = () => (
   <section className={styles.Login}>
