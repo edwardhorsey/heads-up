@@ -63,5 +63,6 @@
                 "extensions": [".js", ".jsx", ".ts", ".tsx"]
             }
         }
-    }
+    },
+    "ignorePatterns": ["serviceWorker.ts"]
 }

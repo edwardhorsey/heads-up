@@ -2,10 +2,38 @@ import React, { createContext, useReducer, useContext } from 'react';
 import { useAuth } from './authContext';
 import socket from '../Socket/socket';
 import {
-  ServerState, ServerProviderProps, ServerReducerAction, initialServerState, IServerContext, initialServerContext,
+  ServerState,
+  ServerProviderProps,
+  ServerReducerAction,
+  initialServerState,
+  Iplayer,
+  IServerContext,
+  initialServerContext,
 } from '../Interfaces/interfaces';
 
-const serverReducer = (serverState: ServerState, action: ServerReducerAction): ServerState => {
+const calculateWhichPlayer = (
+  uid: string,
+  players: Iplayer[],
+  gid: string,
+): number => {
+  if (uid === players[0].uid) {
+    return 0;
+  }
+  if (uid === players[1].uid) {
+    return 1;
+  }
+
+  throw new Error(
+    `Action joinGame: client uid ${uid} does not match
+    that inside Game (gid: ${gid}) - player uids: 
+    ${players[0].uid} ${players[1].uid}`,
+  );
+};
+
+const serverReducer = (
+  serverState: ServerState,
+  action: ServerReducerAction,
+): ServerState => {
   switch (action.type) {
     case 'socketOnOpen':
       return { ...serverState, status: 'connected' };
@@ -35,27 +63,17 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction): S
       return { ...serverState, falseGID: false };
 
     case 'joinGame':
-      let whichPlayer: number|null = null;
-
-      if (serverState.uid === action.payload.players[0].uid) {
-        whichPlayer = 0;
-      } else if (serverState.uid === action.payload.players[1].uid) {
-        whichPlayer = 1;
-      } else {
-        throw new Error(
-          `Action joinGame: client uid ${serverState.uid} does not match
-          that inside Game (gid: ${action.payload.gid}) - player uids: 
-          ${action.payload.players[0].uid} ${action.payload.players[1].uid}`,
-        );
-      }
-
       return {
         ...serverState,
         gid: action.payload.gid,
         falseGID: false,
         players: action.payload.players,
         readyToStart: action.payload.players.length === 2,
-        whichPlayer,
+        whichPlayer: calculateWhichPlayer(
+          serverState.uid,
+          action.payload.players,
+          action.payload.gid,
+        ),
       };
 
     case 'onePlayerReady':
@@ -73,7 +91,9 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction): S
         action: action.payload.action === 'two' ? 1 : 0,
         stage: action.payload.stage,
         yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand,
+        oppHand: (
+          action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand
+        ),
         community: action.payload['community-cards'],
         pot: action.payload.pot,
         noOfHands: action.payload['number-of-hands'],
@@ -99,7 +119,9 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction): S
           { ...player, ...action.payload.players[index] }
         )),
         yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand,
+        oppHand: (
+          action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand
+        ),
         community: action.payload['community-cards'],
         stage: 'showdown',
         action: null,
@@ -143,7 +165,9 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction): S
           { ...player, ...action.payload.players[index] }
         )),
         yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand,
+        oppHand: (
+          action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand
+        ),
         noOfRounds: action.payload['number-of-rounds'],
         stage: action.payload.stage,
         inHand: false,
@@ -158,7 +182,9 @@ const serverReducer = (serverState: ServerState, action: ServerReducerAction): S
 const ServerContext = createContext<IServerContext>(initialServerContext);
 
 export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
-  const [serverState, serverDispatch] = useReducer(serverReducer, initialServerState);
+  const [serverState, serverDispatch] = useReducer(
+    serverReducer, initialServerState,
+  );
   const { authDispatch, login } = useAuth();
 
   socket.onopen = () => {
@@ -191,9 +217,14 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
         break;
 
       case 'newHand':
-        serverState.noOfHands < 1
-          ? serverDispatch({ type: method, payload: response })
-          : setTimeout(() => serverDispatch({ type: method, payload: response }), 3000);
+        if (serverState.noOfHands < 1) {
+          serverDispatch({ type: method, payload: response });
+        } else {
+          setTimeout(
+            () => serverDispatch({ type: method, payload: response }),
+            3000,
+          );
+        }
         break;
 
       default:
@@ -201,7 +232,12 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
     }
   };
 
-  return <ServerContext.Provider value={{ serverState, serverDispatch }}>{props.children}</ServerContext.Provider>;
+  const { children } = props;
+  return (
+    <ServerContext.Provider value={{ serverState, serverDispatch }}>
+      {children}
+    </ServerContext.Provider>
+  );
 };
 
 export const useServer = (): IServerContext => useContext(ServerContext);

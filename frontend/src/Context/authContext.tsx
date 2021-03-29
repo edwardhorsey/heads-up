@@ -1,10 +1,19 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-  AuthReducerAction, initialAuthState, IAuthContext, initialAuthContext, AuthProviderProps, AuthState, WebsocketResponse,
+  AuthProviderProps,
+  AuthReducerAction,
+  AuthState,
+  initialAuthContext,
+  initialAuthState,
+  IAuthContext,
+  WebsocketResponse,
 } from '../Interfaces/interfaces';
 
-const authReducer = (authState: AuthState, action: AuthReducerAction): AuthState => {
+const authReducer = (
+  authState: AuthState,
+  action: AuthReducerAction,
+): AuthState => {
   switch (action.type) {
     case 'login':
       return {
@@ -34,13 +43,20 @@ export const AuthProvider = (props: AuthProviderProps): JSX.Element => {
   const history = useHistory();
 
   const login = (response: WebsocketResponse) => {
-    response.userObject
-      ? authDispatch({ type: 'login', userObject: response.userObject })
-      : console.error(response.message);
+    if (response.userObject) {
+      authDispatch({ type: 'login', userObject: response.userObject });
+    } else {
+      console.error(response.message);
+    }
     history.push('/');
   };
 
-  return <AuthContext.Provider value={{ authState, authDispatch, login }}>{props.children}</AuthContext.Provider>;
+  const { children } = props;
+  return (
+    <AuthContext.Provider value={{ authState, authDispatch, login }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = (): IAuthContext => useContext(AuthContext);

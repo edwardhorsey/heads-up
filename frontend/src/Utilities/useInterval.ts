@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 
 type IntervalFunction = () => (unknown | void)
+type SavedCallback = React.MutableRefObject<IntervalFunction | undefined>
 
 function useInterval(callback: IntervalFunction, delay: number | null): void {
-  const savedCallback: React.MutableRefObject<IntervalFunction | undefined> = useRef();
-  console.log(savedCallback);
+  const savedCallback: SavedCallback = useRef();
 
   // Remember the latest callback.
   useEffect(() => {
@@ -20,6 +20,8 @@ function useInterval(callback: IntervalFunction, delay: number | null): void {
       const id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
+
+    return () => { /* do nothing */ };
   }, [delay]);
 }
 
