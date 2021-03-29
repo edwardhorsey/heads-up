@@ -222,7 +222,7 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
         } else {
           setTimeout(
             () => serverDispatch({ type: method, payload: response }),
-            3000,
+            3000, // add exception for when stage is 'back to lobby'
           );
         }
         break;
