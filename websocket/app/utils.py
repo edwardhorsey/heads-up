@@ -60,13 +60,16 @@ def get_game(gid):
 async def get_access_tokens(code):
     url = os.environ['AWS_COGNITO_APP_URL']
     app_client_id = os.environ['AWS_COGNITO_APP_CLIENT_ID']
+    redirect_uri = 'http://localhost:3000/logging-in/' if 'IS_OFFLINE' in os.environ else (
+        os.environ['AWS_COGNITO_APP_REDIRECT_URI']
+    )
 
     return requests.post(url + '/oauth2/token',{
         'Content-Type':'application/x-www-form-urlencoded',
         'grant_type': 'authorization_code',
         'client_id': app_client_id,
         'code': code,
-        'redirect_uri': os.environ['AWS_COGNITO_APP_REDIRECT_URI']
+        'redirect_uri': redirect_uri,
     }).json()
 
 async def get_user_profile(code):
