@@ -20,8 +20,9 @@ const validate = (values: Ivalues) => {
 };
 
 const CreateOrJoin: React.FC = () => {
-  const { serverState, serverDispatch } = useServer();
-  const { falseGID, uid } = serverState;
+  const { gameState, serverState, gameDispatch } = useServer();
+  const { uid } = serverState;
+  const { falseGID } = gameState;
 
   const formik = useFormik({
     initialValues: { gid: '' },
@@ -30,7 +31,7 @@ const CreateOrJoin: React.FC = () => {
   });
 
   if (formik.errors.gid === 'Required' && falseGID) {
-    serverDispatch({ type: 'validGid' });
+    gameDispatch({ type: 'validGid' });
   }
 
   return (

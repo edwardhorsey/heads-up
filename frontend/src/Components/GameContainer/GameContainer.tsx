@@ -9,17 +9,16 @@ import Button from '../Button';
 /* import { leaveGame } from '../../Socket/requests'; */
 
 const GameContainer: React.FC = () => {
-  const { serverState } = useServer();
+  const { gameState, serverState } = useServer();
+  const { uid /* inHand */ } = serverState;
   const {
-    uid,
     gid,
     players,
     whichPlayer,
     yourHand,
     noOfRounds,
     stage,
-    /* inHand */
-  } = serverState;
+  } = gameState;
 
   // yourself is user
   const yourself: Iplayer = players[whichPlayer];

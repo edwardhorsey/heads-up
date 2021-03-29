@@ -7,8 +7,8 @@ import GameContainer from '../GameContainer';
 import Button from '../Button';
 
 const Home: React.FC = () => {
-  const { serverState, serverDispatch } = useServer();
-  const { readyToStart } = serverState;
+  const { gameState, serverDispatch } = useServer();
+  const { readyToStart } = gameState;
   const { authState, authDispatch } = useAuth();
   const { displayName } = authState;
   const logoutHome = () => {

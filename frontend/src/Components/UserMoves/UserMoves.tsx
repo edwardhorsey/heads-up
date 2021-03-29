@@ -9,10 +9,11 @@ import Button from '../Button';
 import Timer from '../Timer';
 
 const UserMoves: React.FC = () => {
-  const { serverState } = useServer();
+  const { gameState, serverState } = useServer();
+  const { uid } = serverState;
   const {
-    uid, gid, players, whichPlayer, action, stage,
-  } = serverState;
+    gid, players, whichPlayer, action, stage,
+  } = gameState;
 
   // opponent is opponent
   const opponent: Iplayer = players[whichPlayer === 0 ? 1 : 0];

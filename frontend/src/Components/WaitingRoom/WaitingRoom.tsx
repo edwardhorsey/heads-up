@@ -4,11 +4,11 @@ import { useServer } from '../../Context/serverContext';
 import Button from '../Button';
 
 const WaitingRoom: React.FC = () => {
-  const { serverState, serverDispatch } = useServer();
-  const { displayName, gid } = serverState;
+  const { gameState, gameDispatch } = useServer();
+  const { displayName, gid } = gameState;
   return (
     <section className={styles.WaitingRoom}>
-      <Button logic={() => serverDispatch({ type: 'removeGid' })} text="Back" />
+      <Button logic={() => gameDispatch({ type: 'removeGid' })} text="Back" />
       <p>{displayName}</p>
       <p>
         Game ID:

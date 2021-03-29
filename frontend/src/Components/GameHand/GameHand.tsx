@@ -37,7 +37,7 @@ interface GameHandProps {
 }
 
 const GameHand: React.FC<GameHandProps> = ({ yourself, opponent }) => {
-  const { serverState } = useServer();
+  const { gameState } = useServer();
   const {
     whichPlayer,
     yourHand,
@@ -49,7 +49,7 @@ const GameHand: React.FC<GameHandProps> = ({ yourself, opponent }) => {
     stage,
     noOfHands,
     action,
-  } = serverState;
+  } = gameState;
 
   const isAWinningCard = (card: Card) => (
     winningHand[2].join('').includes(card.join(''))

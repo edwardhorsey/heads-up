@@ -9,8 +9,8 @@ interface LobbyProps {
 }
 
 const Lobby: React.FC<LobbyProps> = ({ displayName }) => {
-  const { serverState } = useServer();
-  const { gid } = serverState;
+  const { gameState } = useServer();
+  const { gid } = gameState;
   return (
     <section className={styles.Lobby}>
       <h3>
