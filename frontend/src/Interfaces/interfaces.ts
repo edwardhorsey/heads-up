@@ -37,6 +37,12 @@ export type AuthReducerAction =
   | { type: 'logout' }
   | { type: 'forceLogout', message: string; };
 
+export const authReducerActions: AuthReducerAction['type'][] = [
+  'login',
+  'logout',
+  'forceLogout',
+];
+
 export type AuthDispatch = (action: AuthReducerAction) => void;
 
 /*
@@ -94,29 +100,56 @@ Server context
 */
 
 export type ServerReducerAction =
-  | { type: 'socketOnOpen' }
-  | { type: 'socketOnClose' }
-  | { type: 'socketOnError' }
-  | { type: 'resetServer' }
-  | { type: 'connected', payload: WebsocketResponse }; 
+| { type: 'socketOnOpen' }
+| { type: 'socketOnClose' }
+| { type: 'socketOnError' }
+| { type: 'resetServer' }
+| { type: 'connected', payload: WebsocketResponse };
+
+export const serverReducerActions: ServerReducerAction['type'][] = [
+  'socketOnOpen',
+  'socketOnClose',
+  'socketOnError',
+  'resetServer',
+  'connected',
+];
 
 export type GameReducerAction =
-  | { type: 'login', payload: WebsocketResponse }
-  | { type: 'forceLogout', payload: WebsocketResponse }
-  | { type: 'setUsername', payload: WebsocketResponse }
-  | { type: 'createGame', payload: WebsocketResponse }
-  | { type: 'removeGid' }
-  | { type: 'incorrectGid', payload: WebsocketResponse }
-  | { type: 'validGid' }
-  | { type: 'joinGame', payload: WebsocketResponse }
-  | { type: 'onePlayerReady', payload: WebsocketResponse }
-  | { type: 'newHand', payload: WebsocketResponse }
-  | { type: 'allIn', payload: WebsocketResponse }
-  | { type: 'showdown', payload: WebsocketResponse }
-  | { type: 'folded', payload: WebsocketResponse }
-  | { type: 'winner', payload: WebsocketResponse }
-  | { type: 'playerBust', payload: WebsocketResponse }
-  | { type: 'backToLobby', payload: WebsocketResponse };
+| { type: 'login', payload: WebsocketResponse }
+| { type: 'forceLogout', payload: WebsocketResponse }
+| { type: 'setUsername', payload: WebsocketResponse }
+| { type: 'createGame', payload: WebsocketResponse }
+| { type: 'removeGid' }
+| { type: 'incorrectGid', payload: WebsocketResponse }
+| { type: 'validGid' }
+| { type: 'joinGame', payload: WebsocketResponse }
+| { type: 'onePlayerReady', payload: WebsocketResponse }
+| { type: 'newHand', payload: WebsocketResponse }
+| { type: 'allIn', payload: WebsocketResponse }
+| { type: 'showdown', payload: WebsocketResponse }
+| { type: 'folded', payload: WebsocketResponse }
+| { type: 'winner', payload: WebsocketResponse }
+| { type: 'playerBust', payload: WebsocketResponse }
+| { type: 'backToLobby', payload: WebsocketResponse };
+
+export const gameReducerActions: GameReducerAction['type'][] = [
+  'login',
+  'forceLogout',
+  'setUsername',
+  'createGame',
+  'removeGid',
+  'incorrectGid',
+  'validGid',
+  'joinGame',
+  'onePlayerReady',
+  'newHand',
+  'allIn',
+  'showdown',
+  'folded',
+  'winner',
+  'playerBust',
+  'backToLobby',
+];
 
 export type Stage = 'initial'
   | 'preflop'
