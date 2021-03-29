@@ -86,6 +86,7 @@ export interface WebsocketResponse {
   winner: string;
   'winning-hand': WinningHand;
   'number-of-rounds': number;
+  whichPlayer: number;
 }
 
 /*
@@ -93,40 +94,42 @@ Server context
 */
 
 export type ServerReducerAction =
- | { type: 'socketOnOpen' }
- | { type: 'socketOnClose' }
- | { type: 'socketOnError' }
- | { type: 'resetServer' }
- | { type: 'connected', payload: WebsocketResponse }
- | { type: 'login', payload: WebsocketResponse }
- | { type: 'forceLogout', payload: WebsocketResponse }
- | { type: 'setUsername', payload: WebsocketResponse }
- | { type: 'createGame', payload: WebsocketResponse }
- | { type: 'removeGid' }
- | { type: 'incorrectGid', payload: WebsocketResponse }
- | { type: 'validGid' }
- | { type: 'joinGame', payload: WebsocketResponse }
- | { type: 'onePlayerReady', payload: WebsocketResponse }
- | { type: 'newHand', payload: WebsocketResponse }
- | { type: 'allIn', payload: WebsocketResponse }
- | { type: 'showdown', payload: WebsocketResponse }
- | { type: 'folded', payload: WebsocketResponse }
- | { type: 'winner', payload: WebsocketResponse }
- | { type: 'playerBust', payload: WebsocketResponse }
- | { type: 'backToLobby', payload: WebsocketResponse };
+  | { type: 'socketOnOpen' }
+  | { type: 'socketOnClose' }
+  | { type: 'socketOnError' }
+  | { type: 'resetServer' }
+  | { type: 'connected', payload: WebsocketResponse }; 
+
+export type GameReducerAction =
+  | { type: 'login', payload: WebsocketResponse }
+  | { type: 'forceLogout', payload: WebsocketResponse }
+  | { type: 'setUsername', payload: WebsocketResponse }
+  | { type: 'createGame', payload: WebsocketResponse }
+  | { type: 'removeGid' }
+  | { type: 'incorrectGid', payload: WebsocketResponse }
+  | { type: 'validGid' }
+  | { type: 'joinGame', payload: WebsocketResponse }
+  | { type: 'onePlayerReady', payload: WebsocketResponse }
+  | { type: 'newHand', payload: WebsocketResponse }
+  | { type: 'allIn', payload: WebsocketResponse }
+  | { type: 'showdown', payload: WebsocketResponse }
+  | { type: 'folded', payload: WebsocketResponse }
+  | { type: 'winner', payload: WebsocketResponse }
+  | { type: 'playerBust', payload: WebsocketResponse }
+  | { type: 'backToLobby', payload: WebsocketResponse };
 
 export type Stage = 'initial'
-| 'preflop'
-| 'to-call'
-| 'folded'
-| 'winner'
-| 'showdown'
-| 'end'
-| 'backToLobby';
+  | 'preflop'
+  | 'to-call'
+  | 'folded'
+  | 'winner'
+  | 'showdown'
+  | 'end'
+  | 'backToLobby';
 
 export type SocketStatus = 'disconnected'
-| 'connected'
-| 'error';
+  | 'connected'
+  | 'error';
 
 export type Card = string[];
 
@@ -136,6 +139,10 @@ export type WinningHand = [string, number[], Hand];
 
 export interface ServerState {
   status: SocketStatus; // websocket server
+  uid: string; // player
+}
+
+export interface GameState {
   inHand: boolean; // player
   uid: string; // player
   displayName: string; // player
@@ -158,9 +165,14 @@ export interface ServerState {
 }
 
 export type ServerDispatch = (action: ServerReducerAction) => void;
+export type GameDispatch = (action: GameReducerAction) => void;
 
 export const initialServerState: ServerState = {
   status: 'disconnected',
+  uid: '',
+};
+
+export const initialGameState: GameState = {
   inHand: false,
   uid: '',
   displayName: '',
@@ -189,9 +201,13 @@ export interface ServerProviderProps {
 export interface IServerContext {
   serverState: ServerState;
   serverDispatch: ServerDispatch;
+  gameState: GameState;
+  gameDispatch: GameDispatch;
 }
 
 export const initialServerContext: IServerContext = {
   serverState: initialServerState,
   serverDispatch: () => { /* do nothing */ },
+  gameState: initialGameState,
+  gameDispatch: () => { /* do nothing */ },
 };

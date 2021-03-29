@@ -2,13 +2,16 @@ import React, { createContext, useReducer, useContext } from 'react';
 import { useAuth } from './authContext';
 import socket from '../Socket/socket';
 import {
-  ServerState,
-  ServerProviderProps,
-  ServerReducerAction,
+  GameState,
+  GameReducerAction,
+  initialGameState,
+  initialServerContext,
   initialServerState,
   Iplayer,
   IServerContext,
-  initialServerContext,
+  ServerProviderProps,
+  ServerReducerAction,
+  ServerState,
 } from '../Interfaces/interfaces';
 
 const calculateWhichPlayer = (
@@ -50,132 +53,139 @@ const serverReducer = (
     case 'connected':
       return { ...serverState, uid: action.payload.uid };
 
-    case 'createGame':
-      return { ...serverState, gid: action.payload.gid };
-
-    case 'removeGid':
-      return { ...serverState, gid: '' };
-
-    case 'incorrectGid':
-      return { ...serverState, falseGID: true };
-
-    case 'validGid':
-      return { ...serverState, falseGID: false };
-
-    case 'joinGame':
-      return {
-        ...serverState,
-        gid: action.payload.gid,
-        falseGID: false,
-        players: action.payload.players,
-        readyToStart: action.payload.players.length === 2,
-        whichPlayer: calculateWhichPlayer(
-          serverState.uid,
-          action.payload.players,
-          action.payload.gid,
-        ),
-      };
-
-    case 'onePlayerReady':
-      return {
-        ...serverState,
-        players: serverState.players.map((player, index) => (
-          { ...player, ready: action.payload.players[index].ready }
-        )),
-      };
-
-    case 'newHand':
-      return {
-        ...serverState,
-        players: action.payload.players,
-        action: action.payload.action === 'two' ? 1 : 0,
-        stage: action.payload.stage,
-        yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: (
-          action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand
-        ),
-        community: action.payload['community-cards'],
-        pot: action.payload.pot,
-        noOfHands: action.payload['number-of-hands'],
-        winner: action.payload.winner,
-        winningHand: action.payload['winning-hand'],
-      };
-
-    case 'allIn':
-      return {
-        ...serverState,
-        players: serverState.players.map((player, index) => (
-          { ...player, ...action.payload.players[index] }
-        )),
-        stage: 'to-call',
-        action: action.payload.action === 'two' ? 1 : 0,
-        pot: action.payload.pot,
-      };
-
-    case 'showdown':
-      return {
-        ...serverState,
-        players: serverState.players.map((player, index) => (
-          { ...player, ...action.payload.players[index] }
-        )),
-        yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: (
-          action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand
-        ),
-        community: action.payload['community-cards'],
-        stage: 'showdown',
-        action: null,
-        pot: action.payload.pot,
-      };
-
-    case 'folded':
-      return {
-        ...serverState,
-        players: serverState.players.map((player, index) => (
-          { ...player, ...action.payload.players[index] }
-        )),
-        stage: 'folded',
-        action: null,
-      };
-
-    case 'winner':
-      return {
-        ...serverState,
-        players: serverState.players.map((player, index) => (
-          { ...player, ...action.payload.players[index] }
-        )),
-        pot: action.payload.pot,
-        winner: action.payload.winner,
-        action: null,
-        winningHand: action.payload['winning-hand'],
-        stage: 'winner',
-      };
-
-    case 'playerBust':
-      return {
-        ...serverState,
-        action: null,
-        stage: 'end',
-      };
-
-    case 'backToLobby':
-      return {
-        ...serverState,
-        players: serverState.players.map((player, index) => (
-          { ...player, ...action.payload.players[index] }
-        )),
-        yourHand: action.payload.players[serverState.whichPlayer].hand,
-        oppHand: (
-          action.payload.players[serverState.whichPlayer === 0 ? 1 : 0].hand
-        ),
-        noOfRounds: action.payload['number-of-rounds'],
-        stage: action.payload.stage,
-        inHand: false,
-      };
-
     default: {
-      throw new Error(`Action - ${action.type} - not matched`);
+      throw new Error(`Action - ${action} - not matched`);
     }
+  }
+};
+
+const gameReducer = (
+  gameState: GameState,
+  action: GameReducerAction,
+): GameState => {
+  switch (action.type) {
+      case 'createGame':
+        return { ...gameState, gid: action.payload.gid };
+  
+      case 'removeGid':
+        return { ...gameState, gid: '' };
+  
+      case 'incorrectGid':
+        return { ...gameState, falseGID: true };
+  
+      case 'validGid':
+        return { ...gameState, falseGID: false };
+  
+      case 'joinGame':
+        return {
+          ...gameState,
+          gid: action.payload.gid,
+          falseGID: false,
+          players: action.payload.players,
+          readyToStart: action.payload.players.length === 2,
+          whichPlayer: action.payload.whichPlayer,
+        };
+  
+      case 'onePlayerReady':
+        return {
+          ...gameState,
+          players: gameState.players.map((player, index) => (
+            { ...player, ready: action.payload.players[index].ready }
+          )),
+        };
+  
+      case 'newHand':
+        return {
+          ...gameState,
+          players: action.payload.players,
+          action: action.payload.action === 'two' ? 1 : 0,
+          stage: action.payload.stage,
+          yourHand: action.payload.players[gameState.whichPlayer].hand,
+          oppHand: (
+            action.payload.players[gameState.whichPlayer === 0 ? 1 : 0].hand
+          ),
+          community: action.payload['community-cards'],
+          pot: action.payload.pot,
+          noOfHands: action.payload['number-of-hands'],
+          winner: action.payload.winner,
+          winningHand: action.payload['winning-hand'],
+        };
+  
+      case 'allIn':
+        return {
+          ...gameState,
+          players: gameState.players.map((player, index) => (
+            { ...player, ...action.payload.players[index] }
+          )),
+          stage: 'to-call',
+          action: action.payload.action === 'two' ? 1 : 0,
+          pot: action.payload.pot,
+        };
+  
+      case 'showdown':
+        return {
+          ...gameState,
+          players: gameState.players.map((player, index) => (
+            { ...player, ...action.payload.players[index] }
+          )),
+          yourHand: action.payload.players[gameState.whichPlayer].hand,
+          oppHand: (
+            action.payload.players[gameState.whichPlayer === 0 ? 1 : 0].hand
+          ),
+          community: action.payload['community-cards'],
+          stage: 'showdown',
+          action: null,
+          pot: action.payload.pot,
+        };
+  
+      case 'folded':
+        return {
+          ...gameState,
+          players: gameState.players.map((player, index) => (
+            { ...player, ...action.payload.players[index] }
+          )),
+          stage: 'folded',
+          action: null,
+        };
+  
+      case 'winner':
+        return {
+          ...gameState,
+          players: gameState.players.map((player, index) => (
+            { ...player, ...action.payload.players[index] }
+          )),
+          pot: action.payload.pot,
+          winner: action.payload.winner,
+          action: null,
+          winningHand: action.payload['winning-hand'],
+          stage: 'winner',
+        };
+  
+      case 'playerBust':
+        return {
+          ...gameState,
+          action: null,
+          stage: 'end',
+        };
+  
+      case 'backToLobby':
+        return {
+          ...gameState,
+          players: gameState.players.map((player, index) => (
+            { ...player, ...action.payload.players[index] }
+          )),
+          yourHand: action.payload.players[gameState.whichPlayer].hand,
+          oppHand: (
+            action.payload.players[gameState.whichPlayer === 0 ? 1 : 0].hand
+          ),
+          noOfRounds: action.payload['number-of-rounds'],
+          stage: action.payload.stage,
+          inHand: false,
+        };
+
+      default: {
+        throw new Error(`Action - ${action.type} - not matched`);
+      }
   }
 };
 
@@ -185,6 +195,11 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
   const [serverState, serverDispatch] = useReducer(
     serverReducer, initialServerState,
   );
+
+  const [gameState, gameDispatch] = useReducer(
+    gameReducer, initialGameState,
+  );
+
   const { authDispatch, login } = useAuth();
 
   socket.onopen = () => {
@@ -216,8 +231,23 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
         authDispatch({ type: method, message: response.message });
         break;
 
+      case 'joinGame':
+        const whichPlayer = calculateWhichPlayer(
+          serverState.uid,
+          response.players,
+          response.gid,
+        )
+        gameDispatch({
+          type: method,
+          payload: { 
+            ...response,
+            whichPlayer
+          },
+        });
+        break;
+
       case 'newHand':
-        if (serverState.noOfHands < 1) {
+        if (gameState.noOfHands < 1) {
           serverDispatch({ type: method, payload: response });
         } else {
           setTimeout(
@@ -234,7 +264,12 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
 
   const { children } = props;
   return (
-    <ServerContext.Provider value={{ serverState, serverDispatch }}>
+    <ServerContext.Provider value={{
+      serverState,
+      serverDispatch, 
+      gameState,
+      gameDispatch,
+    }}>
       {children}
     </ServerContext.Provider>
   );
