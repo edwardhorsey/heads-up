@@ -1,3 +1,4 @@
 boto3
 simplejson
 python-jose>=3.0.0
+requests

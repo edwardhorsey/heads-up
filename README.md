@@ -5,9 +5,9 @@
 
 `npm install`
 
-`npm install -g serverless@1.48.2`
+`npm install -g serverless@1.48.2` -> `sls login`
 
-`pip install -r python-packages.txt -t ./lib/python`
+`pip3 install -r python-packages.txt -t ./lib/python`
 
 `sls deploy`
 
