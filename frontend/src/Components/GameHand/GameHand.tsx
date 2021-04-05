@@ -1,6 +1,12 @@
 import React from 'react';
-import { useServer } from '../../Context/serverContext';
-import { Iplayer, Hand, Card } from '../../Interfaces/interfaces';
+import {
+  Iplayer,
+  Hand,
+  Card,
+  WinningHand,
+  Stage,
+  Action,
+} from '../../Interfaces/interfaces';
 import styles from './GameHand.module.scss';
 import PlayingCard from '../PlayingCard';
 import UserMoves from '../UserMoves';
@@ -32,50 +38,70 @@ const cardBacks = () => {
 };
 
 interface GameHandProps {
-  yourself: Iplayer,
-  opponent: Iplayer
+  action: Action;
+  community: Hand;
+  noOfHands: number;
+  opponent: Iplayer;
+  oppHand: Hand;
+  pot: number;
+  stage: Stage;
+  whichPlayer: number;
+  winner: string;
+  winningHand: WinningHand;
+  yourself: Iplayer;
+  yourHand: Hand;
 }
 
-const GameHand: React.FC<GameHandProps> = ({ yourself, opponent }) => {
-  const { gameState } = useServer();
-  const {
-    whichPlayer,
-    yourHand,
-    oppHand,
-    winner,
-    winningHand,
-    pot,
-    community,
-    stage,
-    noOfHands,
-    action,
-  } = gameState;
+const isAWinningCard = (card: Card, winningHand: WinningHand) => (
+  winningHand[2].join('').includes(card.join(''))
+);
 
-  const isAWinningCard = (card: Card) => (
-    winningHand[2].join('').includes(card.join(''))
+const readCards = (
+  hand: Hand,
+  winningHand: WinningHand,
+  stage: Stage,
+) => hand.map((card) => {
+  gameHandCounter += 1;
+  return (
+    <PlayingCard
+      key={`readCards ${gameHandCounter}`}
+      winner={['winner', 'end'].includes(stage) && winningHand[2].length > 0
+        ? isAWinningCard(card, winningHand)
+        : false}
+      card={card}
+    />
   );
+});
 
-  const readCards = (hand: Hand) => hand.map((card) => {
-    gameHandCounter += 1;
-    return (
-      <PlayingCard
-        key={`readCards ${gameHandCounter}`}
-        winner={['winner', 'end'].includes(stage) && winningHand[2].length > 0
-          ? isAWinningCard(card)
-          : false}
-        card={card}
-      />
-    );
-  });
-
+const GameHand: React.FC<GameHandProps> = ({
+  action,
+  community,
+  noOfHands,
+  opponent,
+  oppHand,
+  pot,
+  stage,
+  whichPlayer,
+  winner,
+  winningHand,
+  yourself,
+  yourHand,
+}) => {
   const playerNavStyles = (action !== null && whichPlayer === action)
     ? `${styles.playerNav} ${styles.focus}`
     : styles.playerNav;
+
   const opponentNavStyles = (action !== null && whichPlayer !== action)
     ? `${styles.playerNav} ${styles.focus}`
     : styles.playerNav;
 
-  const opponentsCards = oppHand.length > 0 ? readCards(oppHand) : cardBacks();
+  const opponentsCards = oppHand.length > 0
+    ? readCards(oppHand, winningHand, stage)
+    : cardBacks();
+
+  const yourCards = yourself.folded
+    ? cardBacks()
+    : readCards(yourHand, winningHand, stage);
 
   const announceWinner = () => {
     if (winner === 'draw') {
@@ -114,7 +140,11 @@ const GameHand: React.FC<GameHandProps> = ({ yourself, opponent }) => {
       <PlayerChips which="Opponent" stage={stage} player={opponent} />
       {stage === 'end' && <RoundWinner text={playerBust()} />}
       {winner && <WinnerAnnounce text={announceWinner()} />}
-      {community && <CommunityCards cards={readCards(community)} />}
+      {community && (
+        <CommunityCards
+          cards={readCards(community, winningHand, stage)}
+        />
+      )}
       <Pot amount={pot} stage={stage} />
       <PlayerChips which="Your" stage={stage} player={yourself} />
       <div className={playerNavStyles}>
@@ -124,9 +154,7 @@ const GameHand: React.FC<GameHandProps> = ({ yourself, opponent }) => {
           stage={stage}
           yourHand={yourHand}
         />
-        <PlayersCards
-          cards={yourself.folded ? cardBacks() : readCards(yourHand)}
-        />
+        <PlayersCards cards={yourCards} />
         <UserMoves />
       </div>
     </article>

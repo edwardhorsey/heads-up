@@ -147,6 +147,8 @@ export const gameReducerActions: GameReducerAction['type'][] = [
   'backToLobby',
 ];
 
+export type Action = number | null;
+
 export type Stage = 'initial'
   | 'preflop'
   | 'to-call'
@@ -172,25 +174,25 @@ export interface ServerState {
 }
 
 export interface GameState {
-  inHand: boolean; // player
-  uid: string; // player
-  displayName: string; // player
-  opponentName: string; // game
-  gid: string; // game
-  falseGID: boolean; // app
-  readyToStart: boolean; // game
-  action: number | null; // game
-  stage: Stage; // app
-  players: Array<Iplayer>; // game
-  whichPlayer: number; // game
-  oppHand: Hand; // game
-  yourHand: Hand; // game
+  action: Action; // game
   community: Hand; // game
-  winningHand: WinningHand; // game
-  winner: string; // game
-  pot: number; // game
+  displayName: string; // player
+  falseGID: boolean; // app
+  gid: string; // game
+  inHand: boolean; // player
   noOfHands: number; // game
   noOfRounds: number; // game
+  opponentName: string; // game
+  oppHand: Hand; // game
+  players: Array<Iplayer>; // game
+  pot: number; // game
+  readyToStart: boolean; // game
+  stage: Stage; // app
+  uid: string; // player
+  whichPlayer: number; // game
+  winningHand: WinningHand; // game
+  winner: string; // game
+  yourHand: Hand; // game
 }
 
 export type ServerDispatch = (action: ServerReducerAction) => void;

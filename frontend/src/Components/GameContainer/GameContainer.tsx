@@ -18,6 +18,13 @@ const GameContainer: React.FC = () => {
     yourHand,
     noOfRounds,
     stage,
+    oppHand,
+    winner,
+    winningHand,
+    pot,
+    community,
+    noOfHands,
+    action,
   } = gameState;
 
   // yourself is user
@@ -50,7 +57,20 @@ const GameContainer: React.FC = () => {
         <Button logic={() => readyToPlayHand(gid, uid)} text="Play round" />
       )}
       {yourHand.length > 0 && (
-        <GameHand yourself={yourself} opponent={opponent} />
+        <GameHand
+          action={action}
+          community={community}
+          noOfHands={noOfHands}
+          opponent={opponent}
+          oppHand={oppHand}
+          pot={pot}
+          stage={stage}
+          winner={winner}
+          winningHand={winningHand}
+          whichPlayer={whichPlayer}
+          yourself={yourself}
+          yourHand={yourHand}
+        />
       )}
     </section>
   );
