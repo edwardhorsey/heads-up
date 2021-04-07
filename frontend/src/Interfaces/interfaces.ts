@@ -56,7 +56,6 @@ export interface Iplayer {
   'bet-size': number,
   hand: Hand,
   folded: boolean,
-  blind: number,
   'rounds-won': number,
   profit: number
 }
@@ -69,7 +68,6 @@ export const initialPlayer: Iplayer = {
   'bet-size': 0,
   hand: [],
   folded: false,
-  blind: 0,
   'rounds-won': 0,
   profit: 0,
 };
