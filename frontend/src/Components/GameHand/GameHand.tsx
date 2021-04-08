@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactChild } from 'react';
 import {
   Iplayer,
   Hand,
@@ -6,6 +6,7 @@ import {
   WinningHand,
   Stage,
   Action,
+  CommunityType,
 } from '../../Interfaces/interfaces';
 import styles from './GameHand.module.scss';
 import PlayingCard from '../PlayingCard';
@@ -39,7 +40,7 @@ const cardBacks = () => {
 
 interface GameHandProps {
   action: Action;
-  community: Hand;
+  community: CommunityType;
   noOfHands: number;
   opponent: Iplayer;
   oppHand: Hand;
@@ -57,10 +58,10 @@ const isAWinningCard = (card: Card, winningHand: WinningHand) => (
 );
 
 const readCards = (
-  hand: Hand,
+  cards: Card[],
   winningHand: WinningHand,
   stage: Stage,
-) => hand.map((card) => {
+) => cards.map((card: Card) => {
   gameHandCounter += 1;
   return (
     <PlayingCard

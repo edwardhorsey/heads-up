@@ -8,7 +8,7 @@ describe('Pot tests', () => {
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<Pot amount={1350} />);
+    component = shallow(<Pot amount={1350} stage={'winner'} />);
   });
 
   it('should render', () => {

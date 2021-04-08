@@ -1,4 +1,6 @@
-export const mockGameStateWinner = {
+import { Card, GameState } from '../Interfaces/interfaces';
+
+const mockGameStateWinner: GameState = {
   inHand: false,
   uid: '',
   displayName: '',
@@ -130,3 +132,5 @@ export const mockGameStateWinner = {
   noOfHands: 1,
   noOfRounds: 0,
 };
+
+export default mockGameStateWinner;

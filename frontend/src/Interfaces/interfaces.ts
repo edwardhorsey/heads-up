@@ -84,7 +84,7 @@ export interface WebsocketResponse {
   players: Iplayer[];
   action: string;
   stage: Stage;
-  'community-cards': Card[];
+  'community-cards': CommunityType;
   pot: number;
   'number-of-hands': number;
   winner: string;
@@ -160,11 +160,15 @@ export type SocketStatus = 'disconnected'
   | 'connected'
   | 'error';
 
-export type Card = string[];
+export type Card = [string, string] | [];
 
-export type Hand = Card[];
+export type Hand = [Card, Card] | [];
 
-export type WinningHand = [string, number[], Hand];
+export type CommunityType = [Card, Card, Card, Card, Card] | [];
+
+export type CommunityCardsRanks = [number, number, number, number, number] | [];
+
+export type WinningHand = [string, CommunityCardsRanks, CommunityType];
 
 export interface ServerState {
   status: SocketStatus; // websocket server
@@ -173,7 +177,7 @@ export interface ServerState {
 
 export interface GameState {
   action: Action; // game
-  community: Hand; // game
+  community: CommunityType; // game
   displayName: string; // player
   falseGID: boolean; // app
   gid: string; // game

@@ -22,7 +22,7 @@ const WinnerAnnounce: React.FC<IProps> = ({ text }) => {
   ));
 
   return (
-    <p className={styles.WinnerAnnounce}>{output}</p>
+    <div className={styles.WinnerAnnounce}>{output}</div>
   );
 };
 export default WinnerAnnounce;
