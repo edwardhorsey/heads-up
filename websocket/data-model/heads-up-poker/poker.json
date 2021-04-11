@@ -1,0 +1,215 @@
+{
+  "ModelName": "poker",
+  "ModelMetadata": {
+    "Author": "Edward",
+    "DateCreated": "Apr 10, 2021, 08:22 PM",
+    "DateLastModified": "Apr 11, 2021, 07:09 PM",
+    "Description": "heads-up-poker",
+    "AWSService": "Amazon DynamoDB",
+    "Version": "2.0"
+  },
+  "DataModel": [
+    {
+      "TableName": "heads-up-poker",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "PK",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "SK",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "email",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "userToken",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "bankroll",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "gameObject",
+          "AttributeType": "M"
+        },
+        {
+          "AttributeName": "userTokenPK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "userTokenSK",
+          "AttributeType": "S"
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "userToken",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "userTokenPK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "userTokenSK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "KEYS_ONLY"
+          }
+        }
+      ],
+      "TableData": [
+        {
+          "PK": {
+            "S": "g12345"
+          },
+          "SK": {
+            "S": "g12345"
+          },
+          "gameObject": {
+            "M": {
+              "current_blind": {
+                "N": "100"
+              },
+              "current_dealer": {
+                "S": "one"
+              },
+              "current_hand": {
+                "BOOL": false
+              },
+              "gid": {
+                "S": "10abf3a4f3"
+              },
+              "number_of_hands": {
+                "N": "0"
+              },
+              "number_of_rounds": {
+                "N": "2"
+              },
+              "one_rounds_won": {
+                "N": "0"
+              },
+              "player_one": {
+                "M": {
+                  "bankroll": {
+                    "N": "500"
+                  },
+                  "bet_size": {
+                    "N": "0"
+                  },
+                  "folded": {
+                    "BOOL": false
+                  },
+                  "name": {
+                    "S": "ed"
+                  },
+                  "uid": {
+                    "S": "ckmudl8940010586ng3lid7bj"
+                  }
+                }
+              },
+              "player_one_ready": {
+                "BOOL": false
+              },
+              "player_two": {
+                "M": {
+                  "bankroll": {
+                    "N": "2350"
+                  },
+                  "bet_size": {
+                    "N": "0"
+                  },
+                  "folded": {
+                    "BOOL": false
+                  },
+                  "name": {
+                    "S": "ambika"
+                  },
+                  "uid": {
+                    "S": "ckmudl2y2000r586n84f3540k"
+                  }
+                }
+              },
+              "player_two_ready": {
+                "BOOL": false
+              },
+              "previous_hands": {
+                "L": []
+              },
+              "two_rounds_won": {
+                "N": "2"
+              }
+            }
+          }
+        },
+        {
+          "PK": {
+            "S": "049ef12a-ef5a-4dff-816b-7d901e2a7168"
+          },
+          "SK": {
+            "S": "049ef12a-ef5a-4dff-816b-7d901e2a7168"
+          },
+          "name": {
+            "S": "Edward"
+          },
+          "email": {
+            "S": "edwardhorsey@protonmail.com"
+          },
+          "bankroll": {
+            "S": "3000"
+          },
+          "userTokenPK": {
+            "S": "049ef12a-ef5a-4dff-816b-7d901e2a7168"
+          },
+          "userTokenSK": {
+            "S": "User"
+          }
+        },
+        {
+          "PK": {
+            "S": "ckndb7ceq00005woi06k023cq"
+          },
+          "SK": {
+            "S": "ckndb7ceq00005woi06k023cq"
+          }
+        },
+        {
+          "PK": {
+            "S": "ckndb7ceq02345woi06k023cq"
+          },
+          "SK": {
+            "S": "ckndb7ceq02345woi06k023cq"
+          }
+        },
+        {
+          "PK": {
+            "S": "ckndb7ceq11145woi06k023cq"
+          },
+          "SK": {
+            "S": "ckndb7ceq11145woi06k023cq"
+          },
+          "userTokenPK": {
+            "S": "049ef12a-ef5a-4dff-816b-7d901e2a7168"
+          },
+          "userTokenSK": {
+            "S": "Connection"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      }
+    }
+  ]
+}

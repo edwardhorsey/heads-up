@@ -36,8 +36,6 @@ def remove_user_details(connectionIds):
         )
 
 def check_if_user_token_exists(userToken):
-    print('hi ed')
-    print(userToken)
     result = table_connections.query(
         IndexName="userTokenIndex",
         KeyConditionExpression=Key('userToken').eq(userToken),
