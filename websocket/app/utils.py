@@ -6,6 +6,7 @@ from boto3.dynamodb.conditions import Key
 from .tables import table_connections
 from .tables import table_games
 from .tables import table_past_games
+from .tables import poker_table
 
 from .cognito_lambda import lambda_handler as decode_token
 from .poker.game import Game

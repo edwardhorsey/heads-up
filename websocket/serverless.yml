@@ -8,6 +8,7 @@ custom:
   pokerConnections: pokerConnections-${self:custom.currentStage}
   pokerGames: pokerGames-${self:custom.currentStage}
   pokerPastGames: pokerPastGames-${self:custom.currentStage}
+  pokerTable: pokerTable-${self:custom.currentStage}
 
 provider:
   name: aws
@@ -45,6 +46,7 @@ functions:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:
       POKER_CONNECTIONS_TABLE_NAME: ${self:custom.pokerConnections}
+      POKER_TABLE_NAME: ${self:custom.pokerTable}
 
   disconnectHandler:
     handler: disconnect_handler.handle
@@ -54,6 +56,7 @@ functions:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:
       POKER_CONNECTIONS_TABLE_NAME: ${self:custom.pokerConnections}
+      POKER_TABLE_NAME: ${self:custom.pokerTable}
 
   gameActionHandler:
     handler: game_action_handler.handle
@@ -66,6 +69,7 @@ functions:
       POKER_CONNECTIONS_TABLE_NAME: ${self:custom.pokerConnections}
       POKER_GAMES_TABLE_NAME: ${self:custom.pokerGames}
       POKER_PAST_GAMES_TABLE_NAME: ${self:custom.pokerPastGames}
+      POKER_TABLE_NAME: ${self:custom.pokerTable}
 
 resources:
   Resources:
@@ -108,17 +112,34 @@ resources:
         SSESpecification:
           SSEEnabled: true
 
-    pokerPastGames:
+    pokerTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
-        TableName: ${self:custom.pokerPastGames}
+        TableName: ${self:custom.pokerTable}
         AttributeDefinitions:
-          - AttributeName: gameId
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: userTokenPK
+            AttributeType: S
+          - AttributeName: userTokenSK
             AttributeType: S
         KeySchema:
-          - AttributeName: gameId
+          - AttributeName: PK
             KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+        - IndexName: userToken
+          KeySchema:
+          - AttributeName: userTokenPK
+            KeyType: HASH
+          - AttributeName: userTokenSK
+            KeyType: RANGE
+          Projection:
+            ProjectionType: KEYS_ONLY
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true
