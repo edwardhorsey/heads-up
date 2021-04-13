@@ -7,7 +7,7 @@ import boto3
 
 from .utils import put_display_name
 from .utils import get_display_name
-from .utils import put_user_details
+from .utils import first_visit_put_user_details
 from .utils import check_if_user_token_exists
 from .utils import remove_user_details
 from .utils import generate_game_id
@@ -15,6 +15,7 @@ from .utils import re_map_game
 from .utils import get_game
 from .utils import put_game
 from .utils import get_user_profile
+from .utils import save_user_token_to_connection
 
 from .poker.game import Game
 from .poker.player import Player
@@ -29,26 +30,29 @@ async def login(endpoint, connectionId, body):
 
     if user_details:
         # check if any connection id has same token
-        players_already_using_token = check_if_user_token_exists(user_details['sub'])
-        if len(players_already_using_token):
-            players = [player['connectionId'] for player in players_already_using_token]
-            remove_user_details(players)
-            logout_response = {
-                'method': 'forceLogout',
-                'uid': connectionId,
-                'message': 'Session invalidated: a more recent websocket connection has logged in using your account'
-            }
-            for client in players:
-                try:
-                    apigatewaymanagementapi.post_to_connection(
-                        Data = json.dumps(logout_response),
-                        ConnectionId = client
-                    )
-                except Exception as error:
-                    print('Error posting to kicked player\'s connectionId: ', error)
+        # players_already_using_token = check_if_user_token_exists(user_details['sub'])
+        # if len(players_already_using_token):
+        #     players = [player['connectionId'] for player in players_already_using_token]
+        #     remove_user_details(players)
+        #     logout_response = {
+        #         'method': 'forceLogout',
+        #         'uid': connectionId,
+        #         'message': 'Session invalidated: a more recent websocket connection has logged in using your account'
+        #     }
+        #     for client in players:
+        #         try:
+        #             apigatewaymanagementapi.post_to_connection(
+        #                 Data = json.dumps(logout_response),
+        #                 ConnectionId = client
+        #             )
+        #         except Exception as error:
+        #             print('Error posting to kicked player\'s connectionId: ', error)
 
-        # save user details to connection id
-        put_user_details(connectionId, user_details)
+        # if user doesn't exist in db write user:
+        #     first_visit_put_user_details(connectionId, user_details, 0)
+
+        # save user token to connection id
+        save_user_token_to_connection(connectionId, user_details['sub'])
 
         response = {
             'method': 'login',

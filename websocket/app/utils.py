@@ -18,15 +18,33 @@ def get_display_name(connectionId):
     user = table_connections.get_item(Key={'connectionId': connectionId})
     return user['Item']['displayName'] if user else False
 
-def put_user_details(connectionId, userDetails):
-    return table_connections.put_item(
+def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
+    return poker_table.put_item(
         Item={
-            'connectionId': connectionId,
-            'displayName': userDetails['cognito:username'],
-            'userToken': userDetails['sub'],
-            'userDetails': userDetails,
+            'PK': user_details['sub'],
+            'SK': user_details['sub'],
+            'displayName': user_details['cognito:username'],
+            'email': user_details['email'],
+            'userTokenPK': user_details['sub'],
+            'userTokenSK': 'User',
+            'userDetails': user_details,
+            'bankroll': 0,
         }
     )
+
+def save_user_token_to_connection(connectionId, user_token):
+    return poker_table.put_item(
+        Item={
+            'PK': connectionId,
+            'SK': connectionId,
+            'userTokenPK': user_token,
+            'userTokenSK': 'Connection',
+        }
+    )
+
+def get_user(connectionId):
+    ### access via userToken index
+    return false 
 
 def remove_user_details(connectionIds):
     print(connectionIds)
@@ -36,10 +54,10 @@ def remove_user_details(connectionIds):
             UpdateExpression="REMOVE displayName, userToken, userDetails",
         )
 
-def check_if_user_token_exists(userToken):
+def check_if_user_token_exists(user_token):
     result = table_connections.query(
         IndexName="userTokenIndex",
-        KeyConditionExpression=Key('userToken').eq(userToken),
+        KeyConditionExpression=Key('userToken').eq(user_token),
     )
     return result['Items'] if result else False
 
