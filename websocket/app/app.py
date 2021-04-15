@@ -9,6 +9,7 @@ from .utils import put_display_name
 from .utils import get_display_name
 from .utils import first_visit_put_user_details
 from .utils import check_if_user_token_exists
+from .utils import check_if_user_exists
 from .utils import remove_user_details
 from .utils import generate_game_id
 from .utils import re_map_game
@@ -30,7 +31,8 @@ async def login(endpoint, connectionId, body):
 
     if user_details:
         # check if any connection id has same token
-        # players_already_using_token = check_if_user_token_exists(user_details['sub'])
+        # players_already_using_token = 
+        # from .utils import check_if_user_token_exists(user_details['sub'])
         # if len(players_already_using_token):
         #     players = [player['connectionId'] for player in players_already_using_token]
         #     remove_user_details(players)
@@ -48,8 +50,8 @@ async def login(endpoint, connectionId, body):
         #         except Exception as error:
         #             print('Error posting to kicked player\'s connectionId: ', error)
 
-        # if user doesn't exist in db write user:
-        #     first_visit_put_user_details(connectionId, user_details, 0)
+        if check_if_user_exists(user_details['sub']):
+            first_visit_put_user_details(connectionId, user_details, 500)
 
         # save user token to connection id
         save_user_token_to_connection(connectionId, user_details['sub'])

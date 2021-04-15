@@ -16,7 +16,7 @@ def put_display_name(connectionId, displayName):
 
 def get_display_name(connectionId):
     user = table_connections.get_item(Key={'connectionId': connectionId})
-    return user['Item']['displayName'] if user else False
+    return user['Item']['displayName'] if 'Item' in user else False
 
 def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
     return poker_table.put_item(
@@ -31,6 +31,10 @@ def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
             'bankroll': 0,
         }
     )
+
+def check_if_user_exists(user_token):
+    user = poker_table.get_item(Key={'PK': user_token, 'SK': user_token})
+    return True if 'Item' in user else False
 
 def save_user_token_to_connection(connectionId, user_token):
     return poker_table.put_item(
