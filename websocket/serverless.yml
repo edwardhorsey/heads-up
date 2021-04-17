@@ -8,7 +8,7 @@ custom:
   pokerConnections: pokerConnections-${self:custom.currentStage}
   pokerGames: pokerGames-${self:custom.currentStage}
   pokerPastGames: pokerPastGames-${self:custom.currentStage}
-  pokerTable: pokerTable-${self:custom.currentStage}
+  pokerSingleTable: pokerSingleTable-${self:custom.currentStage}
 
 provider:
   name: aws
@@ -45,8 +45,7 @@ functions:
     layers:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:
-      POKER_CONNECTIONS_TABLE_NAME: ${self:custom.pokerConnections}
-      POKER_TABLE_NAME: ${self:custom.pokerTable}
+      POKER_TABLE_NAME: ${self:custom.pokerSingleTable}
 
   disconnectHandler:
     handler: disconnect_handler.handle
@@ -55,8 +54,7 @@ functions:
     layers:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:
-      POKER_CONNECTIONS_TABLE_NAME: ${self:custom.pokerConnections}
-      POKER_TABLE_NAME: ${self:custom.pokerTable}
+      POKER_TABLE_NAME: ${self:custom.pokerSingleTable}
 
   gameActionHandler:
     handler: game_action_handler.handle
@@ -66,10 +64,7 @@ functions:
     layers:
       - { Ref: PythonPackageLayerLambdaLayer }
     environment:
-      POKER_CONNECTIONS_TABLE_NAME: ${self:custom.pokerConnections}
-      POKER_GAMES_TABLE_NAME: ${self:custom.pokerGames}
-      POKER_PAST_GAMES_TABLE_NAME: ${self:custom.pokerPastGames}
-      POKER_TABLE_NAME: ${self:custom.pokerTable}
+      POKER_TABLE_NAME: ${self:custom.pokerSingleTable}
 
 resources:
   Resources:
@@ -112,11 +107,11 @@ resources:
         SSESpecification:
           SSEEnabled: true
 
-    pokerTable:
+    pokerSingleTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
-        TableName: ${self:custom.pokerTable}
+        TableName: ${self:custom.pokerSingleTable}
         AttributeDefinitions:
           - AttributeName: PK
             AttributeType: S
@@ -125,6 +120,10 @@ resources:
           - AttributeName: userTokenPK
             AttributeType: S
           - AttributeName: userTokenSK
+            AttributeType: S
+          - AttributeName: connectionIdPK
+            AttributeType: S
+          - AttributeName: connectionIdSK
             AttributeType: S
         KeySchema:
           - AttributeName: PK
@@ -139,7 +138,15 @@ resources:
           - AttributeName: userTokenSK
             KeyType: RANGE
           Projection:
-            ProjectionType: KEYS_ONLY
+            ProjectionType: ALL
+        - IndexName: connectionId
+          KeySchema:
+          - AttributeName: connectionIdPK
+            KeyType: HASH
+          - AttributeName: connectionIdSK
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true
