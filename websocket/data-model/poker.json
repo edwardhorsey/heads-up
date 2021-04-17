@@ -3,7 +3,7 @@
   "ModelMetadata": {
     "Author": "Edward",
     "DateCreated": "Apr 10, 2021, 08:22 PM",
-    "DateLastModified": "Apr 11, 2021, 07:19 PM",
+    "DateLastModified": "Apr 17, 2021, 01:28 PM",
     "Description": "heads-up-poker",
     "AWSService": "Amazon DynamoDB",
     "Version": "2.0"
@@ -49,11 +49,19 @@
         {
           "AttributeName": "userDetails",
           "AttributeType": "S"
+        },
+        {
+          "AttributeName": "ConnectionIdPK",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "ConnectionIdSK",
+          "AttributeType": "S"
         }
       ],
       "GlobalSecondaryIndexes": [
         {
-          "IndexName": "userToken",
+          "IndexName": "userTokenIndex",
           "KeyAttributes": {
             "PartitionKey": {
               "AttributeName": "userTokenPK",
@@ -65,7 +73,23 @@
             }
           },
           "Projection": {
-            "ProjectionType": "KEYS_ONLY"
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "ConnectionIDIndex",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "ConnectionIdPK",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "ConnectionIdSK",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
           }
         }
       ],
@@ -177,6 +201,12 @@
           },
           "userDetails": {
             "S": "{    \"at_hash\" : { \"S\" : \"_FjrFyFdFzH33uR6aQbcVw\" },    \"aud\" : { \"S\" : \"5v1u9tam54jo46i3q1h7rj1i2u\" },    \"auth_time\" : { \"N\" : \"1618165059\" },    \"cognito:username\" : { \"S\" : \"ed\" },    \"email\" : { \"S\" : \"edwardhorsey@protonmail.com\" },    \"email_verified\" : { \"BOOL\" : true },    \"event_id\" : { \"S\" : \"5503421d-8776-41ae-a662-0b31d9bafde8\" },    \"exp\" : { \"N\" : \"1618172259\" },    \"iat\" : { \"N\" : \"1618165059\" },    \"iss\" : { \"S\" : \"https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_MBgo8dvHG\" },    \"sub\" : { \"S\" : \"049ef12a-ef5a-4dff-816b-7d901e2a7168\" },    \"token_use\" : { \"S\" : \"id\" }  }"
+          },
+          "ConnectionIdPK": {
+            "S": "ckndb7ceq11145woi06k023cq"
+          },
+          "ConnectionIdSK": {
+            "S": "User"
           }
         },
         {
@@ -206,6 +236,12 @@
             "S": "049ef12a-ef5a-4dff-816b-7d901e2a7168"
           },
           "userTokenSK": {
+            "S": "Connection"
+          },
+          "ConnectionIdPK": {
+            "S": "ckndb7ceq11145woi06k023cq"
+          },
+          "ConnectionIdSK": {
             "S": "Connection"
           }
         }
