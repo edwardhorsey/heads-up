@@ -2,26 +2,18 @@ import os
 import uuid
 import requests
 from boto3.dynamodb.conditions import Key
-
-# from .tables import table_connections
-# from .tables import table_games
-# from .tables import table_past_games
 from .tables import poker_table
-
 from .cognito import lambda_handler as decode_token
 from .poker.game import Game
 
-# def put_display_name(connectionId, displayName):
-    # return table_connections.put_item(Item={'connectionId': connectionId, 'displayName': displayName})
-
 def get_display_name(connectionId):
     user = poker_table.query(
-        IndexName = "userToken",
-        KeyConditionExpression =
-            Key('userTokenPK').eq(token),
+        IndexName="connectionId",
+        KeyConditionExpression=
+            Key('connectionIdPK').eq(connectionId),
         Limit = 1
     )
-    return user['Items'][0]['displayName'] if 'Item' in user else False
+    return user['Items'][0]['displayName'] if ('Items' in user and user['Items']) else False
 
 def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
     return poker_table.put_item(
@@ -122,7 +114,7 @@ def get_game(gid):
             'SK': gid,
         }
     )
-    return re_map_game(game['Item']['game']) if game else False
+    return re_map_game(game['Item']['game']) if 'Item' in game else False
 
 async def get_access_tokens(code):
     url = os.environ['AWS_COGNITO_APP_URL']

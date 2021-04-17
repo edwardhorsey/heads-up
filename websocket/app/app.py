@@ -5,24 +5,13 @@ import time
 import os
 import boto3
 
-# from .utils import put_display_name
-from .utils import get_display_name
-from .utils import first_visit_put_user_details
-from .utils import check_if_user_token_exists
-from .utils import check_if_user_exists
-from .utils import remove_user_details
-from .utils import generate_game_id
-from .utils import re_map_game
-from .utils import get_game
-from .utils import put_game
-from .utils import get_user_profile
-from .utils import log_user_in
-
+from .utils import *
 from .poker.game import Game
 from .poker.player import Player
 
+#
 # Game functions
-
+#
 # Login
 async def login(endpoint, connectionId, body):
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
