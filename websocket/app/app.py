@@ -5,33 +5,30 @@ import time
 import os
 import boto3
 
-from .utils import put_display_name
-from .utils import get_display_name
-from .utils import put_user_details
-from .utils import check_if_user_token_exists
-from .utils import remove_user_details
-from .utils import generate_game_id
-from .utils import re_map_game
-from .utils import get_game
-from .utils import put_game
-from .utils import get_user_profile
-
+from .utils import *
 from .poker.game import Game
 from .poker.player import Player
 
+#
 # Game functions
-
+#
 # Login
 async def login(endpoint, connectionId, body):
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+    failed_to_log_in = {
+        'method': 'login',
+        'uid': connectionId,
+        'userObject': False,
+        'message': 'Failed to log in'
+    }
+
     authorization_code = body['code']
     user_details = await get_user_profile(authorization_code)
 
     if user_details:
-        # check if any connection id has same token
         players_already_using_token = check_if_user_token_exists(user_details['sub'])
-        if len(players_already_using_token):
-            players = [player['connectionId'] for player in players_already_using_token]
+        if players_already_using_token:
+            players = [player['PK'] for player in players_already_using_token]
             remove_user_details(players)
             logout_response = {
                 'method': 'forceLogout',
@@ -47,27 +44,25 @@ async def login(endpoint, connectionId, body):
                 except Exception as error:
                     print('Error posting to kicked player\'s connectionId: ', error)
 
-        # save user details to connection id
-        put_user_details(connectionId, user_details)
+        if not check_if_user_exists(user_details['sub']):
+            first_visit_put_user_details(connectionId, user_details, 500)
 
-        response = {
-            'method': 'login',
-            'uid': connectionId,
-            'userObject': {
-                'authToken': user_details['sub'],
-                'displayName': user_details['cognito:username'],
-                'email': user_details['email'],
-            },
-            'message': 'Logged in',
-        }
-
+        # save user_token and connectionId
+        if log_user_in(connectionId, user_details['sub']):
+            response = {
+                'method': 'login',
+                'uid': connectionId,
+                'userObject': {
+                    'authToken': user_details['sub'],
+                    'displayName': user_details['cognito:username'],
+                    'email': user_details['email'],
+                },
+                'message': 'Logged in',
+            }
+        else:
+            response = failed_to_log_in
     else:
-        response = {
-            'method': 'login',
-            'uid': connectionId,
-            'userObject': False,
-            'message': 'Failed to log in'
-        }
+        response = failed_to_log_in
 
     apigatewaymanagementapi.post_to_connection(
         Data = json.dumps(response),

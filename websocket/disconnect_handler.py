@@ -5,10 +5,21 @@ import os
 dynamodb = boto3.client('dynamodb')
 
 def handle(event, context):
-    uid = event['requestContext']['connectionId']
-    user_db_item = dynamodb.get_item(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME'], Key={'connectionId': {'S': uid}})
+    connectionId = event['requestContext']['connectionId']
+    user_db_item = dynamodb.get_item(
+        TableName=os.environ['POKER_TABLE_NAME'],
+        Key={
+            'PK': {'S': connectionId},
+            'SK': {'S': connectionId},
+        },
+    )
 
-    # Delete connectionId from the database
-    dynamodb.delete_item(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME'], Key={'connectionId': {'S': uid}})
+    dynamodb.delete_item(
+        TableName=os.environ['POKER_TABLE_NAME'],
+        Key={
+            'PK': {'S': connectionId},
+            'SK': {'S': connectionId},
+        },
+    )
 
     return {}

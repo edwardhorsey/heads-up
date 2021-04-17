@@ -7,7 +7,12 @@ dynamodb = boto3.client('dynamodb')
 def handle(event, context):
     connectionId = event['requestContext']['connectionId']
 
-    # Insert the Id and default name of the connected user to the database
-    dynamodb.put_item(TableName=os.environ['POKER_CONNECTIONS_TABLE_NAME'], Item={'connectionId': {'S': connectionId}, 'name': {'S': ''}})
+    dynamodb.put_item(
+        TableName=os.environ['POKER_TABLE_NAME'],
+        Item={
+            'PK': {'S': connectionId},
+            'SK': {'S': connectionId}
+        },
+    )
 
     return {}

@@ -12,7 +12,22 @@ def random_dealer():
     return 'one' if randrange(2) == 1 else 'two'
 
 class Game():
-    def __init__(self, gid, player_one, player_two = None, player_one_ready = False, player_two_ready = False, current_dealer = random_dealer(), current_hand = None, current_blind = 100, previous_hands = [], number_of_hands = 0, number_of_rounds = 0, one_rounds_won = 0, two_rounds_won = 0):
+    def __init__(
+        self,
+        gid,
+        player_one,
+        player_two = None,
+        player_one_ready = False,
+        player_two_ready = False,
+        current_dealer = random_dealer(),
+        current_hand = None,
+        current_blind = 100,
+        previous_hands = [],
+        number_of_hands = 0,
+        number_of_rounds = 0,
+        one_rounds_won = 0,
+        two_rounds_won = 0
+    ):
         self.gid = gid
         self.player_one = player_one
         self.player_two = player_two

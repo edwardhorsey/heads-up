@@ -3,7 +3,21 @@ from .hand_evaluater import Hand_Evaluater
 from .deck import Deck
 
 class Hand():
-    def __init__(self, deck, big_blind, dealer, one_starting_chips, two_starting_chips, one_hand_profit = 0, two_hand_profit = 0, one_cards = [], two_cards = [], community = [], pot = 0, winner = '', winning_hand = ['', [], []]):
+    def __init__(self,
+    deck,
+    big_blind,
+    dealer,
+    one_starting_chips,
+    two_starting_chips,
+    one_hand_profit = 0,
+    two_hand_profit = 0,
+    one_cards = [],
+    two_cards = [],
+    community = [],
+    pot = 0,
+    winner = '',
+    winning_hand = ['', [], []]
+    ):
         self.deck = deck
         self.big_blind = big_blind
         self.dealer = dealer
