@@ -26,6 +26,13 @@ from .poker.player import Player
 # Login
 async def login(endpoint, connectionId, body):
     apigatewaymanagementapi = boto3.client('apigatewaymanagementapi', endpoint_url = endpoint)
+    failed_to_log_in = {
+        'method': 'login',
+        'uid': connectionId,
+        'userObject': False,
+        'message': 'Failed to log in'
+    }
+
     authorization_code = body['code']
     user_details = await get_user_profile(authorization_code)
 
@@ -52,26 +59,21 @@ async def login(endpoint, connectionId, body):
             first_visit_put_user_details(connectionId, user_details, 500)
 
         # save user_token and connectionId
-        log_user_in(connectionId, user_details['sub'])
-
-        response = {
-            'method': 'login',
-            'uid': connectionId,
-            'userObject': {
-                'authToken': user_details['sub'],
-                'displayName': user_details['cognito:username'],
-                'email': user_details['email'],
-            },
-            'message': 'Logged in',
-        }
-
+        if log_user_in(connectionId, user_details['sub']):
+            response = {
+                'method': 'login',
+                'uid': connectionId,
+                'userObject': {
+                    'authToken': user_details['sub'],
+                    'displayName': user_details['cognito:username'],
+                    'email': user_details['email'],
+                },
+                'message': 'Logged in',
+            }
+        else:
+            response = failed_to_log_in
     else:
-        response = {
-            'method': 'login',
-            'uid': connectionId,
-            'userObject': False,
-            'message': 'Failed to log in'
-        }
+        response = failed_to_log_in
 
     apigatewaymanagementapi.post_to_connection(
         Data = json.dumps(response),

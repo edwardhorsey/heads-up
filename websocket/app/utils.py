@@ -73,6 +73,9 @@ def log_user_in(connectionId, user_token):
     if (save_user_token_to_connection(connectionId, user_token) and
         save_connection_id_to_user(connectionId, user_token)):
         print(f"User with token '{user_token}' logged in on ConnectionId '{connectionId}'")
+        return True
+    else:
+        return False
 
 def get_user(connectionId):
     ### access via userToken index
