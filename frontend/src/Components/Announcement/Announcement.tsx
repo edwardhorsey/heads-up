@@ -1,12 +1,12 @@
 import React from 'react';
 import { useTransition, animated } from 'react-spring';
-import styles from './WinnerAnnounce.module.scss';
+import styles from './Announcement.module.scss';
 
 interface IProps {
   text: string
 }
 
-const WinnerAnnounce: React.FC<IProps> = ({ text }) => {
+const Announcement: React.FC<IProps> = ({ text }) => {
   const transitions = useTransition(text, null, {
     from: { transform: 'scale(1)', opacity: 0 },
     enter: [
@@ -22,7 +22,7 @@ const WinnerAnnounce: React.FC<IProps> = ({ text }) => {
   ));
 
   return (
-    <div className={styles.WinnerAnnounce}>{output}</div>
+    <div className={styles.Announcement}>{output}</div>
   );
 };
-export default WinnerAnnounce;
+export default Announcement;

@@ -15,8 +15,7 @@ import Pot from '../Pot';
 import PlayerChips from '../PlayersChips/PlayersChips';
 import CommunityCards from '../CommunityCards';
 import PlayersCards from '../PlayersCards';
-import WinnerAnnounce from '../WinnerAnnounce';
-import RoundWinner from '../RoundWinner';
+import Announcement from '../Announcement';
 import PlayerStats from '../PlayerStats';
 import Timer from '../Timer';
 
@@ -139,8 +138,10 @@ const GameHand: React.FC<GameHandProps> = ({
         </div>
       </div>
       <PlayerChips which="Opponent" stage={stage} player={opponent} />
-      {stage === 'end' && <RoundWinner text={playerBust()} />}
-      {winner && <WinnerAnnounce text={announceWinner()} />}
+      <div className={styles.announcements}>
+        {stage === 'end' && <Announcement text={playerBust()} />}
+        {winner && <Announcement text={announceWinner()} />}
+      </div>
       {community && (
         <CommunityCards
           cards={readCards(community, winningHand, stage)}

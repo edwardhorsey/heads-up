@@ -21,7 +21,6 @@ const Home: React.FC = () => {
       <h1>Heads Up Poker</h1>
       <Button logic={logoutHome} text="Logout" />
       {readyToStart ? <GameContainer /> : <Lobby displayName={displayName} />}
-      {' '}
       {/* redirect or buttons to access game? */}
     </section>
   );

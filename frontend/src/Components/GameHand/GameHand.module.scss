@@ -10,4 +10,11 @@
   .focus {
     border: solid 3px rgba(255, 255, 0, 0.501);
   }
+
+  .announcements {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 }

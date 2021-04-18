@@ -1,14 +1,14 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import RoundWinner from './RoundWinner';
+import Announcement from './Announcement';
 
-describe('RoundWinner tests', () => {
+describe('Announcement tests', () => {
   let component: any;
   let mockFn;
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<RoundWinner text="TS defeats JS, this round" />);
+    component = shallow(<Announcement text="TDD is the winner" />);
   });
 
   it('should render', () => {
