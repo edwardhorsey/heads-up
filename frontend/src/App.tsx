@@ -11,6 +11,8 @@ import { useAuth } from './Context/authContext';
 import Login from './Components/Login';
 import LoggingIn from './Components/LoggingIn';
 import Home from './Components/Home';
+import GameContainer from './Components/GameContainer';
+import Lobby from './Components/Lobby';
 
 const App: React.FC = () => {
   const { authState } = useAuth();
@@ -19,11 +21,16 @@ const App: React.FC = () => {
     <div className={styles.App}>
       <Route path="/">
         {authState.authToken ? (
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-          </Switch>
+          <Home>
+            <Switch>
+              <Route exact path="/">
+                <Lobby />
+              </Route>
+              <Route exact path="/game">
+                <GameContainer />
+              </Route>
+            </Switch>
+          </Home>
         ) : (
           <Switch>
             <Route exact path="/">
