@@ -259,7 +259,7 @@ async def all_in(endpoint, connectionId, body):
 
     if this_game.player_one.uid == connectionId:
         all_in_player = this_game.player_one
-    elif this_Game.player_two.uid == connectionId:
+    elif this_game.player_two.uid == connectionId:
         all_in_player = this_game.player_two
     else:
         raise Exception("Player uid not in game", connectionId)
@@ -293,7 +293,7 @@ async def fold(endpoint, connectionId, body):
 
     if this_game.player_one.uid == connectionId:
         folding_player = "one"
-    elif this_Game.player_two.uid == connectionId:
+    elif this_game.player_two.uid == connectionId:
         folding_player = "two"
     else:
         raise Exception("Player uid not in game", connectionId)
@@ -449,5 +449,5 @@ async def back_to_lobby(endpoint, connectionId, body):
     put_game(gid, this_game)
 
     apigatewaymanagementapi.post_to_connection(
-        Data=json.dumps(response), ConnectionId=uid
+        Data=json.dumps(response), ConnectionId=connectionId
     )
