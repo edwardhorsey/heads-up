@@ -93,7 +93,7 @@ const gameReducer = (
       return {
         ...gameState,
         players: gameState.players.map((player, index) => (
-          { ...player, ready: action.payload.players[index].ready }
+          { ...player, ...action.payload.players[index] }
         )),
       };
 
