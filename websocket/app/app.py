@@ -163,6 +163,8 @@ async def ready_to_play(endpoint, connectionId, body):
         this_game.player_one_ready = True
     elif this_game.player_two.uid == connectionId and body["ready"]:
         this_game.player_two_ready = True
+    else:
+        raise Exception("Player uid not in game", connectionId)
 
     response = {
         "gid": gid,
@@ -255,11 +257,13 @@ async def all_in(endpoint, connectionId, body):
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
 
-    all_in_player = (
-        this_game.player_one
-        if this_game.player_one.uid == connectionId
-        else this_game.player_two
-    )
+    if this_game.player_one.uid == connectionId:
+        all_in_player = this_game.player_one
+    elif this_Game.player_two.uid == connectionId:
+        all_in_player = this_game.player_two
+    else:
+        raise Exception("Player uid not in game", connectionId)
+
     this_game.current_hand.all_in(all_in_player)
 
     response = {
@@ -287,10 +291,17 @@ async def fold(endpoint, connectionId, body):
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
 
-    folding_player = "one" if this_game.player_one.uid == connectionId else "two"
+    if this_game.player_one.uid == connectionId:
+        folding_player = "one"
+    elif this_Game.player_two.uid == connectionId:
+        folding_player = "two"
+    else:
+        raise Exception("Player uid not in game", connectionId)
+
     this_game.current_hand.fold(
         folding_player, this_game.player_one, this_game.player_two
     )
+
     response = {
         "method": "folded",
         "gid": gid,
@@ -325,9 +336,11 @@ async def call(endpoint, connectionId, body):
     if this_game.player_one.uid == connectionId:
         calling_player = this_game.player_one
         all_in_player = this_game.player_two
-    else:
+    elif this_game.player_two.uid == connectionId:
         calling_player = this_game.player_two
         all_in_player = this_game.player_one
+    else:
+        raise Exception("Player uid not in game", connectionId)
 
     # deals community cards too and calculates winner
     this_game.current_hand.call(calling_player, body["amount-to-call"], all_in_player)
