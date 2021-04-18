@@ -92,13 +92,10 @@ async def set_username(endpoint, connectionId, body):
 # Create game
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
-    uid = connectionId
-
     display_name = get_display_name(connectionId)
     player_one = Player(connectionId, display_name, 1000)
 
     this_game = Game(gid, player_one)
-
     status = put_game(gid, this_game)
 
     response = {
@@ -117,16 +114,14 @@ async def create_game(endpoint, connectionId, body):
 
 # Join game
 async def join_game(endpoint, connectionId, body):
-    uid = connectionId
     gid = body["gid"]
     # if not check_item_exists(gid):
-    # return await incorrect_gid(uid, gid)
+    # return await incorrect_gid(connectionId, gid)
     this_game = get_game(gid)
+    display_name = get_display_name(connectionId)
+    player_two = Player(connectionId, display_name, 1000)
 
-    display_name = get_display_name(uid)
-    player_two = Player(uid, display_name, 1000)
     this_game.add_player(player_two)
-
     status = put_game(gid, this_game)
 
     clients = [this_game.player_one.uid, this_game.player_two.uid]
@@ -160,14 +155,13 @@ async def join_game(endpoint, connectionId, body):
 
 # Ready to play
 async def ready_to_play(endpoint, connectionId, body):
-    uid = connectionId
     gid = body["gid"]
     this_game = get_game(gid)
 
     # util ? work out which player from uid
-    if this_game.player_one.uid == uid and body["ready"]:
+    if this_game.player_one.uid == connectionId and body["ready"]:
         this_game.player_one_ready = True
-    elif this_game.player_two.uid == uid and body["ready"]:
+    elif this_game.player_two.uid == connectionId and body["ready"]:
         this_game.player_two_ready = True
 
     response = {
@@ -195,9 +189,7 @@ async def ready_to_play(endpoint, connectionId, body):
 
 # New hand
 async def new_hand(endpoint, connectionId, body, this_game, response):
-    uid = connectionId
     gid = body["gid"]
-
     clients = [this_game.player_one.uid, this_game.player_two.uid]
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
@@ -256,10 +248,8 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
 
 # All in
 async def all_in(endpoint, connectionId, body):
-    uid = connectionId
     gid = body["gid"]
     this_game = get_game(gid)
-
     clients = [this_game.player_one.uid, this_game.player_two.uid]
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
@@ -267,7 +257,7 @@ async def all_in(endpoint, connectionId, body):
 
     all_in_player = (
         this_game.player_one
-        if this_game.player_one.uid == uid
+        if this_game.player_one.uid == connectionId
         else this_game.player_two
     )
     this_game.current_hand.all_in(all_in_player)
@@ -290,16 +280,14 @@ async def all_in(endpoint, connectionId, body):
 
 # Fold
 async def fold(endpoint, connectionId, body):
-    uid = connectionId
     gid = body["gid"]
     this_game = get_game(gid)
-
     clients = [this_game.player_one.uid, this_game.player_two.uid]
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
 
-    folding_player = "one" if this_game.player_one.uid == uid else "two"
+    folding_player = "one" if this_game.player_one.uid == connectionId else "two"
     this_game.current_hand.fold(
         folding_player, this_game.player_one, this_game.player_two
     )
@@ -327,16 +315,14 @@ async def fold(endpoint, connectionId, body):
 
 # Call
 async def call(endpoint, connectionId, body):
-    uid = connectionId
     gid = body["gid"]
     this_game = get_game(gid)
-
     clients = [this_game.player_one.uid, this_game.player_two.uid]
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
 
-    if this_game.player_one.uid == uid:
+    if this_game.player_one.uid == connectionId:
         calling_player = this_game.player_one
         all_in_player = this_game.player_two
     else:
@@ -362,7 +348,6 @@ async def call(endpoint, connectionId, body):
 
     time.sleep(2)
     this_game.current_hand.calculate_winner()
-
     put_game(gid, this_game)
 
     await send_winner_response(endpoint, connectionId, body, this_game)
@@ -370,14 +355,13 @@ async def call(endpoint, connectionId, body):
 
 # Send winner response
 async def send_winner_response(endpoint, connectionId, body, this_game):
-    uid = connectionId
     gid = body["gid"]
-    this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
-
     clients = [this_game.player_one.uid, this_game.player_two.uid]
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
+
+    this_game.current_hand.transfer_winnings(this_game.player_one, this_game.player_two)
 
     response = {
         "method": "winner",
@@ -419,30 +403,27 @@ async def send_winner_response(endpoint, connectionId, body, this_game):
 
 # Back to lobby
 async def back_to_lobby(endpoint, connectionId, body):
-    uid = connectionId
     gid = body["gid"]
     this_game = get_game(gid)
-
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
 
-    if this_game.player_one.uid == uid:
+    if this_game.player_one.uid == connectionId:
         if this_game.player_one.bankroll == 0:
             this_game.player_one = Player(
                 this_game.player_one.uid, this_game.player_one.name, 500
             )
-    elif this_game.player_two.uid == uid:
+    elif this_game.player_two.uid == connectionId:
         if this_game.player_two.bankroll == 0:
             this_game.player_two = Player(
                 this_game.player_two.uid, this_game.player_two.name, 500
             )
     else:
-        raise Exception("Player uid not in game", uid)
+        raise Exception("Player uid not in game", connectionId)
 
     response = {
         "method": "backToLobby",
-        "uid": uid,
         "gid": gid,
         "stage": "backToLobby",
         "number-of-rounds": this_game.number_of_rounds,
