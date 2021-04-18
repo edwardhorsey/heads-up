@@ -16,7 +16,7 @@ const Home: React.FC = ({ children }) => {
     if (gameHasEnoughPlayers) {
       history.push('/game');
     }
-  }, [gameHasEnoughPlayers]);
+  }, [gameHasEnoughPlayers, history]);
 
   const logoutHome = () => {
     serverDispatch({ type: 'resetServer' });
