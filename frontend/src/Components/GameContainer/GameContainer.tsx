@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import styles from './GameContainer.module.scss';
 import { useServer } from '../../Context/serverContext';
 import { Iplayer } from '../../Interfaces/interfaces';
@@ -10,7 +11,7 @@ import Button from '../Button';
 
 const GameContainer: React.FC = () => {
   const { gameState, serverState } = useServer();
-  const { uid /* inHand */ } = serverState;
+  const { uid } = serverState;
   const {
     gid,
     players,
@@ -25,7 +26,16 @@ const GameContainer: React.FC = () => {
     community,
     noOfHands,
     action,
+    gameHasEnoughPlayers,
   } = gameState;
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (!gameHasEnoughPlayers) {
+      history.push('/');
+    }
+  }, [gameHasEnoughPlayers, history]);
 
   // yourself is user
   const yourself: Iplayer = players[whichPlayer];
@@ -36,14 +46,8 @@ const GameContainer: React.FC = () => {
     <section className={styles.GameContainer}>
       {/* <Button logic={() => leaveGame} text={'Back'} /> */}
       <div className={styles.gameStats}>
-        <h3>
-          GameID:
-          {gid}
-        </h3>
-        <p>
-          Total rounds:
-          {noOfRounds}
-        </p>
+        <h3>{`GameID: ${gid}`}</h3>
+        <p>{`Total rounds: ${noOfRounds}`}</p>
       </div>
       {yourHand.length === 0 && (
         <GameNav

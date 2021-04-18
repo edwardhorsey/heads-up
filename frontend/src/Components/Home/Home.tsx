@@ -28,10 +28,7 @@ const Home: React.FC = ({ children }) => {
     <section className={styles.Home}>
       <h1>Heads Up Poker</h1>
       <Button logic={logoutHome} text="Logout" />
-      <h3>
-        Hi,
-        {displayName}
-      </h3>
+      <h3>{`Hi, ${displayName}`}</h3>
       {/* redirect or buttons to access game? */}
       {children}
     </section>

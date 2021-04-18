@@ -2,8 +2,8 @@ import React from 'react';
 import {
   Switch,
   Route,
+  Redirect,
   // Link,
-  // Redirect,
 } from 'react-router-dom';
 import styles from './App.module.scss';
 import ConnectedStatus from './Components/ConnectedStatus';
@@ -39,6 +39,7 @@ const App: React.FC = () => {
             <Route exact path="/logging-in">
               <LoggingIn />
             </Route>
+            <Redirect to="/" />
           </Switch>
         )}
       </Route>
