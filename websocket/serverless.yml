@@ -5,9 +5,6 @@ app: poker
 custom:
   currentStage: ${opt:stage, self:provider.stage}
   lambdaRunTime: python3.8
-  pokerConnections: pokerConnections-${self:custom.currentStage}
-  pokerGames: pokerGames-${self:custom.currentStage}
-  pokerPastGames: pokerPastGames-${self:custom.currentStage}
   pokerSingleTable: pokerSingleTable-${self:custom.currentStage}
 
 provider:
@@ -68,45 +65,6 @@ functions:
 
 resources:
   Resources:
-    pokerConnections:
-      Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
-      Properties:
-        TableName: ${self:custom.pokerConnections}
-        AttributeDefinitions:
-          - AttributeName: connectionId
-            AttributeType: S
-          - AttributeName: userToken
-            AttributeType: S
-        KeySchema:
-          - AttributeName: connectionId
-            KeyType: HASH
-        GlobalSecondaryIndexes:
-        - IndexName: userTokenIndex
-          KeySchema:
-          - AttributeName: userToken
-            KeyType: HASH
-          Projection:
-            ProjectionType: ALL
-        BillingMode: PAY_PER_REQUEST
-        SSESpecification:
-          SSEEnabled: true
-
-    pokerGames:
-      Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
-      Properties:
-        TableName: ${self:custom.pokerGames}
-        AttributeDefinitions:
-          - AttributeName: gameId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: gameId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        SSESpecification:
-          SSEEnabled: true
-
     pokerSingleTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain

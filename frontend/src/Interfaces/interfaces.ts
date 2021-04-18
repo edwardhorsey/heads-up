@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 /*
 Auth context
 */
-
 export interface AuthState {
   authToken: string;
   displayName: string;
@@ -75,7 +74,6 @@ export const initialPlayer: Iplayer = {
 /*
 Websocket response
 */
-
 export interface WebsocketResponse {
   uid: string;
   gid: string;
@@ -96,7 +94,6 @@ export interface WebsocketResponse {
 /*
 Server context
 */
-
 export type ServerReducerAction =
   | { type: 'socketOnOpen' }
   | { type: 'socketOnClose' }
@@ -171,30 +168,30 @@ export type CommunityCardsRanks = [number, number, number, number, number] | [];
 export type WinningHand = [string, CommunityCardsRanks, CommunityType];
 
 export interface ServerState {
-  status: SocketStatus; // websocket server
-  uid: string; // player
+  status: SocketStatus;
+  uid: string;
 }
 
 export interface GameState {
-  action: Action; // game
-  community: CommunityType; // game
-  displayName: string; // player
-  falseGID: boolean; // app
-  gid: string; // game
-  inHand: boolean; // player
-  noOfHands: number; // game
-  noOfRounds: number; // game
-  opponentName: string; // game
-  oppHand: Hand; // game
-  players: Array<Iplayer>; // game
-  pot: number; // game
-  gameHasEnoughPlayers: boolean; // game
-  stage: Stage; // app
-  uid: string; // player
-  whichPlayer: number; // game
-  winningHand: WinningHand; // game
-  winner: string; // game
-  yourHand: Hand; // game
+  action: Action;
+  community: CommunityType;
+  displayName: string;
+  falseGID: boolean;
+  gid: string;
+  inHand: boolean;
+  noOfHands: number;
+  noOfRounds: number;
+  opponentName: string;
+  oppHand: Hand;
+  players: Array<Iplayer>;
+  pot: number;
+  gameHasEnoughPlayers: boolean;
+  stage: Stage;
+  uid: string;
+  whichPlayer: number;
+  winningHand: WinningHand;
+  winner: string;
+  yourHand: Hand;
 }
 
 export type ServerDispatch = (action: ServerReducerAction) => void;

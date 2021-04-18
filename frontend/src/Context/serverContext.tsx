@@ -221,7 +221,10 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
   socket.onmessage = (event) => {
     const response = JSON.parse(event.data);
     const { method } = response;
-    console.log('Data arrived! ', response);
+
+    if (process.env.REACT_APP_STAGE === 'dev') {
+      console.log('Data arrived! ', response);
+    }
 
     /* TEMP Special scenarios */
     if (serverReducerActions.includes(method)) {

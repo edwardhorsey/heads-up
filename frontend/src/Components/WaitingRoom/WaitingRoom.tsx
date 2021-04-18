@@ -3,7 +3,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useServer } from '../../Context/serverContext';
 import styles from './WaitingRoom.module.scss';
 import Button from '../Button';
-import copyRegular from './copyRegular.svg';
 
 const WaitingRoom: React.FC = () => {
   const { gameState, gameDispatch } = useServer();
@@ -24,7 +23,7 @@ const WaitingRoom: React.FC = () => {
           <span>
             <img
               className={styles.copyRegular}
-              src={copyRegular}
+              src="./assets/Icons/copyRegular.svg"
               alt="Copy to clipboard"
             />
           </span>

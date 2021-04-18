@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import GameHand from './GameHand';
-import mockGameStateWinner from '../../Utilities/mockData';
+import mockGameStateWinner from '../../Assets/mockData';
 
 const {
   action,

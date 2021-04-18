@@ -12,7 +12,7 @@ interface ChipsTable {
 let chipsGenCounter = 0;
 
 const ChipsGen: React.FC<IProps> = ({ amount }) => {
-  const calculateChips = ():ChipsTable => {
+  const calculateChips = (): ChipsTable => {
     let total = amount;
     const obj: ChipsTable = {
       1000: 0,
