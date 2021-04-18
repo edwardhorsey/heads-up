@@ -1,4 +1,4 @@
-import React, { ReactChild } from 'react';
+import React from 'react';
 import {
   Iplayer,
   Hand,
@@ -53,7 +53,7 @@ interface GameHandProps {
 }
 
 const isAWinningCard = (card: Card, winningHand: WinningHand) => (
-  winningHand[2].join('').includes(card.join(''))
+  winningHand[2].join(',').includes(card.join(','))
 );
 
 const readCards = (
