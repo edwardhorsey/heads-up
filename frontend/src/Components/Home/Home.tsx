@@ -8,7 +8,7 @@ import Button from '../Button';
 
 const Home: React.FC = () => {
   const { gameState, serverDispatch } = useServer();
-  const { readyToStart } = gameState;
+  const { gameHasEnoughPlayers } = gameState;
   const { authState, authDispatch } = useAuth();
   const { displayName } = authState;
   const logoutHome = () => {
@@ -20,7 +20,9 @@ const Home: React.FC = () => {
     <section className={styles.Home}>
       <h1>Heads Up Poker</h1>
       <Button logic={logoutHome} text="Logout" />
-      {readyToStart ? <GameContainer /> : <Lobby displayName={displayName} />}
+      {gameHasEnoughPlayers
+        ? <GameContainer />
+        : <Lobby displayName={displayName} />}
       {/* redirect or buttons to access game? */}
     </section>
   );

@@ -98,11 +98,11 @@ Server context
 */
 
 export type ServerReducerAction =
-| { type: 'socketOnOpen' }
-| { type: 'socketOnClose' }
-| { type: 'socketOnError' }
-| { type: 'resetServer' }
-| { type: 'connected', payload: WebsocketResponse };
+  | { type: 'socketOnOpen' }
+  | { type: 'socketOnClose' }
+  | { type: 'socketOnError' }
+  | { type: 'resetServer' }
+  | { type: 'connected', payload: WebsocketResponse };
 
 export const serverReducerActions: ServerReducerAction['type'][] = [
   'socketOnOpen',
@@ -113,20 +113,20 @@ export const serverReducerActions: ServerReducerAction['type'][] = [
 ];
 
 export type GameReducerAction =
-| { type: 'setUsername', payload: WebsocketResponse }
-| { type: 'createGame', payload: WebsocketResponse }
-| { type: 'removeGid' }
-| { type: 'incorrectGid', payload: WebsocketResponse }
-| { type: 'validGid' }
-| { type: 'joinGame', payload: WebsocketResponse }
-| { type: 'onePlayerReady', payload: WebsocketResponse }
-| { type: 'newHand', payload: WebsocketResponse }
-| { type: 'allIn', payload: WebsocketResponse }
-| { type: 'showdown', payload: WebsocketResponse }
-| { type: 'folded', payload: WebsocketResponse }
-| { type: 'winner', payload: WebsocketResponse }
-| { type: 'playerBust', payload: WebsocketResponse }
-| { type: 'backToLobby', payload: WebsocketResponse };
+  | { type: 'setUsername', payload: WebsocketResponse }
+  | { type: 'createGame', payload: WebsocketResponse }
+  | { type: 'removeGid' }
+  | { type: 'incorrectGid', payload: WebsocketResponse }
+  | { type: 'validGid' }
+  | { type: 'joinGame', payload: WebsocketResponse }
+  | { type: 'onePlayerReady', payload: WebsocketResponse }
+  | { type: 'newHand', payload: WebsocketResponse }
+  | { type: 'allIn', payload: WebsocketResponse }
+  | { type: 'showdown', payload: WebsocketResponse }
+  | { type: 'folded', payload: WebsocketResponse }
+  | { type: 'winner', payload: WebsocketResponse }
+  | { type: 'playerBust', payload: WebsocketResponse }
+  | { type: 'backToLobby', payload: WebsocketResponse };
 
 export const gameReducerActions: GameReducerAction['type'][] = [
   'setUsername',
@@ -188,7 +188,7 @@ export interface GameState {
   oppHand: Hand; // game
   players: Array<Iplayer>; // game
   pot: number; // game
-  readyToStart: boolean; // game
+  gameHasEnoughPlayers: boolean; // game
   stage: Stage; // app
   uid: string; // player
   whichPlayer: number; // game
@@ -212,7 +212,7 @@ export const initialGameState: GameState = {
   opponentName: '',
   gid: '',
   falseGID: false,
-  readyToStart: false,
+  gameHasEnoughPlayers: false,
   action: null,
   stage: 'initial',
   players: [initialPlayer, initialPlayer],

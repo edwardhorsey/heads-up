@@ -85,7 +85,7 @@ const gameReducer = (
         gid: action.payload.gid,
         falseGID: false,
         players: action.payload.players,
-        readyToStart: action.payload.players.length === 2,
+        gameHasEnoughPlayers: action.payload.players.length === 2,
         whichPlayer: action.payload.whichPlayer,
       };
 

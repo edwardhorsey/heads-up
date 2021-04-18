@@ -7,7 +7,7 @@ const mockGameStateWinner: GameState = {
   opponentName: '',
   gid: 'a8911ab9e7',
   falseGID: false,
-  readyToStart: true,
+  gameHasEnoughPlayers: true,
   action: null,
   stage: 'winner',
   players: [

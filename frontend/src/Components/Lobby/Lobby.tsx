@@ -14,7 +14,7 @@ const Lobby: React.FC<LobbyProps> = ({ displayName }) => {
   return (
     <section className={styles.Lobby}>
       <h3>
-        Welcome,
+        Hi,
         {displayName}
       </h3>
       {gid ? <WaitingRoom /> : <CreateOrJoin />}
