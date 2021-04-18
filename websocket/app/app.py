@@ -124,7 +124,7 @@ async def join_game(endpoint, connectionId, body):
     this_game.add_player(player_two)
     status = put_game(gid, this_game)
 
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    clients = this_game.get_clients()
     response = {
         "method": "joinGame",
         "gid": gid,
@@ -170,7 +170,7 @@ async def ready_to_play(endpoint, connectionId, body):
         "players": this_game.print_player_response(),
     }
 
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    clients = this_game.get_clients()
 
     if this_game.player_one_ready and this_game.player_two_ready:
         await new_hand(endpoint, connectionId, body, this_game, response)
@@ -190,7 +190,7 @@ async def ready_to_play(endpoint, connectionId, body):
 # New hand
 async def new_hand(endpoint, connectionId, body, this_game, response):
     gid = body["gid"]
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    clients = this_game.get_clients()
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
@@ -250,7 +250,7 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
 async def all_in(endpoint, connectionId, body):
     gid = body["gid"]
     this_game = get_game(gid)
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    clients = this_game.get_clients()
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
@@ -282,7 +282,7 @@ async def all_in(endpoint, connectionId, body):
 async def fold(endpoint, connectionId, body):
     gid = body["gid"]
     this_game = get_game(gid)
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    clients = this_game.get_clients()
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
@@ -317,7 +317,7 @@ async def fold(endpoint, connectionId, body):
 async def call(endpoint, connectionId, body):
     gid = body["gid"]
     this_game = get_game(gid)
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    clients = this_game.get_clients()
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
@@ -356,7 +356,7 @@ async def call(endpoint, connectionId, body):
 # Send winner response
 async def send_winner_response(endpoint, connectionId, body, this_game):
     gid = body["gid"]
-    clients = [this_game.player_one.uid, this_game.player_two.uid]
+    clients = this_game.get_clients()
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
