@@ -21,6 +21,7 @@ const authReducer = (
         authToken: action.userObject.authToken,
         displayName: action.userObject.displayName,
         email: action.userObject.email,
+        bankroll: action.userObject.bankroll,
       };
 
     case 'logout':

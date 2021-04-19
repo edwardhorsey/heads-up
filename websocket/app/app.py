@@ -25,7 +25,7 @@ async def login(endpoint, connectionId, body):
     }
 
     authorization_code = body["code"]
-    user_details = await get_user_profile(authorization_code)
+    user_details = await get_user_cognito_profile(authorization_code)
 
     if user_details:
         players_already_using_token = check_if_user_token_exists(user_details["sub"])
@@ -45,8 +45,11 @@ async def login(endpoint, connectionId, body):
                 except Exception as error:
                     print("Error posting to kicked player's connectionId: ", error)
 
-        if not check_if_user_exists(user_details["sub"]):
-            first_visit_put_user_details(connectionId, user_details, 500)
+        user_profile = get_user_by_user_token(user_details["sub"])
+        if not user_profile:
+            user_profile = first_visit_put_user_details(
+                connectionId, user_details, Decimal(500)
+            )
 
         # save user_token and connectionId
         if log_user_in(connectionId, user_details["sub"]):
@@ -54,9 +57,10 @@ async def login(endpoint, connectionId, body):
                 "method": "login",
                 "uid": connectionId,
                 "userObject": {
-                    "authToken": user_details["sub"],
-                    "displayName": user_details["cognito:username"],
-                    "email": user_details["email"],
+                    "authToken": user_profile["PK"],
+                    "displayName": user_profile["displayName"],
+                    "email": user_profile["email"],
+                    "bankroll": user_profile['bankroll'],
                 },
                 "message": "Logged in",
             }

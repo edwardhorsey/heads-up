@@ -7,12 +7,14 @@ export interface AuthState {
   authToken: string;
   displayName: string;
   email: string;
+  bankroll: string;
 }
 
 export const initialAuthState: AuthState = {
   authToken: '',
   displayName: '',
   email: '',
+  bankroll: '',
 };
 
 export interface IAuthContext {

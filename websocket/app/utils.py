@@ -21,23 +21,23 @@ def get_display_name(connectionId):
 
 
 def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
-    return poker_table.put_item(
-        Item={
-            "PK": user_details["sub"],
-            "SK": user_details["sub"],
-            "displayName": user_details["cognito:username"],
-            "email": user_details["email"],
-            "userTokenPK": user_details["sub"],
-            "userTokenSK": "User",
-            "userDetails": user_details,
-            "bankroll": starting_bankroll,
-        }
-    )
+    item = {
+        "PK": user_details["sub"],
+        "SK": user_details["sub"],
+        "displayName": user_details["cognito:username"],
+        "email": user_details["email"],
+        "userTokenPK": user_details["sub"],
+        "userTokenSK": "User",
+        "userDetails": user_details,
+        "bankroll": starting_bankroll,
+    }
+    poker_table.put_item(Item=item)
+    return item
 
 
-def check_if_user_exists(user_token):
+def get_user_by_user_token(user_token):
     user = poker_table.get_item(Key={"PK": user_token, "SK": user_token})
-    return True if "Item" in user else False
+    return user["Item"] if "Item" in user else False
 
 
 def save_user_token_to_connection(connectionId, user_token):
@@ -75,11 +75,6 @@ def log_user_in(connectionId, user_token):
         return True
     else:
         return False
-
-
-def get_user(connectionId):
-    ### access via userToken index
-    return false
 
 
 def remove_user_details(connectionIds):
@@ -146,7 +141,7 @@ async def get_access_tokens(code):
     ).json()
 
 
-async def get_user_profile(code):
+async def get_user_cognito_profile(code):
     try:
         access_tokens = await get_access_tokens(code)
         if "error" in access_tokens:
