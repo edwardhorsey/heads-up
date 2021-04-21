@@ -46,7 +46,7 @@ class Game:
 
     def new_round(self):
         self.number_of_rounds += 1
-        if self.player_one.bankroll <= 0:
+        if self.player_one.chips <= 0:
             self.two_rounds_won += 1
         else:
             self.one_rounds_won += 1
@@ -80,8 +80,8 @@ class Game:
                 new_deck,
                 self.current_blind,
                 self.current_dealer,
-                self.player_one.bankroll,
-                self.player_two.bankroll,
+                self.player_one.chips,
+                self.player_two.chips,
             )
             self.current_hand.deal_blinds(
                 self.player_one, self.player_two, self.current_dealer
@@ -113,7 +113,7 @@ class Game:
             {
                 "uid": self.player_one.uid,
                 "name": self.player_one.name,
-                "bankroll": self.player_one.bankroll,
+                "chips": self.player_one.chips,
                 "ready": self.player_one_ready,
                 "bet-size": self.player_one.bet_size,
                 "hand": self.current_hand.one_cards if self.current_hand else [],
@@ -131,7 +131,7 @@ class Game:
             {
                 "uid": self.player_two.uid,
                 "name": self.player_two.name,
-                "bankroll": self.player_two.bankroll,
+                "chips": self.player_two.chips,
                 "ready": self.player_two_ready,
                 "bet-size": self.player_two.bet_size,
                 "hand": self.current_hand.two_cards if self.current_hand else [],

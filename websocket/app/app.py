@@ -74,25 +74,6 @@ async def login(endpoint, connectionId, body):
     )
 
 
-# Set username
-async def set_username(endpoint, connectionId, body):
-    status = put_display_name(connectionId, body["username"])
-
-    response = {
-        "method": "setUsername",
-        "uid": connectionId,
-        "username": body["username"],
-        "success": status,
-    }
-
-    apigatewaymanagementapi = boto3.client(
-        "apigatewaymanagementapi", endpoint_url=endpoint
-    )
-    apigatewaymanagementapi.post_to_connection(
-        Data=json.dumps(response), ConnectionId=connectionId
-    )
-
-
 # Create game
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
@@ -137,12 +118,12 @@ async def join_game(endpoint, connectionId, body):
             {
                 "uid": this_game.player_one.uid,
                 "name": this_game.player_one.name,
-                "bankroll": this_game.player_one.bankroll,
+                "chips": this_game.player_one.chips,
             },
             {
                 "uid": this_game.player_two.uid,
                 "name": this_game.player_two.name,
-                "bankroll": this_game.player_two.bankroll,
+                "chips": this_game.player_two.chips,
             },
         ],
         "status": status,
@@ -202,8 +183,8 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
     )
 
     if (
-        this_game.player_one.bankroll > this_game.current_blind
-        and this_game.player_two.bankroll > this_game.current_blind
+        this_game.player_one.chips > this_game.current_blind
+        and this_game.player_two.chips > this_game.current_blind
     ):
         this_game.new_hand()
 
@@ -427,12 +408,12 @@ async def back_to_lobby(endpoint, connectionId, body):
     )
 
     if this_game.player_one.uid == connectionId:
-        if this_game.player_one.bankroll == 0:
+        if this_game.player_one.chips == 0:
             this_game.player_one = Player(
                 this_game.player_one.uid, this_game.player_one.name, 500
             )
     elif this_game.player_two.uid == connectionId:
-        if this_game.player_two.bankroll == 0:
+        if this_game.player_two.chips == 0:
             this_game.player_two = Player(
                 this_game.player_two.uid, this_game.player_two.name, 500
             )

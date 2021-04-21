@@ -43,17 +43,17 @@ class Hand:
         self.pot += bet_amount
 
     def all_in(self, player):
-        player.bet_size += player.bankroll
-        self.bet(player, player.bankroll)
+        player.bet_size += player.chips
+        self.bet(player, player.chips)
 
     def call(self, calling_player, total_bet, all_in_player):
         amount_left_to_call = total_bet - calling_player.bet_size
-        if amount_left_to_call > calling_player.bankroll:
-            difference = amount_left_to_call - calling_player.bankroll
-            all_in_player.bankroll += difference
+        if amount_left_to_call > calling_player.chips:
+            difference = amount_left_to_call - calling_player.chips
+            all_in_player.chips += difference
             all_in_player.bet_size -= difference
             self.pot -= difference
-            amount_left_to_call = calling_player.bankroll
+            amount_left_to_call = calling_player.chips
         self.bet(calling_player, amount_left_to_call)
         calling_player.bet_size += amount_left_to_call
         self.run_cards()
@@ -61,14 +61,14 @@ class Hand:
 
     def transfer_winnings(self, one, two):
         if self.winner == "one":
-            one.bankroll += self.pot
+            one.chips += self.pot
         elif self.winner == "two":
-            two.bankroll += self.pot
+            two.chips += self.pot
         elif self.winner == "draw":
-            one.bankroll += Decimal(str(0.5)) * self.pot
-            two.bankroll += Decimal(str(0.5)) * self.pot
-        self.one_hand_profit = one.bankroll - self.one_starting_chips
-        self.two_hand_profit = two.bankroll - self.two_starting_chips
+            one.chips += Decimal(str(0.5)) * self.pot
+            two.chips += Decimal(str(0.5)) * self.pot
+        self.one_hand_profit = one.chips - self.one_starting_chips
+        self.two_hand_profit = two.chips - self.two_starting_chips
 
     def fold(self, which, one, two):
         if which == "one":

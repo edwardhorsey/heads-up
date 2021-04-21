@@ -27,10 +27,7 @@ const PlayerStats: React.FC<IProps> = ({
       {who === 'you' && stage === 'winner' && roundProfit()}
       <div className={playerBackground}>
         <p className={styles.name}>{player.name}</p>
-        <p>
-          Bankroll:
-          {player.bankroll}
-        </p>
+        <p>{`Chips: ${player.chips}`}</p>
       </div>
       {who === 'opp' && stage === 'winner' && roundProfit()}
     </div>

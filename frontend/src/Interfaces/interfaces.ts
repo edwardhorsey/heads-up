@@ -52,7 +52,7 @@ Player
 export interface Iplayer {
   uid: string,
   name: string,
-  bankroll: number,
+  chips: number,
   ready: boolean,
   'bet-size': number,
   hand: Hand,
@@ -64,7 +64,7 @@ export interface Iplayer {
 export const initialPlayer: Iplayer = {
   uid: '',
   name: '',
-  bankroll: 0,
+  chips: 0,
   ready: false,
   'bet-size': 0,
   hand: [],
