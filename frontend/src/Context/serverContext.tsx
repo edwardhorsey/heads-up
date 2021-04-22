@@ -252,7 +252,7 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
           break;
 
         case 'addChips':
-          if (response.userBankroll) {
+          if (response.userBankroll !== false) {
             authDispatch({ type: method, bankroll: response.userBankroll });
           }
 

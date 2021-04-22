@@ -60,7 +60,7 @@ const GameContainer: React.FC = () => {
           yourHand={yourHand}
         />
       )}
-      {(['initial', 'backToLobby'].includes(stage)) && (
+      {(!yourself.chips && ['initial', 'backToLobby'].includes(stage)) && (
         <AddChips
           numChips={chips}
           minimum={gameMinimumBuyIn}

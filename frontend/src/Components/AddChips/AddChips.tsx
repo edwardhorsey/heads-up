@@ -27,11 +27,12 @@ const AddChips: React.FC<AddChipsProps> = ({
     if (!values.amount) {
       errors.amount = 'Required';
     } else if (
-      values.amount < 1
+      Number(values.amount) < 1
       || values.amount + numChips < minimum
     ) {
       errors.amount = `Must meet minimum chip requirement: ${minimum}`;
     }
+
     return errors;
   };
 
@@ -41,9 +42,8 @@ const AddChips: React.FC<AddChipsProps> = ({
     initialValues: { amount: defaultValue },
     validate,
     onSubmit: ({ amount }) => {
-      console.log('adding ', amount);
       addChips(gid, uid, amount);
-      // setButtonDisabled(true);
+      setButtonDisabled(true);
     },
   });
 
@@ -52,7 +52,6 @@ const AddChips: React.FC<AddChipsProps> = ({
       <form>
         <input
           name="amount"
-          value={`${defaultValue}`}
           onChange={formik.handleChange}
         />
         <Button

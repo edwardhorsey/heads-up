@@ -464,18 +464,18 @@ async def back_to_lobby(endpoint, connectionId, body):
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
 
-    if this_game.player_one.uid == connectionId:
-        if this_game.player_one.chips == 0:
-            this_game.player_one = Player(
-                this_game.player_one.uid, this_game.player_one.name, 500
-            )
-    elif this_game.player_two.uid == connectionId:
-        if this_game.player_two.chips == 0:
-            this_game.player_two = Player(
-                this_game.player_two.uid, this_game.player_two.name, 500
-            )
-    else:
-        raise Exception("Player uid not in game", connectionId)
+    # if this_game.player_one.uid == connectionId:
+    #     if this_game.player_one.chips == 0:
+    #         this_game.player_one = Player(
+    #             this_game.player_one.uid, this_game.player_one.name, 500
+    #         )
+    # elif this_game.player_two.uid == connectionId:
+    #     if this_game.player_two.chips == 0:
+    #         this_game.player_two = Player(
+    #             this_game.player_two.uid, this_game.player_two.name, 500
+    #         )
+    # else:
+    #     raise Exception("Player uid not in game", connectionId)
 
     response = {
         "method": "backToLobby",
