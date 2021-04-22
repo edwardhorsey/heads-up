@@ -4,6 +4,7 @@ import uuid
 import time
 import os
 import boto3
+from decimal import Decimal
 
 from .utils import *
 from .poker.game import Game
@@ -60,7 +61,7 @@ async def login(endpoint, connectionId, body):
                     "authToken": user_profile["PK"],
                     "displayName": user_profile["displayName"],
                     "email": user_profile["email"],
-                    "bankroll": user_profile['bankroll'],
+                    "bankroll": user_profile["bankroll"],
                 },
                 "message": "Logged in",
             }
@@ -78,7 +79,7 @@ async def login(endpoint, connectionId, body):
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
     display_name = get_display_name(connectionId)
-    player_one = Player(connectionId, display_name, 1000)
+    player_one = Player(connectionId, display_name, 0)
 
     this_game = Game(gid, player_one)
     status = put_game(gid, this_game)
@@ -104,7 +105,7 @@ async def join_game(endpoint, connectionId, body):
     # return await incorrect_gid(connectionId, gid)
     this_game = get_game(gid)
     display_name = get_display_name(connectionId)
-    player_two = Player(connectionId, display_name, 1000)
+    player_two = Player(connectionId, display_name, 0)
 
     this_game.add_player(player_two)
     status = put_game(gid, this_game)
@@ -133,6 +134,62 @@ async def join_game(endpoint, connectionId, body):
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
     for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps(response), ConnectionId=client
+        )
+
+
+# Ready to play
+async def add_chips(endpoint, connectionId, body):
+    gid = body["gid"]
+    amount = Decimal(body["amount"])
+    this_game = get_game(gid)
+    this_user = get_user_by_connection(connectionId)
+    response = {
+        "method": "addChips",
+        "gid": gid,
+    }
+
+    try:
+        if this_user["bankroll"] - amount < 0:
+            print(
+                f'User ({connectionId}, {this_user["email"]}) does not \
+                have enough funds. Bankroll: {this_user["bankroll"]}. \
+                Requested amount: {amount}.'
+            )
+            raise Exception("Not enough funds")
+
+        if this_game.player_one.uid == connectionId:
+            this_game.player_one.chips += amount
+        elif this_game.player_two.uid == connectionId:
+            this_game.player_two.chips += amount
+        else:
+            raise Exception("Player uid not in game", connectionId)
+
+        this_user["bankroll"] -= amount
+        update_user_bankroll(this_user["PK"], this_user["bankroll"])
+        put_game(gid, this_game)
+        response.update(
+            {
+                "players": this_game.print_player_response(),
+                "message": f'Player {this_user["displayName"]}) added {amount} chips into the game.',
+                "userBankroll": False,
+            }
+        )
+    except Exception as error:
+        message = error
+
+    clients = this_game.get_clients()
+    apigatewaymanagementapi = boto3.client(
+        "apigatewaymanagementapi", endpoint_url=endpoint
+    )
+
+    for client in clients:
+        if "players" in response:
+            if client == connectionId:
+                response["userBankroll"] = this_user["bankroll"]
+            else:
+                response["userBankroll"] = False
         apigatewaymanagementapi.post_to_connection(
             Data=json.dumps(response), ConnectionId=client
         )

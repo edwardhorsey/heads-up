@@ -40,6 +40,15 @@ def get_user_by_user_token(user_token):
     return user["Item"] if "Item" in user else False
 
 
+def get_user_by_connection(connectionId):
+    user = poker_table.query(
+        IndexName="connectionId",
+        KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
+        Limit=1,
+    )
+    return user["Items"][0] if ("Items" in user and user["Items"]) else False
+
+
 def save_user_token_to_connection(connectionId, user_token):
     return poker_table.put_item(
         Item={
@@ -96,6 +105,21 @@ def check_if_user_token_exists(user_token):
         & Key("userTokenSK").eq("Connection"),
     )
     return result["Items"] if result["Items"] else False
+
+
+def update_user_bankroll(user_token, new_bankroll):
+    print("updating bankroll:", user_token, new_bankroll)
+
+    return poker_table.update_item(
+        Key={
+            "PK": user_token,
+            "SK": user_token,
+        },
+        UpdateExpression="SET bankroll = :br",
+        ExpressionAttributeValues={
+            ":br": new_bankroll,
+        },
+    )
 
 
 def generate_game_id():
