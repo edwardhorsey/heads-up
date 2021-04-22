@@ -33,6 +33,16 @@ export const joinGame = (gid: string, uid: string): void => (
   }))
 );
 
+export const addChips = (gid: string, uid: string, amount: number): void => (
+  socket.send(JSON.stringify({
+    action: 'onGameAction',
+    method: 'addChips',
+    uid,
+    gid,
+    amount,
+  }))
+);
+
 export const readyToPlayHand = (gid: string, uid: string): void => (
   socket.send(JSON.stringify({
     action: 'onGameAction',

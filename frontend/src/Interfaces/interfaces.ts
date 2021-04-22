@@ -36,7 +36,8 @@ export interface AuthProviderProps {
 export type AuthReducerAction =
   | { type: 'login', userObject: AuthState }
   | { type: 'logout' }
-  | { type: 'forceLogout', message: string; };
+  | { type: 'forceLogout', message: string; }
+  | { type: 'addChips', bankroll: string; };
 
 export const authReducerActions: AuthReducerAction['type'][] = [
   'login',
@@ -87,6 +88,7 @@ export interface WebsocketResponse {
   'community-cards': CommunityType;
   pot: number;
   'number-of-hands': number;
+  userBankroll: number;
   winner: string;
   'winning-hand': WinningHand;
   'number-of-rounds': number;
@@ -118,6 +120,7 @@ export type GameReducerAction =
   | { type: 'incorrectGid', payload: WebsocketResponse }
   | { type: 'validGid' }
   | { type: 'joinGame', payload: WebsocketResponse }
+  | { type: 'addChips', payload: WebsocketResponse }
   | { type: 'onePlayerReady', payload: WebsocketResponse }
   | { type: 'newHand', payload: WebsocketResponse }
   | { type: 'allIn', payload: WebsocketResponse }
@@ -134,6 +137,7 @@ export const gameReducerActions: GameReducerAction['type'][] = [
   'incorrectGid',
   'validGid',
   'joinGame',
+  'addChips',
   'onePlayerReady',
   'newHand',
   'allIn',

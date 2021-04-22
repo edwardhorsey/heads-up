@@ -31,6 +31,12 @@ const authReducer = (
       console.error(action.message);
       return initialAuthState;
 
+    case 'addChips':
+      return {
+        ...authState,
+        bankroll: action.bankroll,
+      };
+
     default: {
       throw new Error(`Action - ${action} - not matched`);
     }

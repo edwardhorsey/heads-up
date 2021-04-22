@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik, FormikErrors } from 'formik';
 import styles from './AddChips.module.scss';
-// import { useServer } from '../../Context/serverContext';
-// import { addChips, joinGame } from '../../Socket/requests';
+import { addChips } from '../../Socket/requests';
 import Button from '../Button';
 
 interface Ivalues {
@@ -10,29 +9,41 @@ interface Ivalues {
 }
 
 interface AddChipsProps {
-  numChips: number,
-  minimum: number,
+  numChips: number;
+  minimum: number;
+  gid: string;
+  uid: string;
 }
 
-const AddChips: React.FC<AddChipsProps> = ({ numChips, minimum }) => {
+const AddChips: React.FC<AddChipsProps> = ({
+  numChips,
+  minimum,
+  gid,
+  uid,
+}) => {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const validate = (values: Ivalues) => {
     const errors: FormikErrors<Ivalues> = {};
     if (!values.amount) {
       errors.amount = 'Required';
-    } else if (values.amount + numChips >= minimum) {
+    } else if (
+      values.amount < 1
+      || values.amount + numChips < minimum
+    ) {
       errors.amount = `Must meet minimum chip requirement: ${minimum}`;
     }
     return errors;
   };
 
-  const defaultValue = minimum - numChips === 0 ? 500 : minimum - numChips;
+  const defaultValue = minimum - numChips < 1 ? 500 : minimum - numChips;
 
   const formik = useFormik({
     initialValues: { amount: defaultValue },
     validate,
     onSubmit: ({ amount }) => {
-      // addChips(gid, uid, amount)
       console.log('adding ', amount);
+      addChips(gid, uid, amount);
+      // setButtonDisabled(true);
     },
   });
 
@@ -41,10 +52,14 @@ const AddChips: React.FC<AddChipsProps> = ({ numChips, minimum }) => {
       <form>
         <input
           name="amount"
-          placeholder={`${defaultValue}`}
+          value={`${defaultValue}`}
           onChange={formik.handleChange}
         />
-        <Button logic={formik.handleSubmit} text="Add chips" />
+        <Button
+          logic={formik.handleSubmit}
+          text="Add chips"
+          disabled={buttonDisabled}
+        />
         {formik.errors.amount
           ? <div className={styles.formErrors}>{formik.errors.amount}</div>
           : ''}

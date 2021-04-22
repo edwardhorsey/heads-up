@@ -7,6 +7,7 @@ import { readyToPlayHand } from '../../Socket/requests';
 import GameNav from '../GameNav';
 import GameHand from '../GameHand';
 import Button from '../Button';
+import AddChips from '../AddChips';
 /* import { leaveGame } from '../../Socket/requests'; */
 
 const GameContainer: React.FC = () => {
@@ -39,8 +40,10 @@ const GameContainer: React.FC = () => {
 
   // yourself is user
   const yourself: Iplayer = players[whichPlayer];
+  const { chips } = yourself;
   // opponent is opponent
   const opponent: Iplayer = players[whichPlayer === 0 ? 1 : 0];
+  const gameMinimumBuyIn = 500;
 
   return (
     <section className={styles.GameContainer}>
@@ -55,6 +58,14 @@ const GameContainer: React.FC = () => {
           opponent={opponent}
           stage={stage}
           yourHand={yourHand}
+        />
+      )}
+      {(['initial', 'backToLobby'].includes(stage)) && (
+        <AddChips
+          numChips={chips}
+          minimum={gameMinimumBuyIn}
+          gid={gid}
+          uid={uid}
         />
       )}
       {(!yourself.ready && ['initial', 'backToLobby'].includes(stage)) && (

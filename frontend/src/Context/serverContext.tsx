@@ -89,6 +89,12 @@ const gameReducer = (
         whichPlayer: action.payload.whichPlayer,
       };
 
+    case 'addChips':
+      return {
+        ...gameState,
+        players: action.payload.players,
+      };
+
     case 'onePlayerReady':
       return {
         ...gameState,
@@ -243,6 +249,14 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
               ),
             },
           });
+          break;
+
+        case 'addChips':
+          if (response.userBankroll) {
+            authDispatch({ type: method, bankroll: response.userBankroll });
+          }
+
+          gameDispatch({ type: method, payload: response });
           break;
 
         case 'newHand':
