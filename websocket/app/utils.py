@@ -73,6 +73,7 @@ def save_connection_id_to_user(connectionId, user_token):
         },
     )
 
+
 def save_game_id_to_user(gameId, user_token):
     return poker_table.update_item(
         Key={
@@ -148,9 +149,9 @@ def put_game(gid, game):
         Item={
             "PK": gid,
             "SK": gid,
-            "game": game.self_dict()
+            "game": game.self_dict(),
             "gameIdPK": gid,
-            "gameIdSK": 'game',
+            "gameIdSK": "game",
         }
     )
 

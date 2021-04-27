@@ -79,8 +79,8 @@ async def login(endpoint, connectionId, body):
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
     user = get_user_by_connection(connectionId)
-    display_name = user['displayName']
-    user_token = user['PK']
+    display_name = user["displayName"]
+    user_token = user["PK"]
     player_one = Player(connectionId, display_name, 0)
 
     this_game = Game(gid, player_one)
@@ -89,7 +89,6 @@ async def create_game(endpoint, connectionId, body):
 
     response = {
         "method": "createGame",
-        "success": status,
         "gid": gid,
     }
 
@@ -108,8 +107,8 @@ async def join_game(endpoint, connectionId, body):
     # return await incorrect_gid(connectionId, gid)
     this_game = get_game(gid)
     user = get_user_by_connection(connectionId)
-    display_name = user['displayName']
-    user_token = user['PK']
+    display_name = user["displayName"]
+    user_token = user["PK"]
     player_two = Player(connectionId, display_name, 0)
 
     this_game.add_player(player_two)
