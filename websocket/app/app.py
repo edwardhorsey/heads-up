@@ -78,11 +78,14 @@ async def login(endpoint, connectionId, body):
 # Create game
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
-    display_name = get_display_name(connectionId)
+    user = get_user_by_connection(connectionId)
+    display_name = user['displayName']
+    user_token = user['PK']
     player_one = Player(connectionId, display_name, 0)
 
     this_game = Game(gid, player_one)
-    status = put_game(gid, this_game)
+    put_game(gid, this_game)
+    save_game_id_to_user(gid, user_token)
 
     response = {
         "method": "createGame",
@@ -104,11 +107,14 @@ async def join_game(endpoint, connectionId, body):
     # if not check_item_exists(gid):
     # return await incorrect_gid(connectionId, gid)
     this_game = get_game(gid)
-    display_name = get_display_name(connectionId)
+    user = get_user_by_connection(connectionId)
+    display_name = user['displayName']
+    user_token = user['PK']
     player_two = Player(connectionId, display_name, 0)
 
     this_game.add_player(player_two)
-    status = put_game(gid, this_game)
+    put_game(gid, this_game)
+    save_game_id_to_user(gid, user_token)
 
     clients = this_game.get_clients()
     response = {
@@ -127,7 +133,6 @@ async def join_game(endpoint, connectionId, body):
                 "chips": this_game.player_two.chips,
             },
         ],
-        "status": status,
     }
 
     apigatewaymanagementapi = boto3.client(

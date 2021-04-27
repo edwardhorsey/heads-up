@@ -83,6 +83,10 @@ resources:
             AttributeType: S
           - AttributeName: connectionIdSK
             AttributeType: S
+          - AttributeName: gameIdPK
+            AttributeType: S
+          - AttributeName: gameIdSK
+            AttributeType: S
         KeySchema:
           - AttributeName: PK
             KeyType: HASH
@@ -102,6 +106,14 @@ resources:
           - AttributeName: connectionIdPK
             KeyType: HASH
           - AttributeName: connectionIdSK
+            KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: gameId
+          KeySchema:
+          - AttributeName: gameIdPK
+            KeyType: HASH
+          - AttributeName: gameIdSK
             KeyType: RANGE
           Projection:
             ProjectionType: ALL

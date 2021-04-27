@@ -73,6 +73,19 @@ def save_connection_id_to_user(connectionId, user_token):
         },
     )
 
+def save_game_id_to_user(gameId, user_token):
+    return poker_table.update_item(
+        Key={
+            "PK": user_token,
+            "SK": user_token,
+        },
+        UpdateExpression="SET gameIdPK = :pk , gameIdSK = :sk",
+        ExpressionAttributeValues={
+            ":pk": gameId,
+            ":sk": "User",
+        },
+    )
+
 
 def log_user_in(connectionId, user_token):
     if save_user_token_to_connection(
@@ -131,7 +144,15 @@ def re_map_game(game):
 
 
 def put_game(gid, game):
-    return poker_table.put_item(Item={"PK": gid, "SK": gid, "game": game.self_dict()})
+    return poker_table.put_item(
+        Item={
+            "PK": gid,
+            "SK": gid,
+            "game": game.self_dict()
+            "gameIdPK": gid,
+            "gameIdSK": 'game',
+        }
+    )
 
 
 def get_game(gid):
