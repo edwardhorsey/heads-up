@@ -80,12 +80,11 @@ async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
     user = get_user_by_connection(connectionId)
     display_name = user["displayName"]
-    user_token = user["PK"]
     player_one = Player(connectionId, display_name, 0)
 
     this_game = Game(gid, player_one)
     put_game(gid, this_game)
-    save_game_id_to_user(gid, user_token)
+    save_game_id_to_connection_id(gid, connectionId)
 
     response = {
         "method": "createGame",
@@ -108,12 +107,11 @@ async def join_game(endpoint, connectionId, body):
     this_game = get_game(gid)
     user = get_user_by_connection(connectionId)
     display_name = user["displayName"]
-    user_token = user["PK"]
     player_two = Player(connectionId, display_name, 0)
 
     this_game.add_player(player_two)
     put_game(gid, this_game)
-    save_game_id_to_user(gid, user_token)
+    save_game_id_to_connection_id(gid, connectionId)
 
     clients = this_game.get_clients()
     response = {

@@ -74,16 +74,16 @@ def save_connection_id_to_user(connectionId, user_token):
     )
 
 
-def save_game_id_to_user(gameId, user_token):
+def save_game_id_to_connection_id(gameId, connectionId):
     return poker_table.update_item(
         Key={
-            "PK": user_token,
-            "SK": user_token,
+            "PK": connectionId,
+            "SK": connectionId,
         },
         UpdateExpression="SET gameIdPK = :pk , gameIdSK = :sk",
         ExpressionAttributeValues={
             ":pk": gameId,
-            ":sk": "User",
+            ":sk": "Connection",
         },
     )
 
@@ -164,6 +164,19 @@ def get_game(gid):
         }
     )
     return re_map_game(game["Item"]["game"]) if "Item" in game else False
+
+
+def get_game_by_user_token(connectionId):
+user = poker_table.query(
+    IndexName="connectionId",
+    KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
+    Limit=1,
+)
+return (
+    user["Items"][0]["displayName"]
+    if ("Items" in user and user["Items"])
+    else False
+)
 
 
 async def get_access_tokens(code):
