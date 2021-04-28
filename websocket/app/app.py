@@ -49,7 +49,7 @@ async def login(endpoint, connectionId, body):
         user_profile = get_user_by_user_token(user_details["sub"])
         if not user_profile:
             user_profile = first_visit_put_user_details(
-                connectionId, user_details, Decimal(500)
+                connectionId, user_details, Decimal(5000)
             )
 
         # save user_token and connectionId

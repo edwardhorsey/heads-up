@@ -1,23 +1,11 @@
 import os
 import uuid
 import requests
+import simplejson as json
 from boto3.dynamodb.conditions import Key
 from .tables import poker_table
 from .cognito import lambda_handler as decode_token
 from .poker.game import Game
-
-
-def get_display_name(connectionId):
-    user = poker_table.query(
-        IndexName="connectionId",
-        KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
-        Limit=1,
-    )
-    return (
-        user["Items"][0]["displayName"]
-        if ("Items" in user and user["Items"])
-        else False
-    )
 
 
 def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
@@ -43,20 +31,32 @@ def get_user_by_user_token(user_token):
 def get_user_by_connection(connectionId):
     user = poker_table.query(
         IndexName="connectionId",
-        KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
+        KeyConditionExpression=Key("connectionIdPK").eq(connectionId)
+        & Key("connectionIdSK").eq("User"),
         Limit=1,
     )
     return user["Items"][0] if ("Items" in user and user["Items"]) else False
 
 
+def get_all_by_connection(connectionId):
+    items = poker_table.query(
+        IndexName="connectionId",
+        KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
+    )
+    return items["Items"] if "Items" in items else False
+
+
 def save_user_token_to_connection(connectionId, user_token):
-    return poker_table.put_item(
-        Item={
+    return poker_table.update_item(
+        Key={
             "PK": connectionId,
             "SK": connectionId,
-            "userTokenPK": user_token,
-            "userTokenSK": "Connection",
-        }
+        },
+        UpdateExpression="SET userTokenPK = :pk , userTokenSK = :sk",
+        ExpressionAttributeValues={
+            ":pk": user_token,
+            ":sk": "Connection",
+        },
     )
 
 
@@ -75,6 +75,7 @@ def save_connection_id_to_user(connectionId, user_token):
 
 
 def save_game_id_to_connection_id(gameId, connectionId):
+    print("saving game id to connection id", gameId, connectionId)
     return poker_table.update_item(
         Key={
             "PK": connectionId,
@@ -166,19 +167,6 @@ def get_game(gid):
     return re_map_game(game["Item"]["game"]) if "Item" in game else False
 
 
-def get_game_by_user_token(connectionId):
-user = poker_table.query(
-    IndexName="connectionId",
-    KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
-    Limit=1,
-)
-return (
-    user["Items"][0]["displayName"]
-    if ("Items" in user and user["Items"])
-    else False
-)
-
-
 async def get_access_tokens(code):
     url = os.environ["AWS_COGNITO_APP_URL"]
     app_client_id = os.environ["AWS_COGNITO_APP_CLIENT_ID"]
@@ -217,3 +205,29 @@ async def get_user_cognito_profile(code):
     except Exception as error:
         print(error)
         return False
+
+
+def pretty_print(some_dict):
+    print(json.dumps(some_dict, indent=4, sort_keys=True))
+
+
+def withdraw_chips_from_game(connectionId, bankroll, user_token, gid):
+    print(f"{connectionId}'s bankroll: {bankroll}")
+    this_game = get_game(gid)
+    try:
+        if this_game.player_one.uid == connectionId:
+            print(f"{connectionId}'s chips in game: {this_game.player_one.chips}")
+            bankroll += this_game.player_one.chips
+        elif this_game.player_two.uid == connectionId:
+            print(f"{connectionId}'s chips in game: {this_game.player_two.chips}")
+            bankroll += this_game.player_two.chips
+        else:
+            raise Exception(
+                "Player uid not in game. No chips to credit to user.", connectionId
+            )
+
+        print(f"{connectionId}'s NEW bankroll: {bankroll}")
+        update_user_bankroll(user_token, bankroll)
+
+    except Exception as error:
+        print(error)
