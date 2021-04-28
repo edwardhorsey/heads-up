@@ -124,7 +124,6 @@ def check_if_user_token_exists(user_token):
 
 def update_user_bankroll(user_token, new_bankroll):
     print("updating bankroll:", user_token, new_bankroll)
-
     return poker_table.update_item(
         Key={
             "PK": user_token,
