@@ -1,4 +1,4 @@
-import json
+import simplejson as json
 import boto3
 import os
 
@@ -55,7 +55,7 @@ def handle(event, context):
 
         for client in clients:
             apigatewaymanagementapi.post_to_connection(
-                Data=json.dumps(response), ConnectionId=clients
+                Data=json.dumps(response), ConnectionId=client
             )
 
     dynamodb.delete_item(
