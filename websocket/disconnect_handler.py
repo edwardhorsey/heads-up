@@ -8,7 +8,11 @@ from app.utils import get_game
 from app.utils import put_game
 
 dynamodb = boto3.client("dynamodb")
-endpoint = (
+
+
+def handle(event, context):
+    connectionId = event["requestContext"]["connectionId"]
+    endpoint = (
     "http://localhost:3001/"
     if "IS_OFFLINE" in os.environ
     else (
@@ -19,9 +23,6 @@ endpoint = (
     )
 )
 
-
-def handle(event, context):
-    connectionId = event["requestContext"]["connectionId"]
     items = get_all_by_connection(connectionId)
 
     bankroll = user_token = gid = None
