@@ -106,7 +106,7 @@ class Game:
             raise ValueError("Player not in game.")
 
     def get_clients(self):
-        return [self.player_one.uid, self.player_two.uid]
+        return self.get_player_uids()
 
     def print_player_response(self):
         player_one = (

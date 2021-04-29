@@ -495,3 +495,41 @@ async def back_to_lobby(endpoint, connectionId, body):
     apigatewaymanagementapi.post_to_connection(
         Data=json.dumps(response), ConnectionId=connectionId
     )
+
+
+# Leave game
+async def leave_game(endpoint, connectionId, body):
+    gid = body["gid"]
+    this_game = get_game(gid)
+    user = get_user_by_connection(connectionId)
+    new_bankroll = withdraw_chips_from_game(connectionId, bankroll, user_token, gid)
+    this_game.remove_player(connectionId)
+    put_game(gid, this_game)
+
+    # send response to other players
+    response = {
+        "method": "playerLeft",
+        "gid": gid,
+        "number-of-rounds": this_game.number_of_rounds,
+        "players": this_game.print_player_response(),
+    }
+
+    clients = this_game.get_clients()
+    apigatewaymanagementapi = boto3.client(
+        "apigatewaymanagementapi", endpoint_url=endpoint
+    )
+
+    for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps(response), ConnectionId=clients
+        )
+
+    # send response to player who left
+    response = {
+        "method": "youLeft",
+        "gid": gid,
+        "bankroll": new_bankroll,
+    }
+    apigatewaymanagementapi.post_to_connection(
+        Data=json.dumps(response), ConnectionId=connectionId
+    )

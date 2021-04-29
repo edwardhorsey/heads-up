@@ -210,16 +210,17 @@ def pretty_print(some_dict):
     print(json.dumps(some_dict, indent=4, sort_keys=True))
 
 
-def withdraw_chips_from_game(connectionId, bankroll, user_token, gid):
+def withdraw_chips_from_game(connectionId, bankroll, user_token, this_game):
     print(f"{connectionId}'s bankroll: {bankroll}")
-    this_game = get_game(gid)
     try:
         if this_game.player_one.uid == connectionId:
             print(f"{connectionId}'s chips in game: {this_game.player_one.chips}")
             bankroll += this_game.player_one.chips
+            this_game.player_one.chips = 0
         elif this_game.player_two.uid == connectionId:
             print(f"{connectionId}'s chips in game: {this_game.player_two.chips}")
             bankroll += this_game.player_two.chips
+            this_game.player_two.chips = 0
         else:
             raise Exception(
                 "Player uid not in game. No chips to credit to user.", connectionId
@@ -230,3 +231,5 @@ def withdraw_chips_from_game(connectionId, bankroll, user_token, gid):
 
     except Exception as error:
         print(error)
+
+    return bankroll
