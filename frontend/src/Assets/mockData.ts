@@ -131,6 +131,7 @@ export const mockGameStateWinner: GameState = {
   pot: 2000,
   noOfHands: 1,
   noOfRounds: 0,
+  playerLeftMessage: '',
 };
 
 export const mockPlayerWinner: Iplayer = mockGameStateWinner.players[0];

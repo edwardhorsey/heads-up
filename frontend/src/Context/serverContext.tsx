@@ -192,6 +192,15 @@ const gameReducer = (
         inHand: false,
       };
 
+    case 'playerLeft':
+      return {
+        ...gameState,
+        playerLeftMessage: action.payload.playerLeftMessage,
+      };
+
+    case 'youLeft':
+      return initialGameState;
+
     default: {
       throw new Error(`Action - ${action.type} - not matched`);
     }
@@ -268,6 +277,14 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
               2000,
             );
           }
+          break;
+
+        case 'youLeft':
+          if (response.userBankroll !== false) {
+            authDispatch({ type: 'addChips', bankroll: response.userBankroll });
+          }
+
+          gameDispatch({ type: method, payload: response });
           break;
 
         default:

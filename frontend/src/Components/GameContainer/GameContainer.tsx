@@ -8,6 +8,8 @@ import GameNav from '../GameNav';
 import GameHand from '../GameHand';
 import Button from '../Button';
 import AddChips from '../AddChips';
+import Announcement from '../Announcement';
+import Timer from '../Timer';
 
 const GameContainer: React.FC = () => {
   const { gameState, serverState } = useServer();
@@ -27,6 +29,7 @@ const GameContainer: React.FC = () => {
     noOfHands,
     action,
     gameHasEnoughPlayers,
+    playerLeftMessage,
   } = gameState;
 
   const history = useHistory();
@@ -42,7 +45,7 @@ const GameContainer: React.FC = () => {
   const { chips } = yourself;
   // opponent is opponent
   const opponent: Iplayer = players[whichPlayer === 0 ? 1 : 0];
-  const gameMinimumBuyIn = 500;
+  const gameMinimumBuyIn = 1500;
 
   return (
     <section className={styles.GameContainer}>
@@ -62,7 +65,18 @@ const GameContainer: React.FC = () => {
           yourHand={yourHand}
         />
       )}
-      {(!yourself.chips && ['initial', 'backToLobby'].includes(stage)) && (
+      {playerLeftMessage && <Announcement text={playerLeftMessage} />}
+      {playerLeftMessage && (
+        <>
+          <p>Leaving in...</p>
+          <Timer num={10} logic={() => leaveGame(gid)} />
+        </>
+      )}
+      {(
+        !yourself.chips
+        && ['initial', 'backToLobby'].includes(stage)
+        && !playerLeftMessage
+      ) && (
         <AddChips
           numChips={chips}
           minimum={gameMinimumBuyIn}
@@ -70,7 +84,11 @@ const GameContainer: React.FC = () => {
           uid={uid}
         />
       )}
-      {(!yourself.ready && ['initial', 'backToLobby'].includes(stage)) && (
+      {(
+        !yourself.ready
+        && ['initial', 'backToLobby'].includes(stage)
+        && !playerLeftMessage
+      ) && (
         <Button logic={() => readyToPlayHand(gid, uid)} text="Play round" />
       )}
       {yourHand.length > 0 && (

@@ -514,8 +514,7 @@ async def leave_game(endpoint, connectionId, body):
     response = {
         "method": "playerLeft",
         "gid": gid,
-        "number-of-rounds": this_game.number_of_rounds,
-        "players": this_game.print_player_response(),
+        "playerLeftMessage": "Your opponent has left the game",
     }
 
     clients = this_game.get_clients()

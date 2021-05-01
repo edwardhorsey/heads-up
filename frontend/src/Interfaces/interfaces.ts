@@ -59,7 +59,7 @@ export interface Iplayer {
   hand: Hand,
   folded: boolean,
   'rounds-won': number,
-  profit: number
+  profit: number,
 }
 
 export const initialPlayer: Iplayer = {
@@ -93,6 +93,7 @@ export interface WebsocketResponse {
   'winning-hand': WinningHand;
   'number-of-rounds': number;
   whichPlayer: number;
+  playerLeftMessage: string;
 }
 
 /*
@@ -128,7 +129,9 @@ export type GameReducerAction =
   | { type: 'folded', payload: WebsocketResponse }
   | { type: 'winner', payload: WebsocketResponse }
   | { type: 'playerBust', payload: WebsocketResponse }
-  | { type: 'backToLobby', payload: WebsocketResponse };
+  | { type: 'backToLobby', payload: WebsocketResponse }
+  | { type: 'playerLeft', payload: WebsocketResponse }
+  | { type: 'youLeft', payload: WebsocketResponse };
 
 export const gameReducerActions: GameReducerAction['type'][] = [
   'setUsername',
@@ -146,6 +149,8 @@ export const gameReducerActions: GameReducerAction['type'][] = [
   'winner',
   'playerBust',
   'backToLobby',
+  'playerLeft',
+  'youLeft',
 ];
 
 export type Action = number | null;
@@ -198,6 +203,7 @@ export interface GameState {
   winningHand: WinningHand;
   winner: string;
   yourHand: Hand;
+  playerLeftMessage: string;
 }
 
 export type ServerDispatch = (action: ServerReducerAction) => void;
@@ -228,6 +234,7 @@ export const initialGameState: GameState = {
   pot: 0,
   noOfHands: 0,
   noOfRounds: 0,
+  playerLeftMessage: '',
 };
 
 export interface ServerProviderProps {
