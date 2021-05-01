@@ -13,15 +13,15 @@ dynamodb = boto3.client("dynamodb")
 def handle(event, context):
     connectionId = event["requestContext"]["connectionId"]
     endpoint = (
-    "http://localhost:3001/"
-    if "IS_OFFLINE" in os.environ
-    else (
-        "https://"
-        + event["requestContext"]["domainName"]
-        + "/"
-        + event["requestContext"]["stage"]
+        "http://localhost:3001/"
+        if "IS_OFFLINE" in os.environ
+        else (
+            "https://"
+            + event["requestContext"]["domainName"]
+            + "/"
+            + event["requestContext"]["stage"]
+        )
     )
-)
 
     items = get_all_by_connection(connectionId)
 
