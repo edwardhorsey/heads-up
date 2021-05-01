@@ -531,7 +531,7 @@ async def leave_game(endpoint, connectionId, body):
     response = {
         "method": "youLeft",
         "gid": gid,
-        "bankroll": new_bankroll,
+        "userBankroll": new_bankroll,
     }
     apigatewaymanagementapi.post_to_connection(
         Data=json.dumps(response), ConnectionId=connectionId
