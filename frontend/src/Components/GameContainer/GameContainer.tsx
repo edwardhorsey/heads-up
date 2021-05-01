@@ -47,10 +47,7 @@ const GameContainer: React.FC = () => {
   return (
     <section className={styles.GameContainer}>
       <Button
-        logic={() => {
-          console.log('going back');
-          leaveGame(gid);
-        }}
+        logic={() => leaveGame(gid)}
         text="Back"
       />
       <div className={styles.gameStats}>
