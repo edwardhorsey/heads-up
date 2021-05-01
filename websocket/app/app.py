@@ -157,9 +157,10 @@ async def add_chips(endpoint, connectionId, body):
             print(
                 f'User ({connectionId}, {this_user["email"]}) does not \
                 have enough funds. Bankroll: {this_user["bankroll"]}. \
-                Requested amount: {amount}.'
+                Requested amount: {amount}. Readjusting to add entire \
+                bankroll ({this_user["bankroll"]})'
             )
-            raise Exception("Not enough funds")
+            amount = this_user["bankroll"]
 
         if this_game.player_one.uid == connectionId:
             this_game.player_one.chips += amount
@@ -502,6 +503,9 @@ async def leave_game(endpoint, connectionId, body):
     gid = body["gid"]
     this_game = get_game(gid)
     user = get_user_by_connection(connectionId)
+    bankroll = user["bankroll"]
+    user_token = user["PK"]
+
     new_bankroll = withdraw_chips_from_game(connectionId, bankroll, user_token, gid)
     this_game.remove_player(connectionId)
     put_game(gid, this_game)
@@ -521,7 +525,7 @@ async def leave_game(endpoint, connectionId, body):
 
     for client in clients:
         apigatewaymanagementapi.post_to_connection(
-            Data=json.dumps(response), ConnectionId=clients
+            Data=json.dumps(response), ConnectionId=client
         )
 
     # send response to player who left

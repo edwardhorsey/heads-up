@@ -12,6 +12,7 @@ from app.app import all_in
 from app.app import fold
 from app.app import call
 from app.app import back_to_lobby
+from app.app import leave_game
 
 
 async def main(event, context):
@@ -51,6 +52,8 @@ async def main(event, context):
         await fold(endpoint, connectionId, body)
     elif body["method"] == "backToLobby":
         await back_to_lobby(endpoint, connectionId, body)
+    elif body["method"] == "leaveGame":
+        await leave_game(endpoint, connectionId, body)
     else:
         response = {
             "method": body["method"],

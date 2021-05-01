@@ -90,14 +90,11 @@ export const backToLobby = (gid: string, uid: string): void => (
   }))
 );
 
-/*
 export const leaveGame = (gid: string): void => {
-  const request = {
+  console.log('leaving');
+  return socket.send(JSON.stringify({
     action: 'onGameAction',
     method: 'leaveGame',
     gid,
-  }
-
-  return socket.send(JSON.stringify(request));
+  }));
 };
-*/

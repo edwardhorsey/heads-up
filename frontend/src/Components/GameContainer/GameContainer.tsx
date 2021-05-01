@@ -3,12 +3,11 @@ import { useHistory } from 'react-router-dom';
 import styles from './GameContainer.module.scss';
 import { useServer } from '../../Context/serverContext';
 import { Iplayer } from '../../Interfaces/interfaces';
-import { readyToPlayHand } from '../../Socket/requests';
+import { leaveGame, readyToPlayHand } from '../../Socket/requests';
 import GameNav from '../GameNav';
 import GameHand from '../GameHand';
 import Button from '../Button';
 import AddChips from '../AddChips';
-/* import { leaveGame } from '../../Socket/requests'; */
 
 const GameContainer: React.FC = () => {
   const { gameState, serverState } = useServer();
@@ -47,7 +46,13 @@ const GameContainer: React.FC = () => {
 
   return (
     <section className={styles.GameContainer}>
-      {/* <Button logic={() => leaveGame} text={'Back'} /> */}
+      <Button
+        logic={() => {
+          console.log('going back');
+          leaveGame(gid);
+        }}
+        text="Back"
+      />
       <div className={styles.gameStats}>
         <h3>{`GameID: ${gid}`}</h3>
         <p>{`Total rounds: ${noOfRounds}`}</p>
