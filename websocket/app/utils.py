@@ -1,53 +1,62 @@
 import os
 import uuid
 import requests
+import simplejson as json
 from boto3.dynamodb.conditions import Key
 from .tables import poker_table
 from .cognito import lambda_handler as decode_token
 from .poker.game import Game
 
 
-def get_display_name(connectionId):
+def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
+    item = {
+        "PK": user_details["sub"],
+        "SK": user_details["sub"],
+        "displayName": user_details["cognito:username"],
+        "email": user_details["email"],
+        "userTokenPK": user_details["sub"],
+        "userTokenSK": "User",
+        "userDetails": user_details,
+        "bankroll": starting_bankroll,
+    }
+    poker_table.put_item(Item=item)
+    return item
+
+
+def get_user_by_user_token(user_token):
+    user = poker_table.get_item(Key={"PK": user_token, "SK": user_token})
+    return user["Item"] if "Item" in user else False
+
+
+def get_user_by_connection(connectionId):
     user = poker_table.query(
         IndexName="connectionId",
-        KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
+        KeyConditionExpression=Key("connectionIdPK").eq(connectionId)
+        & Key("connectionIdSK").eq("User"),
         Limit=1,
     )
-    return (
-        user["Items"][0]["displayName"]
-        if ("Items" in user and user["Items"])
-        else False
+    return user["Items"][0] if ("Items" in user and user["Items"]) else False
+
+
+def get_all_by_connection(connectionId):
+    items = poker_table.query(
+        IndexName="connectionId",
+        KeyConditionExpression=Key("connectionIdPK").eq(connectionId),
     )
-
-
-def first_visit_put_user_details(connectionId, user_details, starting_bankroll):
-    return poker_table.put_item(
-        Item={
-            "PK": user_details["sub"],
-            "SK": user_details["sub"],
-            "displayName": user_details["cognito:username"],
-            "email": user_details["email"],
-            "userTokenPK": user_details["sub"],
-            "userTokenSK": "User",
-            "userDetails": user_details,
-            "bankroll": starting_bankroll,
-        }
-    )
-
-
-def check_if_user_exists(user_token):
-    user = poker_table.get_item(Key={"PK": user_token, "SK": user_token})
-    return True if "Item" in user else False
+    return items["Items"] if "Items" in items else False
 
 
 def save_user_token_to_connection(connectionId, user_token):
-    return poker_table.put_item(
-        Item={
+    return poker_table.update_item(
+        Key={
             "PK": connectionId,
             "SK": connectionId,
-            "userTokenPK": user_token,
-            "userTokenSK": "Connection",
-        }
+        },
+        UpdateExpression="SET userTokenPK = :pk , userTokenSK = :sk",
+        ExpressionAttributeValues={
+            ":pk": user_token,
+            ":sk": "Connection",
+        },
     )
 
 
@@ -65,6 +74,21 @@ def save_connection_id_to_user(connectionId, user_token):
     )
 
 
+def save_game_id_to_connection_id(gameId, connectionId):
+    print("saving game id to connection id", gameId, connectionId)
+    return poker_table.update_item(
+        Key={
+            "PK": connectionId,
+            "SK": connectionId,
+        },
+        UpdateExpression="SET gameIdPK = :pk , gameIdSK = :sk",
+        ExpressionAttributeValues={
+            ":pk": gameId,
+            ":sk": "Connection",
+        },
+    )
+
+
 def log_user_in(connectionId, user_token):
     if save_user_token_to_connection(
         connectionId, user_token
@@ -75,11 +99,6 @@ def log_user_in(connectionId, user_token):
         return True
     else:
         return False
-
-
-def get_user(connectionId):
-    ### access via userToken index
-    return false
 
 
 def remove_user_details(connectionIds):
@@ -103,6 +122,20 @@ def check_if_user_token_exists(user_token):
     return result["Items"] if result["Items"] else False
 
 
+def update_user_bankroll(user_token, new_bankroll):
+    print("updating bankroll:", user_token, new_bankroll)
+    return poker_table.update_item(
+        Key={
+            "PK": user_token,
+            "SK": user_token,
+        },
+        UpdateExpression="SET bankroll = :br",
+        ExpressionAttributeValues={
+            ":br": new_bankroll,
+        },
+    )
+
+
 def generate_game_id():
     return uuid.uuid4().hex[:10]
 
@@ -112,7 +145,15 @@ def re_map_game(game):
 
 
 def put_game(gid, game):
-    return poker_table.put_item(Item={"PK": gid, "SK": gid, "game": game.self_dict()})
+    return poker_table.put_item(
+        Item={
+            "PK": gid,
+            "SK": gid,
+            "game": game.self_dict(),
+            "gameIdPK": gid,
+            "gameIdSK": "game",
+        }
+    )
 
 
 def get_game(gid):
@@ -146,7 +187,7 @@ async def get_access_tokens(code):
     ).json()
 
 
-async def get_user_profile(code):
+async def get_user_cognito_profile(code):
     try:
         access_tokens = await get_access_tokens(code)
         if "error" in access_tokens:
@@ -163,3 +204,32 @@ async def get_user_profile(code):
     except Exception as error:
         print(error)
         return False
+
+
+def pretty_print(some_dict):
+    print(json.dumps(some_dict, indent=4, sort_keys=True))
+
+
+def withdraw_chips_from_game(connectionId, bankroll, user_token, this_game):
+    print(f"{connectionId}'s bankroll: {bankroll}")
+    try:
+        if this_game.player_one and this_game.player_one.uid == connectionId:
+            print(f"{connectionId}'s chips in game: {this_game.player_one.chips}")
+            bankroll += this_game.player_one.chips
+            this_game.player_one.chips = 0
+        elif this_game.player_two and this_game.player_two.uid == connectionId:
+            print(f"{connectionId}'s chips in game: {this_game.player_two.chips}")
+            bankroll += this_game.player_two.chips
+            this_game.player_two.chips = 0
+        else:
+            raise Exception(
+                "Player uid not in game. No chips to credit to user.", connectionId
+            )
+
+        print(f"{connectionId}'s NEW bankroll: {bankroll}")
+        update_user_bankroll(user_token, bankroll)
+
+    except Exception as error:
+        print(error)
+
+    return bankroll

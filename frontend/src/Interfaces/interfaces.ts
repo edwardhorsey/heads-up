@@ -7,12 +7,14 @@ export interface AuthState {
   authToken: string;
   displayName: string;
   email: string;
+  bankroll: string;
 }
 
 export const initialAuthState: AuthState = {
   authToken: '',
   displayName: '',
   email: '',
+  bankroll: '',
 };
 
 export interface IAuthContext {
@@ -34,7 +36,8 @@ export interface AuthProviderProps {
 export type AuthReducerAction =
   | { type: 'login', userObject: AuthState }
   | { type: 'logout' }
-  | { type: 'forceLogout', message: string; };
+  | { type: 'forceLogout', message: string; }
+  | { type: 'addChips', bankroll: string; };
 
 export const authReducerActions: AuthReducerAction['type'][] = [
   'login',
@@ -50,19 +53,19 @@ Player
 export interface Iplayer {
   uid: string,
   name: string,
-  bankroll: number,
+  chips: number,
   ready: boolean,
   'bet-size': number,
   hand: Hand,
   folded: boolean,
   'rounds-won': number,
-  profit: number
+  profit: number,
 }
 
 export const initialPlayer: Iplayer = {
   uid: '',
   name: '',
-  bankroll: 0,
+  chips: 0,
   ready: false,
   'bet-size': 0,
   hand: [],
@@ -85,10 +88,12 @@ export interface WebsocketResponse {
   'community-cards': CommunityType;
   pot: number;
   'number-of-hands': number;
+  userBankroll: number;
   winner: string;
   'winning-hand': WinningHand;
   'number-of-rounds': number;
   whichPlayer: number;
+  playerLeftMessage: string;
 }
 
 /*
@@ -116,6 +121,7 @@ export type GameReducerAction =
   | { type: 'incorrectGid', payload: WebsocketResponse }
   | { type: 'validGid' }
   | { type: 'joinGame', payload: WebsocketResponse }
+  | { type: 'addChips', payload: WebsocketResponse }
   | { type: 'onePlayerReady', payload: WebsocketResponse }
   | { type: 'newHand', payload: WebsocketResponse }
   | { type: 'allIn', payload: WebsocketResponse }
@@ -123,7 +129,9 @@ export type GameReducerAction =
   | { type: 'folded', payload: WebsocketResponse }
   | { type: 'winner', payload: WebsocketResponse }
   | { type: 'playerBust', payload: WebsocketResponse }
-  | { type: 'backToLobby', payload: WebsocketResponse };
+  | { type: 'backToLobby', payload: WebsocketResponse }
+  | { type: 'playerLeft', payload: WebsocketResponse }
+  | { type: 'youLeft', payload: WebsocketResponse };
 
 export const gameReducerActions: GameReducerAction['type'][] = [
   'setUsername',
@@ -132,6 +140,7 @@ export const gameReducerActions: GameReducerAction['type'][] = [
   'incorrectGid',
   'validGid',
   'joinGame',
+  'addChips',
   'onePlayerReady',
   'newHand',
   'allIn',
@@ -140,6 +149,8 @@ export const gameReducerActions: GameReducerAction['type'][] = [
   'winner',
   'playerBust',
   'backToLobby',
+  'playerLeft',
+  'youLeft',
 ];
 
 export type Action = number | null;
@@ -192,6 +203,7 @@ export interface GameState {
   winningHand: WinningHand;
   winner: string;
   yourHand: Hand;
+  playerLeftMessage: string;
 }
 
 export type ServerDispatch = (action: ServerReducerAction) => void;
@@ -222,6 +234,7 @@ export const initialGameState: GameState = {
   pot: 0,
   noOfHands: 0,
   noOfRounds: 0,
+  playerLeftMessage: '',
 };
 
 export interface ServerProviderProps {

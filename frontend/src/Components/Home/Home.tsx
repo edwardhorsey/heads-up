@@ -9,7 +9,7 @@ const Home: React.FC = ({ children }) => {
   const { gameState, serverDispatch } = useServer();
   const { gameHasEnoughPlayers } = gameState;
   const { authState, authDispatch } = useAuth();
-  const { displayName } = authState;
+  const { bankroll, displayName } = authState;
   const history = useHistory();
 
   useEffect(() => {
@@ -26,9 +26,14 @@ const Home: React.FC = ({ children }) => {
 
   return (
     <section className={styles.Home}>
-      <h1>Heads Up Poker</h1>
-      <Button logic={logoutHome} text="Logout" />
-      <h3>{`Hi, ${displayName}`}</h3>
+      <nav className={styles.Nav}>
+        <h1>Heads Up Poker</h1>
+        <div className={styles.NavItems}>
+          <h3>{`Hi, ${displayName}`}</h3>
+          <h3>{`Bankroll: ${bankroll}`}</h3>
+          <Button logic={logoutHome} text="Logout" />
+        </div>
+      </nav>
       {/* redirect or buttons to access game? */}
       {children}
     </section>

@@ -4,14 +4,15 @@ import os
 import asyncio
 
 from app.app import login
-from app.app import set_username
 from app.app import create_game
 from app.app import join_game
+from app.app import add_chips
 from app.app import ready_to_play
 from app.app import all_in
 from app.app import fold
 from app.app import call
 from app.app import back_to_lobby
+from app.app import leave_game
 
 
 async def main(event, context):
@@ -30,16 +31,17 @@ async def main(event, context):
 
     # Request body containing ACTION
     body = json.loads(event["body"])
+    print(f'ConnectionId: {connectionId}, Method: {body["method"]}')
 
     # Routes
-    if body["method"] == "setUsername":
-        await set_username(endpoint, connectionId, body)
-    elif body["method"] == "login":
+    if body["method"] == "login":
         await login(endpoint, connectionId, body)
     elif body["method"] == "createGame":
         await create_game(endpoint, connectionId, body)
     elif body["method"] == "joinGame":
         await join_game(endpoint, connectionId, body)
+    elif body["method"] == "addChips":
+        await add_chips(endpoint, connectionId, body)
     elif body["method"] == "readyToPlay":
         await ready_to_play(endpoint, connectionId, body)
     elif body["method"] == "allIn":
@@ -50,6 +52,8 @@ async def main(event, context):
         await fold(endpoint, connectionId, body)
     elif body["method"] == "backToLobby":
         await back_to_lobby(endpoint, connectionId, body)
+    elif body["method"] == "leaveGame":
+        await leave_game(endpoint, connectionId, body)
     else:
         response = {
             "method": body["method"],

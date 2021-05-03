@@ -21,6 +21,7 @@ const authReducer = (
         authToken: action.userObject.authToken,
         displayName: action.userObject.displayName,
         email: action.userObject.email,
+        bankroll: action.userObject.bankroll,
       };
 
     case 'logout':
@@ -29,6 +30,12 @@ const authReducer = (
     case 'forceLogout':
       console.error(action.message);
       return initialAuthState;
+
+    case 'addChips':
+      return {
+        ...authState,
+        bankroll: action.bankroll,
+      };
 
     default: {
       throw new Error(`Action - ${action} - not matched`);

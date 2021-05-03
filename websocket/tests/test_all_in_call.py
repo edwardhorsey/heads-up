@@ -21,9 +21,9 @@
 #         game.new_hand()
 #         game.current_hand.all_in(game.player_one)
 #         self.assertEqual(game.player_one.bet_size, 1000)
-#         self.assertEqual(game.player_one.bankroll, 0)
+#         self.assertEqual(game.player_one.chips, 0)
 #         self.assertEqual(game.player_two.bet_size, 100)
-#         self.assertEqual(game.player_two.bankroll, 900)
+#         self.assertEqual(game.player_two.chips, 900)
 #         self.assertEqual(game.current_hand.pot, 1100)
 
 #     def test_allin_big_blind(self):
@@ -31,9 +31,9 @@
 #         game.new_hand()
 #         game.current_hand.all_in(game.player_two)
 #         self.assertEqual(game.player_one.bet_size, 50)
-#         self.assertEqual(game.player_one.bankroll, 600)
+#         self.assertEqual(game.player_one.chips, 600)
 #         self.assertEqual(game.player_two.bet_size, 1300)
-#         self.assertEqual(game.player_two.bankroll, 0)
+#         self.assertEqual(game.player_two.chips, 0)
 #         self.assertEqual(game.current_hand.pot, 1350)
 
 #     def test_even_stacks_allin_call(self):
@@ -43,9 +43,9 @@
 #         game.current_hand.all_in(game.player_one)
 #         game.current_hand.call(game.player_two, 1000, game.player_one)
 #         self.assertEqual(game.player_one.bet_size, 1000)
-#         self.assertEqual(game.player_one.bankroll, 0)
+#         self.assertEqual(game.player_one.chips, 0)
 #         self.assertEqual(game.player_two.bet_size, 1000)
-#         self.assertEqual(game.player_two.bankroll, 0)
+#         self.assertEqual(game.player_two.chips, 0)
 #         self.assertEqual(game.current_hand.pot, 2000)
 
 #     def test_even_uneven_stacks_allin_call(self):
@@ -55,9 +55,9 @@
 #         self.assertEqual(game.player_one.bet_size, 1800)
 #         game.current_hand.call(game.player_two, 1800, game.player_one)
 #         self.assertEqual(game.player_one.bet_size, 750)
-#         self.assertEqual(game.player_one.bankroll, 1050)
+#         self.assertEqual(game.player_one.chips, 1050)
 #         self.assertEqual(game.player_two.bet_size, 750)
-#         self.assertEqual(game.player_two.bankroll, 0)
+#         self.assertEqual(game.player_two.chips, 0)
 #         self.assertEqual(game.current_hand.pot, 1500)
 
 #     def test_even_uneven_stacks_alt_allin_call(self):
@@ -67,9 +67,9 @@
 #         self.assertEqual(game.player_one.bet_size, 450)
 #         game.current_hand.call(game.player_two, 450, game.player_one)
 #         self.assertEqual(game.player_one.bet_size, 450)
-#         self.assertEqual(game.player_one.bankroll, 0)
+#         self.assertEqual(game.player_one.chips, 0)
 #         self.assertEqual(game.player_two.bet_size, 450)
-#         self.assertEqual(game.player_two.bankroll, 1100)
+#         self.assertEqual(game.player_two.chips, 1100)
 #         self.assertEqual(game.current_hand.pot, 900)
 
 

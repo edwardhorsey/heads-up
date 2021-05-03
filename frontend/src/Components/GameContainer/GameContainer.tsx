@@ -3,11 +3,13 @@ import { useHistory } from 'react-router-dom';
 import styles from './GameContainer.module.scss';
 import { useServer } from '../../Context/serverContext';
 import { Iplayer } from '../../Interfaces/interfaces';
-import { readyToPlayHand } from '../../Socket/requests';
+import { leaveGame, readyToPlayHand } from '../../Socket/requests';
 import GameNav from '../GameNav';
 import GameHand from '../GameHand';
 import Button from '../Button';
-/* import { leaveGame } from '../../Socket/requests'; */
+import AddChips from '../AddChips';
+import Announcement from '../Announcement';
+import Timer from '../Timer';
 
 const GameContainer: React.FC = () => {
   const { gameState, serverState } = useServer();
@@ -27,6 +29,7 @@ const GameContainer: React.FC = () => {
     noOfHands,
     action,
     gameHasEnoughPlayers,
+    playerLeftMessage,
   } = gameState;
 
   const history = useHistory();
@@ -39,12 +42,17 @@ const GameContainer: React.FC = () => {
 
   // yourself is user
   const yourself: Iplayer = players[whichPlayer];
+  const { chips } = yourself;
   // opponent is opponent
   const opponent: Iplayer = players[whichPlayer === 0 ? 1 : 0];
+  const gameMinimumBuyIn = 1500;
 
   return (
     <section className={styles.GameContainer}>
-      {/* <Button logic={() => leaveGame} text={'Back'} /> */}
+      <Button
+        logic={() => leaveGame(gid)}
+        text="Back"
+      />
       <div className={styles.gameStats}>
         <h3>{`GameID: ${gid}`}</h3>
         <p>{`Total rounds: ${noOfRounds}`}</p>
@@ -57,7 +65,30 @@ const GameContainer: React.FC = () => {
           yourHand={yourHand}
         />
       )}
-      {(!yourself.ready && ['initial', 'backToLobby'].includes(stage)) && (
+      {playerLeftMessage && <Announcement text={playerLeftMessage} />}
+      {playerLeftMessage && (
+        <>
+          <p>Leaving in...</p>
+          <Timer num={10} logic={() => leaveGame(gid)} />
+        </>
+      )}
+      {(
+        !yourself.chips
+        && ['initial', 'backToLobby'].includes(stage)
+        && !playerLeftMessage
+      ) && (
+        <AddChips
+          numChips={chips}
+          minimum={gameMinimumBuyIn}
+          gid={gid}
+          uid={uid}
+        />
+      )}
+      {(
+        !yourself.ready
+        && ['initial', 'backToLobby'].includes(stage)
+        && !playerLeftMessage
+      ) && (
         <Button logic={() => readyToPlayHand(gid, uid)} text="Play round" />
       )}
       {yourHand.length > 0 && (

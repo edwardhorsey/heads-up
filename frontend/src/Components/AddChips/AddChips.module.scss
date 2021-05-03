@@ -1,0 +1,11 @@
+.AddChips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .formErrors {
+    font-size: 0.8rem;
+    color: darkred;
+    text-align: center;
+  }
+}

@@ -115,7 +115,7 @@ const GameHand: React.FC<GameHandProps> = ({
   };
 
   const playerBust = () => {
-    const bust = yourself.bankroll <= 0
+    const bust = yourself.chips <= 0
       ? [yourself, opponent]
       : [opponent, yourself];
     return `${bust[0].name} has bust, ${bust[1].name} wins the round!`;

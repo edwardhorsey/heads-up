@@ -89,6 +89,12 @@ const gameReducer = (
         whichPlayer: action.payload.whichPlayer,
       };
 
+    case 'addChips':
+      return {
+        ...gameState,
+        players: action.payload.players,
+      };
+
     case 'onePlayerReady':
       return {
         ...gameState,
@@ -186,6 +192,15 @@ const gameReducer = (
         inHand: false,
       };
 
+    case 'playerLeft':
+      return {
+        ...gameState,
+        playerLeftMessage: action.payload.playerLeftMessage,
+      };
+
+    case 'youLeft':
+      return initialGameState;
+
     default: {
       throw new Error(`Action - ${action.type} - not matched`);
     }
@@ -245,6 +260,14 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
           });
           break;
 
+        case 'addChips':
+          if (response.userBankroll !== false) {
+            authDispatch({ type: method, bankroll: response.userBankroll });
+          }
+
+          gameDispatch({ type: method, payload: response });
+          break;
+
         case 'newHand':
           if (gameState.noOfHands < 1 || gameState.stage === 'backToLobby') {
             gameDispatch({ type: method, payload: response });
@@ -254,6 +277,14 @@ export const ServerProvider = (props: ServerProviderProps): JSX.Element => {
               2000,
             );
           }
+          break;
+
+        case 'youLeft':
+          if (response.userBankroll !== false) {
+            authDispatch({ type: 'addChips', bankroll: response.userBankroll });
+          }
+
+          gameDispatch({ type: method, payload: response });
           break;
 
         default:

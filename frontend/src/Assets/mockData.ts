@@ -1,6 +1,6 @@
-import { Card, GameState } from '../Interfaces/interfaces';
+import { GameState, Iplayer } from '../Interfaces/interfaces';
 
-const mockGameStateWinner: GameState = {
+export const mockGameStateWinner: GameState = {
   inHand: false,
   uid: '',
   displayName: '',
@@ -14,7 +14,7 @@ const mockGameStateWinner: GameState = {
     {
       uid: 'ckn7un3m30056cloi5h7a4ast',
       name: 'ambika',
-      bankroll: 0,
+      chips: 0,
       ready: true,
       'bet-size': 0,
       hand: [
@@ -34,7 +34,7 @@ const mockGameStateWinner: GameState = {
     {
       uid: 'ckn7un46e005bcloicr7i8vmb',
       name: 'ed',
-      bankroll: 2000,
+      chips: 2000,
       ready: true,
       'bet-size': 0,
       hand: [
@@ -131,6 +131,31 @@ const mockGameStateWinner: GameState = {
   pot: 2000,
   noOfHands: 1,
   noOfRounds: 0,
+  playerLeftMessage: '',
 };
 
-export default mockGameStateWinner;
+export const mockPlayerWinner: Iplayer = mockGameStateWinner.players[0];
+
+export const mockPlayerBet: Iplayer = {
+  uid: '123456',
+  name: 'Edward',
+  chips: 1000,
+  ready: true,
+  'bet-size': 500,
+  hand: [['a', 'clubs'], ['k', 'clubs']],
+  folded: false,
+  'rounds-won': 3,
+  profit: 0,
+};
+
+export const mockPlayerBetTwo: Iplayer = {
+  uid: '0fdcd7e6-2621-4acd-8c9d-3c81f8e42382',
+  name: 'TestWard Dot Com',
+  chips: 10000000,
+  ready: true,
+  'bet-size': 9725,
+  hand: [['2', 'clubs'], ['7', 'hearts']],
+  folded: false,
+  'rounds-won': 15,
+  profit: 0,
+};

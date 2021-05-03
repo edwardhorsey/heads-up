@@ -4,6 +4,7 @@ import uuid
 import time
 import os
 import boto3
+from decimal import Decimal
 
 from .utils import *
 from .poker.game import Game
@@ -25,7 +26,7 @@ async def login(endpoint, connectionId, body):
     }
 
     authorization_code = body["code"]
-    user_details = await get_user_profile(authorization_code)
+    user_details = await get_user_cognito_profile(authorization_code)
 
     if user_details:
         players_already_using_token = check_if_user_token_exists(user_details["sub"])
@@ -45,8 +46,11 @@ async def login(endpoint, connectionId, body):
                 except Exception as error:
                     print("Error posting to kicked player's connectionId: ", error)
 
-        if not check_if_user_exists(user_details["sub"]):
-            first_visit_put_user_details(connectionId, user_details, 500)
+        user_profile = get_user_by_user_token(user_details["sub"])
+        if not user_profile:
+            user_profile = first_visit_put_user_details(
+                connectionId, user_details, Decimal(5000)
+            )
 
         # save user_token and connectionId
         if log_user_in(connectionId, user_details["sub"]):
@@ -54,9 +58,10 @@ async def login(endpoint, connectionId, body):
                 "method": "login",
                 "uid": connectionId,
                 "userObject": {
-                    "authToken": user_details["sub"],
-                    "displayName": user_details["cognito:username"],
-                    "email": user_details["email"],
+                    "authToken": user_profile["PK"],
+                    "displayName": user_profile["displayName"],
+                    "email": user_profile["email"],
+                    "bankroll": user_profile["bankroll"],
                 },
                 "message": "Logged in",
             }
@@ -70,37 +75,19 @@ async def login(endpoint, connectionId, body):
     )
 
 
-# Set username
-async def set_username(endpoint, connectionId, body):
-    status = put_display_name(connectionId, body["username"])
-
-    response = {
-        "method": "setUsername",
-        "uid": connectionId,
-        "username": body["username"],
-        "success": status,
-    }
-
-    apigatewaymanagementapi = boto3.client(
-        "apigatewaymanagementapi", endpoint_url=endpoint
-    )
-    apigatewaymanagementapi.post_to_connection(
-        Data=json.dumps(response), ConnectionId=connectionId
-    )
-
-
 # Create game
 async def create_game(endpoint, connectionId, body):
     gid = generate_game_id()
-    display_name = get_display_name(connectionId)
-    player_one = Player(connectionId, display_name, 1000)
+    user = get_user_by_connection(connectionId)
+    display_name = user["displayName"]
+    player_one = Player(connectionId, display_name, 0)
 
     this_game = Game(gid, player_one)
-    status = put_game(gid, this_game)
+    put_game(gid, this_game)
+    save_game_id_to_connection_id(gid, connectionId)
 
     response = {
         "method": "createGame",
-        "success": status,
         "gid": gid,
     }
 
@@ -118,11 +105,13 @@ async def join_game(endpoint, connectionId, body):
     # if not check_item_exists(gid):
     # return await incorrect_gid(connectionId, gid)
     this_game = get_game(gid)
-    display_name = get_display_name(connectionId)
-    player_two = Player(connectionId, display_name, 1000)
+    user = get_user_by_connection(connectionId)
+    display_name = user["displayName"]
+    player_two = Player(connectionId, display_name, 0)
 
     this_game.add_player(player_two)
-    status = put_game(gid, this_game)
+    put_game(gid, this_game)
+    save_game_id_to_connection_id(gid, connectionId)
 
     clients = this_game.get_clients()
     response = {
@@ -133,21 +122,77 @@ async def join_game(endpoint, connectionId, body):
             {
                 "uid": this_game.player_one.uid,
                 "name": this_game.player_one.name,
-                "bankroll": this_game.player_one.bankroll,
+                "chips": this_game.player_one.chips,
             },
             {
                 "uid": this_game.player_two.uid,
                 "name": this_game.player_two.name,
-                "bankroll": this_game.player_two.bankroll,
+                "chips": this_game.player_two.chips,
             },
         ],
-        "status": status,
     }
 
     apigatewaymanagementapi = boto3.client(
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
     for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps(response), ConnectionId=client
+        )
+
+
+# Ready to play
+async def add_chips(endpoint, connectionId, body):
+    gid = body["gid"]
+    amount = Decimal(body["amount"])
+    this_game = get_game(gid)
+    this_user = get_user_by_connection(connectionId)
+    response = {
+        "method": "addChips",
+        "gid": gid,
+    }
+
+    try:
+        if this_user["bankroll"] - amount < 0:
+            print(
+                f'User ({connectionId}, {this_user["email"]}) does not \
+                have enough funds. Bankroll: {this_user["bankroll"]}. \
+                Requested amount: {amount}. Readjusting to add entire \
+                bankroll ({this_user["bankroll"]})'
+            )
+            amount = this_user["bankroll"]
+
+        if this_game.player_one.uid == connectionId:
+            this_game.player_one.chips += amount
+        elif this_game.player_two.uid == connectionId:
+            this_game.player_two.chips += amount
+        else:
+            raise Exception("Player uid not in game", connectionId)
+
+        this_user["bankroll"] -= amount
+        update_user_bankroll(this_user["PK"], this_user["bankroll"])
+        put_game(gid, this_game)
+        response.update(
+            {
+                "players": this_game.print_player_response(),
+                "message": f'Player {this_user["displayName"]}) added {amount} chips into the game.',
+                "userBankroll": False,
+            }
+        )
+    except Exception as error:
+        message = error
+
+    clients = this_game.get_clients()
+    apigatewaymanagementapi = boto3.client(
+        "apigatewaymanagementapi", endpoint_url=endpoint
+    )
+
+    for client in clients:
+        if "players" in response:
+            if client == connectionId:
+                response["userBankroll"] = this_user["bankroll"]
+            else:
+                response["userBankroll"] = False
         apigatewaymanagementapi.post_to_connection(
             Data=json.dumps(response), ConnectionId=client
         )
@@ -198,8 +243,8 @@ async def new_hand(endpoint, connectionId, body, this_game, response):
     )
 
     if (
-        this_game.player_one.bankroll > this_game.current_blind
-        and this_game.player_two.bankroll > this_game.current_blind
+        this_game.player_one.chips > this_game.current_blind
+        and this_game.player_two.chips > this_game.current_blind
     ):
         this_game.new_hand()
 
@@ -422,18 +467,18 @@ async def back_to_lobby(endpoint, connectionId, body):
         "apigatewaymanagementapi", endpoint_url=endpoint
     )
 
-    if this_game.player_one.uid == connectionId:
-        if this_game.player_one.bankroll == 0:
-            this_game.player_one = Player(
-                this_game.player_one.uid, this_game.player_one.name, 500
-            )
-    elif this_game.player_two.uid == connectionId:
-        if this_game.player_two.bankroll == 0:
-            this_game.player_two = Player(
-                this_game.player_two.uid, this_game.player_two.name, 500
-            )
-    else:
-        raise Exception("Player uid not in game", connectionId)
+    # if this_game.player_one.uid == connectionId:
+    #     if this_game.player_one.chips == 0:
+    #         this_game.player_one = Player(
+    #             this_game.player_one.uid, this_game.player_one.name, 500
+    #         )
+    # elif this_game.player_two.uid == connectionId:
+    #     if this_game.player_two.chips == 0:
+    #         this_game.player_two = Player(
+    #             this_game.player_two.uid, this_game.player_two.name, 500
+    #         )
+    # else:
+    #     raise Exception("Player uid not in game", connectionId)
 
     response = {
         "method": "backToLobby",
@@ -448,6 +493,48 @@ async def back_to_lobby(endpoint, connectionId, body):
 
     put_game(gid, this_game)
 
+    apigatewaymanagementapi.post_to_connection(
+        Data=json.dumps(response), ConnectionId=connectionId
+    )
+
+
+# Leave game
+async def leave_game(endpoint, connectionId, body):
+    gid = body["gid"]
+    this_game = get_game(gid)
+    user = get_user_by_connection(connectionId)
+    bankroll = user["bankroll"]
+    user_token = user["PK"]
+
+    new_bankroll = withdraw_chips_from_game(
+        connectionId, bankroll, user_token, this_game
+    )
+    this_game.remove_player(connectionId)
+    put_game(gid, this_game)
+
+    # send response to other players
+    response = {
+        "method": "playerLeft",
+        "gid": gid,
+        "playerLeftMessage": "Your opponent has left the game",
+    }
+
+    clients = this_game.get_clients()
+    apigatewaymanagementapi = boto3.client(
+        "apigatewaymanagementapi", endpoint_url=endpoint
+    )
+
+    for client in clients:
+        apigatewaymanagementapi.post_to_connection(
+            Data=json.dumps(response), ConnectionId=client
+        )
+
+    # send response to player who left
+    response = {
+        "method": "youLeft",
+        "gid": gid,
+        "userBankroll": new_bankroll,
+    }
     apigatewaymanagementapi.post_to_connection(
         Data=json.dumps(response), ConnectionId=connectionId
     )
