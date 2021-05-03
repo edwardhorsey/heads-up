@@ -40,12 +40,11 @@ def handle(event, context):
         this_game.remove_player(connectionId)
         put_game(gid, this_game)
 
-        # send response to other players
+        # send response to other player
         response = {
             "method": "playerLeft",
             "gid": gid,
-            "number-of-rounds": this_game.number_of_rounds,
-            "players": this_game.print_player_response(),
+            "playerLeftMessage": "Your opponent has left the game",
         }
 
         clients = this_game.get_clients()
