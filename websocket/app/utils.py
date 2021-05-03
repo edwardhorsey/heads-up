@@ -213,11 +213,11 @@ def pretty_print(some_dict):
 def withdraw_chips_from_game(connectionId, bankroll, user_token, this_game):
     print(f"{connectionId}'s bankroll: {bankroll}")
     try:
-        if this_game.player_one.uid == connectionId:
+        if this_game.player_one and this_game.player_one.uid == connectionId:
             print(f"{connectionId}'s chips in game: {this_game.player_one.chips}")
             bankroll += this_game.player_one.chips
             this_game.player_one.chips = 0
-        elif this_game.player_two.uid == connectionId:
+        elif this_game.player_two and this_game.player_two.uid == connectionId:
             print(f"{connectionId}'s chips in game: {this_game.player_two.chips}")
             bankroll += this_game.player_two.chips
             this_game.player_two.chips = 0

@@ -506,7 +506,9 @@ async def leave_game(endpoint, connectionId, body):
     bankroll = user["bankroll"]
     user_token = user["PK"]
 
-    new_bankroll = withdraw_chips_from_game(connectionId, bankroll, user_token, gid)
+    new_bankroll = withdraw_chips_from_game(
+        connectionId, bankroll, user_token, this_game
+    )
     this_game.remove_player(connectionId)
     put_game(gid, this_game)
 

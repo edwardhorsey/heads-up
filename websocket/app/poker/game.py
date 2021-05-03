@@ -98,12 +98,20 @@ class Game:
         return list(filter(None, [player_one_uid, player_two_uid]))
 
     def remove_player(self, uid):
-        if self.player_one and self.player_one.uid == uid:
-            self.player_one = None
-        elif self.player_two and self.player_two.uid == uid:
-            self.player_two = None
-        else:
-            raise ValueError("Player not in game.")
+        try:
+            if self.player_one or self.player_two:
+                if self.player_one and self.player_one.uid == uid:
+                    self.player_one = None
+                    print(f"{uid} removed from game")
+                elif self.player_two and self.player_two.uid == uid:
+                    self.player_two = None
+                    print(f"{uid} removed from game")
+                else:
+                    raise ValueError("Player not in game.")
+            else:
+                raise ValueError("Game has no players.")
+        except Exception as error:
+            print(error)
 
     def get_clients(self):
         return self.get_player_uids()
