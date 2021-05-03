@@ -4,7 +4,7 @@
 
 
 
-#### Install & deploy websocket:
+#### Install & deploy websocket
 `cd websocket`
 
 `npm install -g serverless@1.48.2` -> `sls login`
