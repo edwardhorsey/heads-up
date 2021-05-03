@@ -88,6 +88,7 @@ const GameContainer: React.FC = () => {
         !yourself.ready
         && ['initial', 'backToLobby'].includes(stage)
         && !playerLeftMessage
+        && !!yourself.chips
       ) && (
         <Button logic={() => readyToPlayHand(gid, uid)} text="Play round" />
       )}

@@ -5,7 +5,7 @@ import { addChips } from '../../Socket/requests';
 import Button from '../Button';
 
 interface Ivalues {
-  amount: number;
+  amount: string;
 }
 
 interface AddChipsProps {
@@ -24,8 +24,11 @@ const AddChips: React.FC<AddChipsProps> = ({
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const validate = (values: Ivalues) => {
     const errors: FormikErrors<Ivalues> = {};
+
     if (!values.amount) {
       errors.amount = 'Required';
+    } else if (!/^[0-9]+$/i.test(values.amount)) {
+      errors.amount = 'Invalid input. Must only contains integers';
     } else if (
       Number(values.amount) < 1
       || Number(values.amount) + numChips < minimum
@@ -39,10 +42,10 @@ const AddChips: React.FC<AddChipsProps> = ({
   const defaultValue = minimum - numChips < 1 ? 500 : minimum - numChips;
 
   const formik = useFormik({
-    initialValues: { amount: defaultValue },
+    initialValues: { amount: String(defaultValue) },
     validate,
     onSubmit: ({ amount }) => {
-      addChips(gid, uid, amount);
+      addChips(gid, uid, Number(amount));
       setButtonDisabled(true);
     },
   });

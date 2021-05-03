@@ -52,6 +52,9 @@ async def login(endpoint, connectionId, body):
                 connectionId, user_details, Decimal(5000)
             )
 
+        if user_profile["bankroll"] < 1:
+            update_user_bankroll(user_details["sub"], Decimal(5000))
+
         # save user_token and connectionId
         if log_user_in(connectionId, user_details["sub"]):
             response = {
@@ -205,9 +208,15 @@ async def ready_to_play(endpoint, connectionId, body):
 
     # util ? work out which player from uid
     if this_game.player_one.uid == connectionId and body["ready"]:
-        this_game.player_one_ready = True
+        if this_game.player_one.chips > this_game.current_blind:
+            this_game.player_one_ready = True
+        else:
+            raise Exception(f'Player ({connectionId}) doesn\'t have enough chips in game to play a round')
     elif this_game.player_two.uid == connectionId and body["ready"]:
-        this_game.player_two_ready = True
+        if this_game.player_two.chips > this_game.current_blind:
+            this_game.player_two_ready = True
+        else:
+            raise Exception(f'Player ({connectionId}) doesn\'t have enough chips in game to play a round')
     else:
         raise Exception("Player uid not in game", connectionId)
 
