@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useInterval from '../../Utilities/useInterval';
 import styles from './Timer.module.scss';
 
@@ -9,6 +9,14 @@ interface IProps {
 
 const Timer: React.FC<IProps> = ({ num, logic }) => {
   const [count, setCount] = useState(num);
+  const [logicCompleted, setLogicCompleted] = useState(false);
+
+  useEffect(() => {
+    if (!logicCompleted && !count) {
+      logic();
+      setLogicCompleted(true);
+    }
+  }, [logicCompleted, count, logic]);
 
   useInterval(() => {
     setCount(count - 1);
@@ -17,7 +25,6 @@ const Timer: React.FC<IProps> = ({ num, logic }) => {
   return (
     <div>
       <h1 className={styles.Timer}>{count}</h1>
-      {!count && logic()}
     </div>
   );
 };
