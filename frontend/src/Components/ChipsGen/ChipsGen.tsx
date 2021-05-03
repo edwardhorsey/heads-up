@@ -52,7 +52,7 @@ const ChipsGen: React.FC<IProps> = ({ amount }) => {
           );
         }
 
-        return chipsStack.length > 0 ?? (
+        return chipsStack.length > 0 && (
           <div key={`chipStack ${chipsGenCounter}`} className={styles.parent}>
             {chipsStack}
           </div>
