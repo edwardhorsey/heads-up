@@ -13,6 +13,7 @@ import LoggingIn from './Components/LoggingIn';
 import Home from './Components/Home';
 import GameContainer from './Components/GameContainer';
 import Lobby from './Components/Lobby';
+import ChipsGen from './Components/ChipsGen';
 
 const App: React.FC = () => {
   const { authState } = useAuth();
