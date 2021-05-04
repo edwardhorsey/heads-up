@@ -1,4 +1,9 @@
 .Hand {
+  height: 600px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+
   .playerNav {
     display: flex;
     justify-content: space-between;
