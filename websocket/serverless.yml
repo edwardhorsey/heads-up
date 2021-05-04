@@ -19,6 +19,7 @@ provider:
 plugins:
   - serverless-dotenv-plugin
   - serverless-pseudo-parameters
+  - serverless-dynamodb-local
   - serverless-offline
 package:
   individually: true

@@ -183,3 +183,4 @@ edward*
 yarn.lock
 package-lock.json
 tempCodeRunnerFile.py
+.dynamodb
