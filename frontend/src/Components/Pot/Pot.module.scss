@@ -5,4 +5,11 @@
   max-width: 400px;
   width: 60%;
   margin: 0 auto;
+  position: relative;
+
+  .text {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+  }
 }

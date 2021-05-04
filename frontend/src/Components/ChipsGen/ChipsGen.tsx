@@ -11,6 +11,20 @@ interface ChipsTable {
 
 let chipsGenCounter = 0;
 
+const chipValues = [
+  500000,
+  100000,
+  250000,
+  10000,
+  5000,
+  1000,
+  500,
+  100,
+  25,
+  5,
+  1,
+];
+
 const ChipsGen: React.FC<IProps> = ({ amount }) => {
   const calculateChips = (): ChipsTable => {
     let total = amount;
@@ -28,19 +42,7 @@ const ChipsGen: React.FC<IProps> = ({ amount }) => {
       1: 0,
     };
 
-    [
-      500000,
-      100000,
-      250000,
-      10000,
-      5000,
-      1000,
-      500,
-      100,
-      25,
-      5,
-      1,
-    ].forEach((chip) => {
+    chipValues.forEach((chip) => {
       while (total - chip >= 0) {
         obj[chip] += 1;
         total -= chip;
@@ -53,21 +55,8 @@ const ChipsGen: React.FC<IProps> = ({ amount }) => {
 
   return (
     <div className={styles.ChipsGen}>
-      {[
-        500000,
-        100000,
-        250000,
-        10000,
-        5000,
-        1000,
-        500,
-        100,
-        25,
-        5,
-        1,
-      ].map((chip) => {
+      {chipValues.map((chip) => {
         const chipsStack = [];
-        console.log(chip);
 
         for (let i = 0; i < hash[chip]; i += 1) {
           const inlineStyle = { top: `-${10 * i}px` };

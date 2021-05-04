@@ -10,9 +10,8 @@ interface IProps {
 
 const Pot: React.FC<IProps> = ({ amount, stage }) => (
   <div className={styles.pot}>
-    <p>
-      Total pot:
-      {amount}
+    <p className={styles.text}>
+      {`Total pot: ${amount}`}
     </p>
     <ChipsGen
       amount={['showdown', 'winner', 'end'].includes(stage) ? amount : 0}
