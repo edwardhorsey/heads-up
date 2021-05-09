@@ -1,5 +1,5 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import GameHand from './GameHand';
 import { mockGameStateWinner } from '../../Assets/mockData';
 
@@ -20,11 +20,9 @@ const {
 const [opponent, yourself] = players;
 
 describe('GameHand tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
 
   beforeEach(() => {
-    mockFn = jest.fn();
     component = shallow(
       <GameHand
         action={action}

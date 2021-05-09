@@ -64,5 +64,5 @@
             }
         }
     },
-    "ignorePatterns": ["serviceWorker.ts"]
+    "ignorePatterns": ["serviceWorker.ts", "setupTests.ts"]
 }

@@ -1,14 +1,19 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import AddChips from './AddChips';
 
 describe('AddChips tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
 
   beforeEach(() => {
-    mockFn = jest.fn();
-    component = shallow(<AddChips numChips={130} minimum={500} />);
+    component = shallow(
+      <AddChips
+        numChips={130}
+        minimum={500}
+        gid="abcdefghij"
+        uid="dlkajwd038ut3490hjlgfkjhlsa"
+      />,
+    );
   });
 
   it('should render', () => {

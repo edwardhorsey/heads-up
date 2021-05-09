@@ -1,14 +1,17 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import Button from './Button';
 
 describe('Leaderboard tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
 
   beforeEach(() => {
-    mockFn = jest.fn();
-    component = shallow(<Button logic={() => { console.log('test'); }} text="testing" />);
+    component = shallow(
+      <Button
+        logic={() => { console.log('Button test'); }}
+        text="testing"
+      />,
+    );
   });
 
   it('should render', () => {

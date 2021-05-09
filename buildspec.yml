@@ -6,6 +6,8 @@ phases:
       - cd frontend && npm install
   build:
     commands:
+      - npm run test
+      - npm run lint
       - npm run build
 
 artifacts:

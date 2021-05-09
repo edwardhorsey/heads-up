@@ -1,11 +1,10 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import CommunityCards from './CommunityCards';
 import PlayingCard from '../PlayingCard';
 
 describe('CommunityCards tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
   const cards = [
     <PlayingCard key={1} winner={false} card={['2', 'clubs']} />,
     <PlayingCard key={2} winner={false} card={['7', 'hearts']} />,
@@ -15,7 +14,6 @@ describe('CommunityCards tests', () => {
   ];
 
   beforeEach(() => {
-    mockFn = jest.fn();
     component = shallow(<CommunityCards cards={cards} />);
   });
 

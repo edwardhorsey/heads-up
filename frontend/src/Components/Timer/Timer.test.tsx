@@ -1,14 +1,14 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import Timer from './Timer';
 
 describe('Leaderboard tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
+  let mockFn = () => { console.log('Timer.test'); };
 
   beforeEach(() => {
     mockFn = jest.fn();
-    component = shallow(<Timer logic={() => { console.log('Timer.test'); }} num={808} />);
+    component = shallow(<Timer logic={mockFn} num={808} />);
   });
 
   it('should render', () => {
