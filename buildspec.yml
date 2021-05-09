@@ -15,7 +15,7 @@ phases:
   build:
     commands:
       - cd websocket
-      - black . --check
+      - black . --check --exclude '(/lib/*|/node_modules/*)'
       - python3 -m unittest discover tests
       - sls deploy
       - cd ../
