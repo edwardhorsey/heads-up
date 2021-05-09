@@ -167,12 +167,12 @@ def get_game(gid):
 
 
 async def get_access_tokens(code):
-    url = os.environ["AWS_COGNITO_APP_URL"]
-    app_client_id = os.environ["AWS_COGNITO_APP_CLIENT_ID"]
+    url = os.environ["WEBSOCKET_AWS_COGNITO_APP_URL"]
+    app_client_id = os.environ["WEBSOCKET_AWS_COGNITO_APP_CLIENT_ID"]
     redirect_uri = (
         "http://localhost:3000/logging-in/"
         if "IS_OFFLINE" in os.environ
-        else (os.environ["AWS_COGNITO_APP_REDIRECT_URI"])
+        else (os.environ["WEBSOCKET_AWS_COGNITO_APP_REDIRECT_URI"])
     )
 
     return requests.post(
