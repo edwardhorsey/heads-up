@@ -211,12 +211,16 @@ async def ready_to_play(endpoint, connectionId, body):
         if this_game.player_one.chips > this_game.current_blind:
             this_game.player_one_ready = True
         else:
-            raise Exception(f'Player ({connectionId}) doesn\'t have enough chips in game to play a round')
+            raise Exception(
+                f"Player ({connectionId}) doesn't have enough chips in game to play a round"
+            )
     elif this_game.player_two.uid == connectionId and body["ready"]:
         if this_game.player_two.chips > this_game.current_blind:
             this_game.player_two_ready = True
         else:
-            raise Exception(f'Player ({connectionId}) doesn\'t have enough chips in game to play a round')
+            raise Exception(
+                f"Player ({connectionId}) doesn't have enough chips in game to play a round"
+            )
     else:
         raise Exception("Player uid not in game", connectionId)
 
