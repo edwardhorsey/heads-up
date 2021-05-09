@@ -3,11 +3,25 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - cd frontend && npm install
+      - cd websocket
+      - npm install -g serverless
+      - pip3 install black
+      - npm install
+      - pip3 install -r python-packages.txt -t ./lib/python
+      - cd ../
+      - cd frontend
+      - npm install
+      - cd ../
   build:
     commands:
-      - npm run test
+      - cd websocket
+      - black . --check
+      - python3 -m unittest discover tests
+      - sls deploy
+      - cd ../
+      - cd frontend
       - npm run lint
+      - npm run test
       - npm run build
 
 artifacts:
