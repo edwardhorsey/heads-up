@@ -1,14 +1,12 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import Announcement from './Announcement';
 
 describe('Announcement tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
 
   beforeEach(() => {
-    mockFn = jest.fn();
-    component = shallow(<Announcement text="TDD is the winner" />);
+    component = shallow(<Announcement text="Test announcement" />);
   });
 
   it('should render', () => {

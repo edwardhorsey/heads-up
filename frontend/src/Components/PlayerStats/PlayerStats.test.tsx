@@ -1,14 +1,12 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import PlayerStats from './PlayerStats';
 import { mockPlayerBet } from '../../Assets/mockData';
 
 describe('PlayerStats tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
 
   beforeEach(() => {
-    mockFn = jest.fn();
     component = shallow(
       <PlayerStats
         player={mockPlayerBet}

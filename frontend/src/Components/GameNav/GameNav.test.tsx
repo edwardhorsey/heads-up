@@ -1,16 +1,14 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import GameNav from './GameNav';
 import { mockGameStateWinner } from '../../Assets/mockData';
 
 describe('GameNav tests', () => {
-  let component: any;
-  let mockFn;
+  let component: ShallowWrapper<React.FC>;
 
   const { stage, players } = mockGameStateWinner;
 
   beforeEach(() => {
-    mockFn = jest.fn();
     component = shallow(
       <GameNav
         yourself={players[0]}
