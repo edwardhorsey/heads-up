@@ -17,8 +17,8 @@ from jose import jwt, jwk
 from jose.utils import base64url_decode
 
 region = "eu-west-1"
-userpool_id = os.environ["AWS_COGNITO_USERPOOL_ID"]  ## 'ap-southeast-2_xxxxxxxxx'
-app_client_id = os.environ["AWS_COGNITO_APP_CLIENT_ID"]  ## '<ENTER APP CLIENT ID HERE>'
+userpool_id = os.environ["WEBSOCKET_AWS_COGNITO_USERPOOL_ID"]  ## 'ap-southeast-2_xxxxxxxxx'
+app_client_id = os.environ["WEBSOCKET_AWS_COGNITO_APP_CLIENT_ID"]  ## '<ENTER APP CLIENT ID HERE>'
 
 keys_url = "https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json".format(
     region, userpool_id
