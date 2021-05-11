@@ -15,8 +15,8 @@ phases:
   build:
     commands:
       - cd websocket
-      - black . --check --exclude '(/lib/*|/node_modules/*)'
-      - python3 -m unittest discover tests
+      - npm run lint
+      - npm run test
       - sls deploy
       - cd ../
       - cd frontend
